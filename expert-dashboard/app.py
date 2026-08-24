@@ -221,72 +221,60 @@ def predict():
     # XAI Path
     xai_rel_path = f"uploads/{result['xai_image_filename']}" if result.get("xai_image_filename") else ""
     
-    # Encyclopedia Data
+    # Encyclopedia Data & Rich Profile
+    try:
+        from api.index import get_breed_profile
+        prof = get_breed_profile(result["top1_breed"])
+    except Exception:
+        prof = {}
+
     enc_list = get_encyclopedia(result["top1_breed"])
-    breed_details = enc_list[0] if enc_list else {
-        "category": "Unknown", "native_tract": "Unknown", 
-        "avg_milk_yield": "Unknown", "optimal_crossbreeding": "Unknown",
-        "data_status": "pending", "source_note": ""
-    }
-
-    # Persist to DB
-    scan_id = insert_scan(
-        image_path          = relative_path,
-        predicted_breed     = result["top1_breed"],
-        confidence_score    = result["top1_confidence"],
-        top3_predictions    = result["top3"],
-        region_input        = region,
-        age_input           = age,
-        color_input         = color,
-        health_status       = "",  # Not yet implemented
-        estimated_weight_kg = "",  # Not yet implemented
-        blockchain_hash     = b_hash,
-        qr_code_path        = qr_relative_path,
-        notes               = notes,
-        status              = status,
-        timestamp           = timestamp_iso,
-    )
-
-    logger.info(
-        f"Scan #{scan_id} | {result['top1_breed']} "
-        f"({result['top1_confidence']:.1%}) | {result['backend']}"
-    )
-
-    # On Vercel, uploaded files live in /tmp which is not served by Flask's
-    # static folder — use a dedicated /api/uploads/ proxy route instead.
-    _is_vercel = bool(os.environ.get("VERCEL"))
-    def _url(rel: str) -> str:
-        if not rel:
-            return ""
-        return f"/api/uploads/{rel.split('/', 1)[-1]}" if _is_vercel else f"/static/{rel}"
+    breed_details = enc_list[0] if enc_list else {}
 
     # Ensure breed_details always has every key the frontend reads
     _bd_defaults = {
-        "category": "Unknown", "native_tract": "—",
-        "avg_milk_yield": "—", "speciality": "—",
-        "optimal_crossbreeding": "—", "data_status": "pending",
+        "category": prof.get("category", "Unknown"),
+        "native_tract": prof.get("native_tract", "—"),
+        "native_states": prof.get("native_states", []),
+        "avg_milk_yield": prof.get("avg_milk_yield", "—"),
+        "speciality": prof.get("speciality", "—"),
+        "temperament": prof.get("temperament", "—"),
+        "purpose": prof.get("purpose", "—"),
+        "disease_resistance": prof.get("disease_resistance", "—"),
+        "optimal_crossbreeding": prof.get("optimal_crossbreeding", "—"),
+        "crossbreeding_partners": prof.get("crossbreeding_partners", []),
+        "data_status": prof.get("data_status", "pending")
     }
     _bd_defaults.update(breed_details)
     breed_details = _bd_defaults
 
+    morph_features = prof.get("morphological_features", {
+        "cranial_structure": "Standard profile",
+        "horn_curvature": "Standard profile",
+        "dewlap": "Standard profile"
+    })
+    expl_sentence = prof.get("explanation_sentence", f"Classification for {result['top1_breed']} driven by attention on head, horn, and body morphological features.")
+
     return jsonify({
-        "success":         True,
-        "scan_id":         scan_id,
-        "top1_breed":      result["top1_breed"],
-        "top1_confidence": result["top1_confidence"],
-        "top3":            result["top3"],
-        "needs_expert":    result.get("needs_expert", False),
-        "region_boosted":  result.get("region_boosted", False),
-        "status":          status,
-        "backend":         result["backend"],
-        "inference_ms":    result["inference_ms"],
-        "image_url":       _url(relative_path),
-        "xai_image_url":   _url(xai_rel_path),
-        "qr_code_url":     _url(qr_relative_path),
-        "blockchain_hash": b_hash,
-        "timestamp":       datetime.utcnow().isoformat(),
-        "breed_details":   breed_details,
-        "pashu_aadhaar":   f"9800 {uid[:4]} {uid[4:8]}"
+        "success":                True,
+        "scan_id":                scan_id,
+        "top1_breed":             result["top1_breed"],
+        "top1_confidence":        result["top1_confidence"],
+        "top3":                   result["top3"],
+        "needs_expert":           result.get("needs_expert", False),
+        "region_boosted":         result.get("region_boosted", False),
+        "status":                 status,
+        "backend":                result["backend"],
+        "inference_ms":           result["inference_ms"],
+        "image_url":              _url(relative_path),
+        "xai_image_url":          _url(xai_rel_path),
+        "qr_code_url":            _url(qr_relative_path),
+        "blockchain_hash":        b_hash,
+        "timestamp":              datetime.utcnow().isoformat(),
+        "breed_details":          breed_details,
+        "morphological_features": morph_features,
+        "explanation_sentence":   expl_sentence,
+        "pashu_aadhaar":          f"9800 {uid[:4]} {uid[4:8]}"
     })
 
 

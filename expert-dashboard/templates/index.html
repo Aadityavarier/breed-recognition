@@ -2257,8 +2257,7 @@
                 <div id="breed-category">Milch Breed</div>
                 <div id="heuristic-badge"
                   style="display:none; position:absolute; top:24px; right:24px; background:#F0FDFA; border:1px solid #14B8A6; color:#0F766E; font-size:10px; font-weight:700; padding:4px 8px; border-radius:4px; cursor:help;"
-                  title="Region-based heuristics applied to boost confidence score for locally native breeds.">📍 REGION
-                  BOOSTED</div>
+                  title="Region-based heuristics applied to boost confidence score for locally native breeds.">📍 REGION BOOSTED</div>
 
                 <div style="margin-top:20px; margin-bottom:12px; font-size:12px; font-weight:700; color:#64748B;">
                   CONFIDENCE BREAKDOWN</div>
@@ -2281,28 +2280,74 @@
               </div>
             </div>
 
-            <!-- Encyclopedia & Vet Data -->
+            <!-- NEW CARD: Why the AI Identified This Breed -->
             <div class="card">
-              <div class="card-title">📚 Breed Profile & Traits</div>
+              <div class="card-title">🔍 Why the AI Identified This Breed</div>
+              
+              <!-- Plain-language Explanation Banner -->
+              <div style="background:#F0FDFA; border-left:4px solid #008080; padding:14px 16px; border-radius:0 8px 8px 0; margin-bottom:16px;">
+                <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">🤖 Diagnostic Explanation & Heatmap Focus</div>
+                <div id="xai-explanation-text" style="font-size:13.5px; color:#0F766E; line-height:1.55; font-weight:600;">—</div>
+              </div>
 
-              <div class="meta-grid">
-                <div class="meta-box">
-                  <div class="lbl">Native Tract</div>
-                  <div class="val" id="native-tract">—</div>
-                </div>
-                <div class="meta-box">
-                  <div class="lbl">Production Yield</div>
-                  <div class="val" id="production-yield">—</div>
-                </div>
-                <div class="meta-box" style="grid-column: 1 / -1;">
-                  <div class="lbl">Key Traits</div>
-                  <div class="val" id="speciality-display">—</div>
+              <!-- Labeled Morphological Features Grid mapped to Heatmap Focus -->
+              <div style="font-size:12px; font-weight:700; color:#64748B; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;">Detected Morphological Features</div>
+              <div class="meta-grid" id="morph-features-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+                <!-- Populated dynamically by populateResults() -->
+              </div>
+            </div>
+
+            <!-- Comprehensive Breed Profile & Vet Data -->
+            <div class="card">
+              <div class="card-title">📚 Comprehensive Breed Profile &amp; Field Data</div>
+
+              <!-- Where it's found -->
+              <div style="margin-bottom: 20px;">
+                <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">📍 Where It's Found (Geographic Distribution)</div>
+                <div class="meta-box" style="background:#F8FAFC;">
+                  <div class="lbl">Native Tract / Region</div>
+                  <div class="val" id="native-tract" style="font-size:14px; margin-bottom:6px;">—</div>
+                  <div id="native-states-tags" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
                 </div>
               </div>
 
-              <div class="crossbreed-alert">
-                <div class="lbl">🧬 Scientific Cross-Breeding Advisory</div>
-                <div class="val" id="crossbreeding-advisory">—</div>
+              <!-- Breed Specialities & Characteristics -->
+              <div style="margin-bottom: 20px;">
+                <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">📊 Breed Specialities &amp; Utility Traits</div>
+                <div class="meta-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+                  <div class="meta-box">
+                    <div class="lbl">🥛 Milk Yield Range</div>
+                    <div class="val" id="production-yield">—</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="lbl">⚙️ Primary Purpose</div>
+                    <div class="val" id="purpose-display">—</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="lbl">❤️ Temperament</div>
+                    <div class="val" id="temperament-display">—</div>
+                  </div>
+                  <div class="meta-box">
+                    <div class="lbl">🛡️ Disease Resistance</div>
+                    <div class="val" id="disease-resistance-display">—</div>
+                  </div>
+                  <div class="meta-box" style="grid-column: 1 / -1;">
+                    <div class="lbl">🌟 Key Breed Characteristics</div>
+                    <div class="val" id="speciality-display" style="font-weight:600; line-height:1.5;">—</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Crossbreeding Advisory & Partners -->
+              <div style="margin-bottom: 20px;">
+                <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">🧬 Commonly Paired &amp; Crossbred With</div>
+                <div class="crossbreed-alert" style="margin-top:0; margin-bottom:12px;">
+                  <div class="lbl">Cross-Breeding Guidance</div>
+                  <div class="val" id="crossbreeding-advisory">—</div>
+                </div>
+                <div id="crossbreed-partners-container" class="meta-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
+                  <!-- Populated dynamically -->
+                </div>
               </div>
 
               <!-- Audit Box -->
@@ -2704,19 +2749,80 @@
 
     async function populateResults(data) {
       // Primary Match
-      document.getElementById('breed-name').textContent = data.top1_breed;
+      document.getElementById('breed-name').textContent = data.top1_breed || data.breed || 'Unknown Breed';
+      
       // Dynamic Encyclopedia Data
       const enc = data.breed_details || {};
-      document.getElementById('breed-category').textContent = enc.category || 'Unknown Category';
+      document.getElementById('breed-category').textContent = enc.category || data.category || 'Unknown Category';
       document.getElementById('native-tract').textContent = enc.native_tract || '—';
-      document.getElementById('production-yield').textContent = enc.avg_milk_yield || '—';
+      document.getElementById('production-yield').textContent = enc.avg_milk_yield || enc.production_yield || '—';
+      
+      const elPurpose = document.getElementById('purpose-display');
+      if (elPurpose) elPurpose.textContent = enc.purpose || '—';
+      
+      const elTemp = document.getElementById('temperament-display');
+      if (elTemp) elTemp.textContent = enc.temperament || '—';
+      
+      const elDis = document.getElementById('disease-resistance-display');
+      if (elDis) elDis.textContent = enc.disease_resistance || '—';
+      
+      document.getElementById('speciality-display').textContent = enc.speciality || enc.key_traits || '—';
+      document.getElementById('crossbreeding-advisory').textContent = enc.optimal_crossbreeding || '—';
 
-      if (enc.data_status === 'curated') {
-        document.getElementById('speciality-display').textContent = enc.speciality || '—';
-        document.getElementById('crossbreeding-advisory').textContent = enc.optimal_crossbreeding || '—';
-      } else {
-        document.getElementById('speciality-display').textContent = 'Profile pending';
-        document.getElementById('crossbreeding-advisory').textContent = 'Profile pending. Breeding guidance not yet available for this breed.';
+      // Native States Tags
+      const statesContainer = document.getElementById('native-states-tags');
+      if (statesContainer) {
+        if (enc.native_states && enc.native_states.length > 0) {
+          statesContainer.innerHTML = enc.native_states.map(s => `<span style="background:#E0F2FE; color:#0369A1; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px;">📍 ${s}</span>`).join('');
+        } else {
+          statesContainer.innerHTML = '';
+        }
+      }
+
+      // Explanation Sentence
+      const explanationSentence = data.explanation_sentence || (data.breed_info ? data.breed_info.key_traits : null) || `Classification for ${data.top1_breed || data.breed} driven by deep attention on cranial profile, ear formation, and body structure.`;
+      const elExpl = document.getElementById('xai-explanation-text');
+      if (elExpl) elExpl.textContent = explanationSentence;
+
+      // Morphological Features Grid
+      const morphs = data.morphological_features || {};
+      const morphContainer = document.getElementById('morph-features-grid');
+      if (morphContainer) {
+        let morphHtml = '';
+        const labels = {
+          cranial_structure: { title: 'Cranial Structure', icon: '🦴' },
+          horn_curvature:    { title: 'Horn Curvature',   icon: '🐂' },
+          dewlap:            { title: 'Dewlap & Neck',    icon: '🫁' },
+          ears:              { title: 'Ears Structure',   icon: '👂' },
+          coat:              { title: 'Coat & Color',     icon: '🎨' },
+          body:              { title: 'Body Frame & Hump',icon: '📐' }
+        };
+        for (const [key, value] of Object.entries(morphs)) {
+          const info = labels[key] || { title: key.replace(/_/g, ' ').toUpperCase(), icon: '🔍' };
+          morphHtml += `
+            <div class="meta-box" style="background:#F8FAFC; border-left:3px solid #008080;">
+              <div class="lbl">${info.icon} ${info.title}</div>
+              <div class="val" style="font-size:13px; font-weight:600; color:#334155;">${value}</div>
+            </div>
+          `;
+        }
+        morphContainer.innerHTML = morphHtml || '<div style="color:#64748B; font-size:13px;">Morphological feature signals loaded.</div>';
+      }
+
+      // Crossbreeding Partners Cards
+      const partnersContainer = document.getElementById('crossbreed-partners-container');
+      if (partnersContainer) {
+        const partners = enc.crossbreeding_partners || [];
+        if (partners.length > 0) {
+          partnersContainer.innerHTML = partners.map(p => `
+            <div class="meta-box" style="background:#FFFBEB; border:1px solid #FDE68A;">
+              <div class="lbl" style="color:#92400E; font-weight:700;">🐂 Paired Breed: ${p.breed}</div>
+              <div class="val" style="font-size:12.5px; color:#78350F; font-weight:600; margin-top:3px; line-height:1.4;">${p.benefit}</div>
+            </div>
+          `).join('');
+        } else {
+          partnersContainer.innerHTML = '<div style="color:#64748B; font-size:12px; font-style:italic;">No recommended crossbreeding partners recorded for this breed.</div>';
+        }
       }
 
       // Region Heuristic Boost Badge
@@ -2729,8 +2835,9 @@
 
       // Top 3 Bars
       let html = '';
-      data.top3.forEach((t) => {
-        const pct = Math.round(t.confidence * 100);
+      const top3List = data.top3 || (data.top_3 ? data.top_3.map(t => ({ breed: t.breed, confidence: t.probability || t.confidence })) : []);
+      top3List.forEach((t) => {
+        const pct = Math.round((t.confidence || t.probability || 0) * 100);
         html += `
       <div class="b-row">
         <div class="b-lbl">${t.breed}</div>
@@ -2749,11 +2856,11 @@
       }, 50);
 
       // XAI
-      document.getElementById('xai-orig').src = data.image_url;
-      document.getElementById('xai-heat').src = data.xai_image_url || data.image_url;
+      document.getElementById('xai-orig').src = data.image_url || data.original_image || '';
+      document.getElementById('xai-heat').src = data.xai_image_url || data.heatmap_image || data.image_url || '';
 
       // Audit
-      document.getElementById('audit-hash').textContent = data.blockchain_hash || '—';
+      document.getElementById('audit-hash').textContent = data.blockchain_hash || data.sha256_hash || data.hash || '—';
       if (data.pashu_aadhaar) {
         document.getElementById('audit-uid').textContent = data.pashu_aadhaar;
       }
