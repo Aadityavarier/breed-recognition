@@ -3282,11 +3282,34 @@
       try {
         const fd = new FormData();
         fd.append('scan_id', id);
+        if (_currentExpert && _currentExpert.username) {
+          fd.append('vet_username', _currentExpert.username);
+        }
 
-        const res = await fetch(endpoint, { method: 'POST', body: fd });
+        const headers = {};
+        if (_currentExpert && _currentExpert.username) {
+          headers['X-Expert-Username'] = _currentExpert.username;
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: headers,
+          credentials: 'same-origin',
+          body: fd
+        });
+
+        if (res.status === 401) {
+          const e = await res.json();
+          showToast('⚠️ Authentication Required: Please log in as a Veterinary Expert.');
+          openVetAuthModal();
+          return;
+        }
+
         if (res.ok) {
-          showToast('Action successful!');
+          const data = await res.json();
+          showToast(data.message || 'Action successful!');
           loadQueue();
+          loadAudit();
         } else {
           const e = await res.json();
           alert('Failed: ' + (e.error || 'Unknown error'));
