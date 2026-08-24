@@ -11,7 +11,8 @@ TEMPLATE_PATH = os.path.join(DASHBOARD_DIR, "templates", "index.html")
 # ── Auto-copy local static image assets if missing in static/images ───────────
 STATIC_IMAGES_DIR = os.path.join(DASHBOARD_DIR, "static", "images")
 os.makedirs(STATIC_IMAGES_DIR, exist_ok=True)
-ARTIFACT_DIR = r"C:\Users\revathi\.gemini\antigravity\brain\f95dc097-e0da-45b5-804a-5efa86b85230"
+_LOCAL_ART_PATH = r"C:\Users\revathi\.gemini\antigravity\brain\f95dc097-e0da-45b5-804a-5efa86b85230"
+ARTIFACT_DIR = os.environ.get("ARTIFACT_DIR") or (_LOCAL_ART_PATH if os.path.exists(_LOCAL_ART_PATH) else STATIC_IMAGES_DIR)
 
 asset_copies = {
     "gir_cattle_hero_1787597951096.png": "gir_hero.jpg",
@@ -503,8 +504,6 @@ def manifest():
         return send_file(m_path, mimetype="application/json")
     return "{}", 404
 
-ARTIFACT_DIR = r"C:\Users\revathi\.gemini\antigravity\brain\f95dc097-e0da-45b5-804a-5efa86b85230"
-
 @app.route("/static/<path:filename>")
 def serve_static(filename):
     path = os.path.join(DASHBOARD_DIR, "static", filename)
@@ -624,6 +623,12 @@ def generate_qr_code_b64(payload) -> str:
 
     if HAS_QRCODE_LIB:
         try:
+            try:
+                from qrcode.image.pil import PilImage
+                factory = PilImage
+            except Exception:
+                factory = None
+
             qr = qrcode.QRCode(
                 version=1,
                 error_correction=qrcode.constants.ERROR_CORRECT_M,
@@ -632,10 +637,13 @@ def generate_qr_code_b64(payload) -> str:
             )
             qr.add_data(payload_str)
             qr.make(fit=True)
-            img = qr.make_image(fill_color="#1B365D", back_color="#FFFFFF")
+            if factory:
+                img = qr.make_image(image_factory=factory, fill_color="#1B365D", back_color="#FFFFFF")
+            else:
+                img = qr.make_image(fill_color="#1B365D", back_color="#FFFFFF")
             
             buf = io.BytesIO()
-            img.save(buf, format="PNG")
+            img.save(buf)
             return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
         except Exception as e:
             print("[QR Generator Error]:", e)
@@ -651,7 +659,7 @@ def generate_fallback_svg_qr_b64(text: str) -> str:
     finder = '<rect x="{x}" y="{y}" width="24" height="24" fill="#1B365D"/><rect x="{x2}" y="{y2}" width="16" height="16" fill="#FFF"/><rect x="{x3}" y="{y3}" width="8" height="8" fill="#1B365D"/>'
     rects.append(finder.format(x=8, y=8, x2=12, y2=12, x3=16, y3=16))
     rects.append(finder.format(x=108, y=8, x2=112, y2=12, x3=116, y3=16))
-    rects.append(finder.format(x=8, y=108, x2=12, y2=12, x3=16, y3=116))
+    rects.append(finder.format(x=8, y=108, x2=12, y2=112, x3=16, y3=116))
 
     for i in range(len(h)):
         val = int(h[i], 16)
@@ -789,7 +797,6 @@ def predict():
 
 
 # ── 2. Encyclopedia / Breed Info Route ────────────────────────────────────────
-@app.route("/api/breeds",       methods=["GET"])
 # ── 60 Complete Indian Cattle & Buffalo Breeds Dataset ─────────────────────────
 ALL_60_BREEDS_DATA = [
     ("Gir Cattle", "Indigenous Milch Cattle", "Saurashtra (Gir Forest), Gujarat", ["Gujarat"], "2,000 – 3,200 kg / lactation", "Highest milk yield among Indian zebu; A2 β-casein milk; heat-tolerant; exported to Brazil and Israel.", "Milch"),
@@ -855,6 +862,7 @@ ALL_60_BREEDS_DATA = [
 ]
 
 
+@app.route("/api/breeds",       methods=["GET"])
 @app.route("/api/catalog",      methods=["GET"])
 @app.route("/breeds",           methods=["GET"])
 @app.route("/catalog",          methods=["GET"])
