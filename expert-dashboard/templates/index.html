@@ -1323,6 +1323,474 @@
       border-radius: 99px;
       letter-spacing: .5px;
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE & COLOR-SCHEME PASS
+    ═══════════════════════════════════════════════════════════ */
+
+    /* ── Color corrections: white-first, nav/hero stay dark ── */
+    body {
+      background: #F8FAFC;
+    }
+
+    /* Force all inner page backgrounds to white/off-white */
+    #pg-scan, #pg-encyclopedia, #pg-queue, #pg-audit {
+      background: transparent;
+    }
+
+    /* Slightly lighten the outer container bg */
+    .container {
+      background: transparent;
+    }
+
+    /* ── Touch target minimums (≥44px) ─────────────────────── */
+    .nav-tab {
+      min-height: 44px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .act-btn {
+      min-height: 36px;
+      padding: 8px 14px;
+    }
+
+    #btn-diagnose {
+      min-height: 48px;
+    }
+
+    .btn-cam {
+      min-height: 44px;
+      padding: 12px;
+    }
+
+    .btn-primary, .btn-outline {
+      min-height: 48px;
+    }
+
+    /* ── Hamburger button (hidden on desktop) ───────────────── */
+    #hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      min-height: 44px;
+      min-width: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    #hamburger:hover { background: rgba(255,255,255,.1); }
+
+    /* ── Mobile nav overlay ─────────────────────────────────── */
+    #mobile-nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,32,64,.85);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    #mobile-nav-overlay.open {
+      display: flex;
+    }
+    #mobile-nav-overlay .nav-tab {
+      font-size: 18px;
+      padding: 14px 40px;
+      border-radius: 10px;
+      width: 260px;
+      justify-content: center;
+      color: rgba(255,255,255,.85);
+    }
+    #mobile-nav-overlay .nav-tab.active,
+    #mobile-nav-overlay .nav-tab:hover {
+      background: rgba(255,255,255,.15);
+      color: #fff;
+    }
+    #mobile-nav-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    #mobile-nav-overlay .lang-row {
+      margin-top: 16px;
+    }
+
+    /* ── #enc-grid responsive ───────────────────────────────── */
+    #enc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Table scroll affordance ────────────────────────────── */
+    .tbl-wrap {
+      -webkit-overflow-scrolling: touch;
+      overflow-x: auto;
+    }
+    .tbl-wrap::after {
+      content: '';
+      display: block;
+      height: 1px;
+    }
+    /* Scroll hint shadow on right edge */
+    .tbl-wrap {
+      background:
+        linear-gradient(to right, #fff 10px, transparent),
+        linear-gradient(to right, transparent, rgba(0,0,0,.05) 100%) 100% 0,
+        radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.07), transparent) 0 0,
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.07), transparent) 100% 0;
+      background-repeat: no-repeat;
+      background-color: #fff;
+      background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+      background-attachment: local, local, scroll, scroll;
+    }
+
+    /* ── Upload area: touch-friendly ───────────────────────── */
+    #drop-area {
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Ensure the file input covers the full drop area for tap-to-open */
+    #drop-area input[type=file] {
+      z-index: 1;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ════════════════════════════════════════════════════════════ */
+
+    /* ── Tablet: ≤ 768px ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* Nav: hide tab row, show hamburger */
+      #topnav {
+        padding: 0 16px;
+        height: 58px;
+      }
+      #topnav .nav-right {
+        display: none !important;
+      }
+      #hamburger {
+        display: flex;
+      }
+      #engine-pill {
+        display: none;
+      }
+      #topnav .brand-sub {
+        display: none;
+      }
+      #topnav .brand-name {
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
+      }
+
+      /* Container padding */
+      .container {
+        padding: 16px;
+      }
+
+      /* Hero */
+      .home-hero {
+        margin: -16px -16px 0 -16px;
+        padding: 48px 20px 40px;
+      }
+      .home-hero h1 {
+        font-size: 26px;
+      }
+      .home-hero .sub {
+        font-size: 14px;
+      }
+      .cta-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .btn-primary, .btn-outline {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+      }
+
+      /* Metrics strip: 2×2 */
+      .home-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hm-card:nth-child(2) { border-right: none; }
+      .hm-card:nth-child(1), .hm-card:nth-child(2) { border-bottom: 1px solid #E2E8F0; }
+
+      /* Legacy metric ribbon */
+      .metrics-ribbon {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Problem, impact, flow grids */
+      .problem-grid {
+        grid-template-columns: 1fr;
+      }
+      .flow-steps {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .flow-step::after { display: none; }
+      .impact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Stakeholder */
+      .stake-grid-new {
+        grid-template-columns: 1fr;
+      }
+      .stakeholder-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Breed showcase */
+      .breed-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .breed-showcase {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+
+      /* Enc grid */
+      #enc-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Studio grid: stack */
+      #studio-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Results grid: stack */
+      .res-grid-top {
+        grid-template-columns: 1fr;
+      }
+      .xai-wrapper {
+        grid-template-columns: 1fr 1fr;
+      }
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Table: ensure horizontal scroll works */
+      .tbl-wrap {
+        border-radius: 8px;
+      }
+      table {
+        min-width: 560px;
+      }
+      th, td {
+        padding: 12px 12px;
+        font-size: 12px;
+      }
+
+      /* Queue ctrl */
+      .q-ctrl {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      /* Section padding */
+      .home-section {
+        padding: 36px 20px;
+      }
+      .home-section .section-title {
+        font-size: 20px;
+      }
+      .home-section .section-sub {
+        font-size: 13.5px;
+      }
+
+      /* Footer */
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      /* Card */
+      .card {
+        padding: 16px;
+      }
+
+      /* Diagnose button: pin to bottom of form card for easy reach */
+      #btn-diagnose {
+        position: sticky;
+        bottom: 8px;
+        z-index: 10;
+        box-shadow: 0 4px 16px rgba(0,128,128,.4);
+      }
+    }
+
+    /* ── Mobile: ≤ 480px ─────────────────────────────────────── */
+    @media (max-width: 480px) {
+
+      html { font-size: 13px; }
+
+      #gov-strip {
+        padding: 4px 12px;
+        font-size: 10px;
+      }
+
+      /* Hero */
+      .home-hero h1 {
+        font-size: 22px;
+      }
+      .home-hero .badge {
+        font-size: 10px;
+      }
+
+      /* Flow: single column */
+      .flow-steps {
+        grid-template-columns: 1fr;
+      }
+
+      /* Breed strip: single column on 375px */
+      .breed-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Metrics: 2-col stays fine, but tighten */
+      .hm-card .hm-val {
+        font-size: 20px;
+      }
+      .hm-card .hm-lbl {
+        font-size: 11px;
+      }
+
+      /* Impact cards: single col */
+      .impact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Enc grid: single col */
+      #enc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Tables: convert to card layout */
+      .tbl-wrap table,
+      .tbl-wrap thead,
+      .tbl-wrap tbody,
+      .tbl-wrap th,
+      .tbl-wrap td,
+      .tbl-wrap tr {
+        display: block;
+      }
+      .tbl-wrap thead tr {
+        display: none; /* hide header row */
+      }
+      .tbl-wrap tbody tr {
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        background: #fff;
+      }
+      .tbl-wrap td {
+        border: none;
+        border-bottom: 1px solid #F1F5F9;
+        padding: 8px 16px;
+        font-size: 12.5px;
+        position: relative;
+        padding-left: 44%;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+      }
+      .tbl-wrap td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 16px;
+        width: 40%;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #64748B;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      /* Remove the min-width constraint on mobile card view */
+      table { min-width: unset; }
+
+      /* Drop area: bigger tap target */
+      #drop-area {
+        padding: 40px 16px;
+      }
+
+      /* Results: XAI images stack */
+      .xai-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      /* Audit box */
+      .audit-box {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      /* Home section padding */
+      .home-section {
+        padding: 28px 16px;
+      }
+
+      /* Footer */
+      .home-footer {
+        padding: 28px 16px 20px;
+      }
+    }
+
+    /* ── Very small: 375px ───────────────────────────────────── */
+    @media (max-width: 390px) {
+      .breed-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+      .home-hero h1 {
+        font-size: 20px;
+      }
+      .metrics-ribbon {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ── Gov-strip: hide long text on very narrow ─────────────── */
+    @media (max-width: 540px) {
+      #gov-strip > div:first-child {
+        display: none;
+      }
+      #gov-strip {
+        justify-content: flex-end;
+      }
+    }
   </style>
 </head>
 
@@ -1365,6 +1833,22 @@
       <button class="nav-tab" onclick="goPage('pg-encyclopedia', this)" data-i18n="tab_enc">Encyclopedia</button>
       <button class="nav-tab" onclick="goPage('pg-queue', this)" data-i18n="tab_expert">Expert Queue</button>
       <button class="nav-tab" onclick="goPage('pg-audit', this)" data-i18n="tab_audit">Audit Trail</button>
+    </div>
+    <button id="hamburger" onclick="document.getElementById('mobile-nav-overlay').classList.add('open')" aria-label="Open menu">☰</button>
+  </div>
+
+  <!-- Mobile Navigation Overlay -->
+  <div id="mobile-nav-overlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <button id="mobile-nav-close" onclick="document.getElementById('mobile-nav-overlay').classList.remove('open')" aria-label="Close menu">✕</button>
+    <button class="nav-tab active" onclick="goPage('pg-home', document.querySelector('.nav-tab:nth-child(1)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_home">🏠 Home</button>
+    <button class="nav-tab" onclick="goPage('pg-scan', document.querySelector('.nav-tab:nth-child(2)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_scan">🔬 AI Scan Studio</button>
+    <button class="nav-tab" onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_enc">📚 Encyclopedia</button>
+    <button class="nav-tab" onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_expert">👩‍⚕️ Expert Queue</button>
+    <button class="nav-tab" onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_audit">🔐 Audit Trail</button>
+    <div class="lang-row">
+      <button id="lang-toggle-mobile" onclick="toggleLang()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:8px 20px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;">
+        <span class="opt on">EN</span><span style="opacity:.4"> | </span><span class="opt">HI</span>
+      </button>
     </div>
   </div>
 
@@ -2310,12 +2794,12 @@
         data.scans.forEach(s => {
           html += `
         <tr>
-          <td>${s.id}</td>
-          <td><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
-          <td><b>${s.predicted_breed}</b><br><small>${(s.confidence_score * 100).toFixed(1)}%</small></td>
-          <td><small>Reg: ${s.region_input || '-'}<br>Col: ${s.color_input || '-'}</small></td>
-          <td><span class="status-badge flagged_for_expert">Needs Review</span></td>
-          <td>
+          <td data-label="ID">${s.id}</td>
+          <td data-label="Photo"><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
+          <td data-label="Breed"><b>${s.predicted_breed}</b><br><small>${(s.confidence_score * 100).toFixed(1)}%</small></td>
+          <td data-label="Inputs"><small>Reg: ${s.region_input || '-'}<br>Col: ${s.color_input || '-'}</small></td>
+          <td data-label="Status"><span class="status-badge flagged_for_expert">Needs Review</span></td>
+          <td data-label="Actions">
             <button class="act-btn verify" onclick="performAction(${s.id}, '/api/verify')">✓ Verify</button>
             <button class="act-btn retrain" onclick="performAction(${s.id}, '/api/retrain')">⚠️ Flag for Retrain</button>
           </td>
@@ -2346,12 +2830,12 @@
         data.scans.forEach(s => {
           html += `
         <tr>
-          <td><small>${new Date(s.timestamp).toLocaleString()}</small></td>
-          <td><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
-          <td><b>${s.predicted_breed}</b></td>
-          <td>${(s.confidence_score * 100).toFixed(1)}%</td>
-          <td><span class="status-badge ${s.status}">${s.status.replace(/_/g, ' ')}</span></td>
-          <td style="font-family:monospace; font-size:11px; color:#15803D;">${s.blockchain_hash ? s.blockchain_hash.substring(0, 20) + '...' : '-'}</td>
+          <td data-label="Time"><small>${new Date(s.timestamp).toLocaleString()}</small></td>
+          <td data-label="Photo"><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
+          <td data-label="Breed"><b>${s.predicted_breed}</b></td>
+          <td data-label="Confidence">${(s.confidence_score * 100).toFixed(1)}%</td>
+          <td data-label="Status"><span class="status-badge ${s.status}">${s.status.replace(/_/g, ' ')}</span></td>
+          <td data-label="Hash" style="font-family:monospace; font-size:11px; color:#15803D;">${s.blockchain_hash ? s.blockchain_hash.substring(0, 20) + '...' : '-'}</td>
         </tr>
       `;
         });
