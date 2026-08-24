@@ -2433,6 +2433,17 @@
       </div>
     </div>
 
+    <!-- Encyclopedia Breed Detail Modal -->
+    <div id="enc-detail-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(15,32,64,0.75); backdrop-filter:blur(4px); z-index:300; align-items:center; justify-content:center; padding:16px; overflow-y:auto;" onclick="closeEncModal(event)">
+      <div class="modal-content" onclick="event.stopPropagation()" style="background:#fff; border-radius:12px; max-width:720px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.3); border:1px solid #E2E8F0; position:relative; animation:modalPop 0.25s ease;">
+        <button onclick="closeEncModal(true)" style="position:sticky; top:12px; float:right; right:12px; background:rgba(0,0,0,0.6); color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; margin:-8px 4px 0 0;">✕</button>
+        
+        <div id="enc-modal-body" style="padding:24px;">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
     <script>
       // Load encyclopedia once when the tab is clicked
       document.querySelector('[data-i18n="tab_enc"]').addEventListener('click', () => {
@@ -3142,23 +3153,47 @@
         if (!data.success || !data.breeds) throw new Error("Invalid response");
 
         let html = '';
-        data.breeds.forEach(b => {
+        data.breeds.forEach((b, idx) => {
+          const name = b.breed_name || b.name || b.breed || 'Unknown Breed';
+          const cat = b.category || 'Indigenous Cattle';
+          const tract = b.native_tract || '—';
+          const yieldVal = b.avg_milk_yield || b.milk_yield || '—';
+          const spec = b.speciality || b.traits || '—';
+          const purpose = b.purpose || 'Milch';
+
           // Filter logic
-          if (filterCategory !== 'All' && !b.category.includes(filterCategory)) return;
-          if (searchQuery && !b.breed_name.toLowerCase().includes(searchQuery.toLowerCase()) && !b.native_tract.toLowerCase().includes(searchQuery.toLowerCase())) return;
+          if (filterCategory !== 'All' && !cat.toLowerCase().includes(filterCategory.toLowerCase())) return;
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            if (!name.toLowerCase().includes(q) && !tract.toLowerCase().includes(q) && !cat.toLowerCase().includes(q)) return;
+          }
+
+          // Cache breed data globally for modal lookup
+          window._encBreedsCache = window._encBreedsCache || {};
+          window._encBreedsCache[idx] = b;
 
           html += `
-        <div class="enc-card" style="background:white; border-radius:8px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid #E2E8F0;">
-          <h3 style="margin:0 0 8px 0; color:#1B365D;">${b.breed_name}</h3>
-          <span style="display:inline-block; background:#E0F2FE; color:#0284C7; padding:4px 8px; border-radius:4px; font-size:12px; margin-bottom:12px;">${b.category}</span>
-          <div style="font-size:13px; color:#475569; margin-bottom:8px;">
-            <b>Native Tract:</b> ${b.native_tract}
+        <div class="enc-card" onclick="openEncModal(${idx})" style="background:white; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid #E2E8F0; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; justify-space-between;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+              <span style="display:inline-block; background:#F0FDFA; color:#0F766E; border:1px solid #CCFBF1; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:700;">${cat}</span>
+              <span style="font-size:11px; color:#64748B; font-weight:600;">⚙️ ${purpose}</span>
+            </div>
+            <h3 style="margin:0 0 10px 0; color:#1B365D; font-size:17px; font-weight:800;">${name}</h3>
+            
+            <div style="font-size:12.5px; color:#475569; margin-bottom:6px;">
+              <b>📍 Native Tract:</b> ${tract}
+            </div>
+            <div style="font-size:12.5px; color:#475569; margin-bottom:10px;">
+              <b>🥛 Milk Yield:</b> ${yieldVal}
+            </div>
+            <div style="font-size:12px; color:#64748B; line-height:1.45; margin-bottom:14px;">
+              ${spec.length > 80 ? spec.substring(0, 80) + '…' : spec}
+            </div>
           </div>
-          <div style="font-size:13px; color:#475569; margin-bottom:8px;">
-            <b>Yield:</b> ${b.avg_milk_yield}
-          </div>
-          <div style="font-size:13px; color:#475569;">
-            <b>Traits:</b> ${b.speciality.substring(0, 80)}...
+
+          <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:4px; text-align:right;">
+            <span style="color:#008080; font-size:12px; font-weight:700;">🔍 View Full Profile &amp; Crossbreeding →</span>
           </div>
         </div>
       `;
@@ -3171,6 +3206,128 @@
         grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding: 40px; color: red;">Error loading catalog.</div>`;
         console.error(err);
       }
+    }
+
+    /* ─── Breed Detail Modal Functions ─────── */
+    function openEncModal(idx) {
+      const b = window._encBreedsCache ? window._encBreedsCache[idx] : null;
+      if (!b) return;
+
+      const name = b.breed_name || b.name || b.breed || 'Unknown Breed';
+      const cat = b.category || 'Indigenous Cattle';
+      const tract = b.native_tract || '—';
+      const yieldVal = b.avg_milk_yield || b.milk_yield || '—';
+      const spec = b.speciality || b.traits || '—';
+      const purpose = b.purpose || 'Milch';
+      const temp = b.temperament || 'Docile';
+      const dis = b.disease_resistance || 'High tick resistance';
+      const states = b.native_states || [];
+      const cross = b.optimal_crossbreeding || '—';
+      const partners = b.crossbreeding_partners || [];
+      const morphs = b.morphological_features || {};
+
+      let morphHtml = '';
+      if (Object.keys(morphs).length > 0) {
+        morphHtml = `
+          <div style="margin-top:16px;">
+            <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Detected Morphological Features</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">
+              ${Object.entries(morphs).map(([k, v]) => `
+                <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; border-radius:6px;">
+                  <div style="font-size:10.5px; color:#64748B; font-weight:700; text-transform:uppercase;">${k.replace(/_/g, ' ')}</div>
+                  <div style="font-size:12.5px; color:#1E293B; font-weight:600; margin-top:2px;">${v}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      let partnersHtml = '';
+      if (partners.length > 0) {
+        partnersHtml = `
+          <div style="margin-top:16px;">
+            <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">🧬 Commonly Paired &amp; Crossbred With</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;">
+              ${partners.map(p => `
+                <div style="background:#FFFBEB; border:1px solid #FDE68A; padding:10px; border-radius:6px;">
+                  <div style="font-size:12px; font-weight:700; color:#92400E;">🐂 Paired Breed: ${p.breed}</div>
+                  <div style="font-size:12px; color:#78350F; font-weight:600; margin-top:2px;">${p.benefit}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      const modalBody = document.getElementById('enc-modal-body');
+      modalBody.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; padding-right:32px;">
+          <div>
+            <span style="display:inline-block; background:#E0F2FE; color:#0369A1; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:6px;">${cat}</span>
+            <h2 style="font-size:24px; font-weight:800; color:#1B365D; margin:0;">${name}</h2>
+          </div>
+          <button onclick="selectBreedInStudio('${name}')" style="background:#008080; color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:12.5px; font-weight:700; cursor:pointer;">🔬 Scan in Studio</button>
+        </div>
+
+        ${states.length > 0 ? `<div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">${states.map(s => `<span style="background:#F0FDFA; color:#0F766E; border:1px solid #99F6E4; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">📍 ${s}</span>`).join('')}</div>` : ''}
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:16px;">
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:6px;">
+            <div style="font-size:11px; color:#64748B; font-weight:600; text-transform:uppercase;">🥛 Milk Yield Range</div>
+            <div style="font-size:14px; font-weight:700; color:#1E293B; margin-top:2px;">${yieldVal}</div>
+          </div>
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:6px;">
+            <div style="font-size:11px; color:#64748B; font-weight:600; text-transform:uppercase;">⚙️ Primary Purpose</div>
+            <div style="font-size:14px; font-weight:700; color:#1E293B; margin-top:2px;">${purpose}</div>
+          </div>
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:6px;">
+            <div style="font-size:11px; color:#64748B; font-weight:600; text-transform:uppercase;">❤️ Temperament</div>
+            <div style="font-size:14px; font-weight:700; color:#1E293B; margin-top:2px;">${temp}</div>
+          </div>
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:6px;">
+            <div style="font-size:11px; color:#64748B; font-weight:600; text-transform:uppercase;">🛡️ Disease Resistance</div>
+            <div style="font-size:13px; font-weight:700; color:#1E293B; margin-top:2px;">${dis}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">📍 Native Geographic Tract</div>
+          <div style="font-size:13.5px; color:#334155; font-weight:600; background:#F8FAFC; padding:10px 12px; border-radius:6px; border:1px solid #E2E8F0;">${tract}</div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">🌟 Full Breed Traits &amp; Speciality</div>
+          <div style="font-size:13.5px; color:#1E293B; line-height:1.55; background:#F8FAFC; padding:12px 14px; border-radius:6px; border:1px solid #E2E8F0;">${spec}</div>
+        </div>
+
+        ${cross !== '—' ? `
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px; font-weight:700; color:#B91C1C; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">🧬 Crossbreeding Advisory</div>
+            <div style="font-size:13px; color:#7F1D1D; background:#FEF2F2; padding:10px 12px; border-radius:6px; border-left:4px solid #EF4444;">${cross}</div>
+          </div>
+        ` : ''}
+
+        ${morphHtml}
+        ${partnersHtml}
+      `;
+
+      const modal = document.getElementById('enc-detail-modal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEncModal(force = false) {
+      const modal = document.getElementById('enc-detail-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    function selectBreedInStudio(breedName) {
+      closeEncModal(true);
+      document.querySelector('.nav-tab:nth-child(2)').click();
     }
 
     /* ─── Init ─────────────────────────────── */

@@ -582,20 +582,27 @@ def catalog():
     breeds_data = []
     for name, p in BREED_PROFILES.items():
         breeds_data.append({
-            "id":              str(len(breeds_data) + 1),
-            "name":            name,
-            "breed":           name,
-            "category":        p["category"],
-            "origin":          p["native_states"][0] if p["native_states"] else "India",
-            "native_tract":    p["native_tract"],
-            "milk_yield":      p["avg_milk_yield"],
-            "production_yield":p["avg_milk_yield"],
-            "features":        p["morphological_features"].get("coat", ""),
-            "traits":          p["speciality"],
-            "purpose":         p["purpose"],
-            "temperament":     p["temperament"],
-            "disease_resistance": p["disease_resistance"],
-            "image_url":       f"/static/images/{name.lower().replace(' ','_')}.jpg"
+            "id":                     str(len(breeds_data) + 1),
+            "breed_name":             name,
+            "name":                   name,
+            "breed":                  name,
+            "category":               p["category"],
+            "origin":                 p["native_states"][0] if p["native_states"] else "India",
+            "native_tract":           p["native_tract"],
+            "native_states":          p["native_states"],
+            "avg_milk_yield":         p["avg_milk_yield"],
+            "milk_yield":             p["avg_milk_yield"],
+            "production_yield":       p["avg_milk_yield"],
+            "speciality":             p["speciality"],
+            "traits":                 p["speciality"],
+            "purpose":                p["purpose"],
+            "temperament":            p["temperament"],
+            "disease_resistance":     p["disease_resistance"],
+            "optimal_crossbreeding":  p["optimal_crossbreeding"],
+            "crossbreeding_partners": p["crossbreeding_partners"],
+            "morphological_features": p["morphological_features"],
+            "explanation_sentence":   p["explanation_sentence"],
+            "image_url":              f"/static/images/{name.lower().replace(' ','_')}.jpg"
         })
     return jsonify({
         "success": True,
