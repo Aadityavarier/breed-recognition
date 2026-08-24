@@ -1,917 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bharat Pashudhan | NDLM AI Portal</title>
-  <!-- Suppress favicon 404 error -->
-  <link rel="icon" href="data:,">
-  <style>
-    /* ─── Reset ──────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 14px; }
-    body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-           background: #F4F6F9; color: #1E293B; min-height: 100vh; }
-    a, button { font-family: inherit; cursor: pointer; }
-    img { display: block; max-width: 100%; }
+import os
+import time
+import hashlib
+import uuid
+from flask import Flask, request, jsonify, send_file, render_template_string
 
-    /* ─── Gov Strip ───────────────────────────────────────────── */
-    #gov-strip {
-      background: #0F2040; color: rgba(255,255,255,.70); font-size: 11px;
-      padding: 4px 24px; display: flex; justify-content: space-between; align-items: center;
-    }
-    #lang-toggle {
-      display: flex; align-items: center; gap: 5px;
-      background: rgba(255,255,255,.12); border: none; color: #fff;
-      padding: 3px 12px; border-radius: 99px; font-size: 11px; font-weight: 700;
-      cursor: pointer; gap: 6px;
-    }
-    #lang-toggle .sep { opacity: .35; }
-    #lang-toggle .opt { opacity: .5; transition: .15s; }
-    #lang-toggle .opt.on { opacity: 1; }
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
+TEMPLATE_PATH = os.path.join(DASHBOARD_DIR, "templates", "index.html")
 
-    /* ─── Top Navbar ─────────────────────────────────────────── */
-    #topnav {
-      background: #1B365D; padding: 0 28px; height: 66px;
-      display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 2px 12px rgba(0,0,0,.3); position: sticky; top: 0; z-index: 100;
-    }
-    #topnav .brand { display: flex; align-items: center; gap: 14px; }
-    #topnav .brand-icon { font-size: 34px; line-height: 1; }
-    #topnav .brand-name { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
-    #topnav .brand-sub  { font-size: 10.5px; color: rgba(255,255,255,.55); margin-top: 2px; }
-    #topnav .nav-right  { display: flex; align-items: center; gap: 4px; }
-    .nav-tab {
-      color: rgba(255,255,255,.7); background: none; border: none;
-      padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      transition: .18s;
-    }
-    .nav-tab:hover  { background: rgba(255,255,255,.1); color: #fff; }
-    .nav-tab.active { background: rgba(255,255,255,.18); color: #fff; }
-    #engine-pill {
-      background: #16a34a; color: #fff; font-size: 11px; font-weight: 700;
-      padding: 3px 8px; border-radius: 4px; margin-left: 12px;
-    }
-    
-    /* ─── Layout ─────────────────────────────────────────────── */
-    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-    .page { display: none; }
-    .page.active { display: block; animation: fadein .3s ease; }
-    @keyframes fadein { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+app = Flask(__name__)
 
-    /* ─── Typography & Cards ─────────────────────────────────── */
-    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 24px; margin-bottom: 24px; border: 1px solid #E2E8F0; }
-    .card-title { font-size: 16px; font-weight: 700; color: #1B365D; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px; }
-    
-    /* ─── Home Landing Page ──────────────────────────────────── */
-    .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #1B365D 0%, #0F2040 100%); color: white; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
-    .hero .ctx { font-size: 14px; font-weight: 600; color: #38BDF8; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    .hero p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 700px; margin: 0 auto 32px auto; line-height: 1.5; }
-    .hero .btn-cta { background: #008080; color: white; border: none; padding: 14px 32px; font-size: 18px; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,128,128,0.3); }
-    .hero .btn-cta:hover { background: #006666; transform: translateY(-2px); }
+GRAD_CAM_ORIGINAL =
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+GRAD_CAM_HEATMAP =
+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
 
-    .metrics-ribbon { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-    .metric-card { background: white; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #E2E8F0; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-    .metric-card .val { font-size: 24px; font-weight: 800; color: #008080; margin-bottom: 4px; }
-    .metric-card .lbl { font-size: 13px; font-weight: 600; color: #64748B; }
+CONFIDENCE_THRESHOLD = 0.70
 
-    .stakeholder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
-    .stake-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid #E2E8F0; }
-    .stake-card h3 { font-size: 16px; font-weight: 700; color: #1B365D; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .stake-card p { font-size: 14px; color: #475569; line-height: 1.5; }
+class MockEngine:
+backend = "TFLite INT8 Edge"
 
-    .breed-showcase { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
-    .showcase-card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #E2E8F0; text-align: center; }
-    .showcase-card img { width: 100%; height: 120px; object-fit: cover; background: #F1F5F9; }
-    .showcase-card .name { font-size: 14px; font-weight: 700; padding: 10px; color: #1E293B; }
-    .showcase-card .type { font-size: 12px; color: #64748B; padding-bottom: 10px; }
+# ─── Static breed encyclopedia data (keys match frontend exactly) ──────────
+BREEDS = [
+{
+"breed_name": "Gir",
+"category": "Indigenous Milch",
+"native_tract": "Saurashtra, Gujarat",
+"avg_milk_yield": "2,000 - 3,200 kg/lactation",
+"speciality": "Prominent convex forehead (bony shield), long pendulous ears folded like a leaf, half-curved horns.",
+"optimal_crossbreeding": "Cross with Holstein Friesian for higher yield while retaining heat tolerance.",
+"data_status": "curated",
+},
+{
+"breed_name": "Sahiwal",
+"category": "Indigenous Milch",
+"native_tract": "Punjab / Rajasthan",
+"avg_milk_yield": "2,500 - 3,200 kg/lactation",
+"speciality": "Reddish brown coat, loose skin, docile demeanor, heat tolerant.",
+"optimal_crossbreeding": "Good base breed for tropical dairy crossbreeding programs.",
+"data_status": "curated",
+},
+{
+"breed_name": "Murrah",
+"category": "Buffalo",
+"native_tract": "Rohtak, Jind, Hisar (Haryana)",
+"avg_milk_yield": "2,200 - 3,500 kg/lactation",
+"speciality": "Jet black coat, tightly curled horns, large udder.",
+"optimal_crossbreeding": "Considered the gold-standard buffalo breed; not typically crossbred.",
+"data_status": "curated",
+},
+{
+"breed_name": "Kankrej",
+"category": "Dual-Purpose",
+"native_tract": "Rann of Kutch, Gujarat/Rajasthan",
+"avg_milk_yield": "1,400 - 2,200 kg/lactation",
+"speciality": "Lyre-shaped horns, silver-grey coat, powerful gait, strong draught ability.",
+"optimal_crossbreeding": "Valued for both milk and draught traits; crossed cautiously to preserve draught strength.",
+"data_status": "curated",
+},
+{
+"breed_name": "Red Sindhi",
+"category": "Indigenous Milch",
+"native_tract": "Sindh region / spread across India",
+"avg_milk_yield": "1,800 - 2,600 kg/lactation",
+"speciality": "Deep red coat, compact body, good heat and tick resistance.",
+"optimal_crossbreeding": "Used to improve heat tolerance in crossbred dairy herds.",
+"data_status": "curated",
+},
+]
 
-    /* ─── Scan Studio ────────────────────────────────────────── */
-    #studio-grid { display: grid; grid-template-columns: 420px 1fr; gap: 24px; align-items: start; }
-    
-    /* LEFT: Form */
-    .f-group { margin-bottom: 16px; }
-    .f-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
-    .f-control { width: 100%; border: 1px solid #CBD5E1; border-radius: 6px; padding: 10px; font-family: inherit; font-size: 14px; color: #1E293B; background: #fff; transition: .2s; }
-    .f-control:focus { border-color: #008080; outline: none; box-shadow: 0 0 0 3px rgba(0,128,128,.15); }
-    
-    #drop-area { border: 2px dashed #CBD5E1; border-radius: 8px; background: #F8FAFC; text-align: center; padding: 32px 20px; cursor: pointer; transition: .2s; margin-bottom: 16px; position: relative; }
-    #drop-area.dragover { border-color: #008080; background: #F0FDFA; }
-    #drop-area input[type=file] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    #drop-icon { font-size: 32px; margin-bottom: 8px; opacity: .7; }
-    #drop-text { font-size: 14px; font-weight: 600; color: #475569; margin-bottom: 4px; }
-    #drop-sub { font-size: 12px; color: #94A3B8; }
-    
-    #preview-box { display: none; margin-bottom: 16px; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #CBD5E1; }
-    #preview-img { width: 100%; display: block; }
-    #preview-clr { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,.6); color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
-    #preview-clr:hover { background: rgba(220,38,38,.9); }
+# ─── In-memory scan store (acts as your "audit trail" / "queue" source) ────
+def _new_scan(predicted_breed, confidence, region, color, notes):
+status = "verified" if confidence >= CONFIDENCE_THRESHOLD else "flagged_for_expert"
+record_hash = hashlib.sha256(f"{predicted_breed}{time.time()}".encode()).hexdigest()
+scan = {
+"id": len(SCANS) + 1,
+"timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+"image_path": "images/placeholder.jpg",
+"predicted_breed": predicted_breed,
+"confidence_score": confidence,
+"region_input": region or None,
+"color_input": color or None,
+"notes": notes or None,
+"status": status,
+"blockchain_hash": record_hash,
+"pashu_aadhaar": f"PA-{uuid.uuid4().hex[:10].upper()}",
+}
+SCANS.append(scan)
+return scan
 
-    .btn-cam { width: 100%; background: #fff; border: 1px solid #CBD5E1; color: #475569; font-weight: 600; padding: 10px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; transition: .2s; }
-    .btn-cam:hover { background: #F1F5F9; color: #1E293B; }
-    
-    #btn-diagnose { width: 100%; background: #008080; color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 700; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; box-shadow: 0 2px 6px rgba(0,128,128,.3); }
-    #btn-diagnose:hover:not(:disabled) { background: #006666; transform: translateY(-1px); }
-    #btn-diagnose:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; opacity: .7; }
+SCANS = []
+# Seed a few records so Queue / Audit tabs aren't empty on first load
+_new_scan("Kankrej", 0.642, "Rajasthan", "Silver Grey", "Age: 4y")
+_new_scan("Red Sindhi", 0.618, "Gujarat", "Dark Red", "Age: 2y")
+_new_scan("Gir", 0.948, "Gujarat", "Reddish Brown", "Age: 5y")
+_new_scan("Murrah", 0.961, "Haryana", "Black", "Age: 6y")
 
-    /* RIGHT: Results */
-    #r-empty { text-align: center; padding: 80px 20px; color: #64748B; background: #fff; border-radius: 12px; border: 1px solid #E2E8F0; }
-    #r-empty .icon { font-size: 48px; margin-bottom: 16px; opacity: .5; filter: grayscale(1); }
-    
-    #r-loading { display: none; text-align: center; padding: 80px 20px; background: #fff; border-radius: 12px; border: 1px solid #E2E8F0; }
-    .spinner { width: 36px; height: 36px; border: 3px solid #E2E8F0; border-top-color: #008080; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px auto; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    #r-results { display: none; }
-    
-    /* Result Grid */
-    .res-grid-top { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-    
-    /* XAI */
-    .xai-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .xai-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px; text-align: center; }
-    .xai-box img { width: 100%; border-radius: 4px; margin-bottom: 6px; background: #000; aspect-ratio: 1; object-fit: contain; }
-    .xai-box .lbl { font-size: 11px; font-weight: 600; color: #64748B; text-transform: uppercase; letter-spacing: .5px; }
+# ─── Pages ──────────────────────────────────────────────────────────────
+@app.route("/")
+def index():
+if os.path.exists(TEMPLATE_PATH):
+with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+content = f.read()
+return render_template_string(content, engine=MockEngine())
+return "<h3>Error: index.html not found.</h3>", 404
 
-    /* Bars */
-    #breed-name { font-size: 24px; font-weight: 800; color: #1B365D; margin-bottom: 4px; }
-    #breed-category { font-size: 13px; font-weight: 600; color: #008080; margin-bottom: 16px; display: inline-block; padding: 3px 8px; background: #F0FDFA; border-radius: 4px; }
-    
-    .b-row { display: flex; align-items: center; font-size: 13px; margin-bottom: 10px; }
-    .b-lbl { width: 100px; font-weight: 600; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 12px; }
-    .b-bar-wrap { flex: 1; height: 10px; background: #F1F5F9; border-radius: 99px; overflow: hidden; margin-right: 12px; position: relative; }
-    .b-bar-fill { height: 100%; background: #008080; border-radius: 99px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-    .b-pct { width: 45px; text-align: right; font-weight: 700; color: #1E293B; }
-    
-    .b-row:nth-child(2) .b-bar-fill { background: #0EA5E9; }
-    .b-row:nth-child(3) .b-bar-fill { background: #94A3B8; }
+@app.route("/static/<path:filename>")
+  def serve_static(filename):
+  path = os.path.join(DASHBOARD_DIR, "static", filename)
+  if os.path.exists(path):
+  return send_file(path)
+  return f"Asset {filename} not found", 404
 
-    /* Metadata Grid */
-    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
-    .meta-box { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px; border-radius: 6px; }
-    .meta-box .lbl { font-size: 11px; color: #64748B; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-    .meta-box .val { font-size: 14px; font-weight: 700; color: #1E293B; }
+  # ─── Predict ────────────────────────────────────────────────────────────
+  @app.route("/api/predict", methods=["POST"])
+  def predict():
+  region = request.form.get("region", "")
+  color = request.form.get("color", "")
+  notes = request.form.get("notes", "")
 
-    .crossbreed-alert { background: #FEF2F2; border-left: 4px solid #EF4444; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-top: 16px; }
-    .crossbreed-alert .lbl { font-size: 12px; font-weight: 700; color: #B91C1C; margin-bottom: 4px; }
-    .crossbreed-alert .val { font-size: 13px; color: #7F1D1D; line-height: 1.4; }
+  breed_name = "Gir" if ("Gujarat" in region or "Red" in color or "Brown" in color) else "Holstein Friesian"
+  confidence = 0.948
 
-    /* Blockchain & QR */
-    .audit-box { display: flex; gap: 16px; align-items: center; background: #F0FDF4; border: 1px solid #BBF7D0; padding: 16px; border-radius: 8px; margin-top: 20px; }
-    .audit-box img { width: 64px; height: 64px; border-radius: 4px; background: #fff; padding: 4px; }
-    .audit-box .info { flex: 1; }
-    .audit-box .title { font-size: 13px; font-weight: 700; color: #166534; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-    .audit-box .hash { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; color: #15803D; word-break: break-all; }
+  scan = _new_scan(breed_name, confidence, region, color, notes)
 
-    /* ─── Queue & Tables ─────────────────────────────────────── */
-    .q-ctrl { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .tbl-wrap { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid #E2E8F0; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { padding: 14px 16px; font-size: 12px; font-weight: 600; color: #64748B; border-bottom: 1px solid #E2E8F0; background: #F8FAFC; text-transform: uppercase; }
-    td { padding: 14px 16px; font-size: 13px; color: #1E293B; border-bottom: 1px solid #E2E8F0; vertical-align: middle; }
-    tbody tr:hover { background: #F8FAFC; }
-    
-    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-    .status-badge.pending { background: #FEF3C7; color: #B45309; }
-    .status-badge.verified { background: #DCFCE7; color: #15803D; }
-    .status-badge.flagged_for_expert { background: #FEE2E2; color: #B91C1C; }
-    .status-badge.retraining_queue { background: #F1F5F9; color: #475569; }
-
-    .act-btn { border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s; margin-right: 4px; }
-    .act-btn.verify { background: #16A34A; color: #fff; }
-    .act-btn.verify:hover { background: #15803D; }
-    .act-btn.retrain { background: #64748B; color: #fff; }
-    .act-btn.retrain:hover { background: #475569; }
-
-  </style>
-</head>
-<body>
-
-  <!-- Gov Strip -->
-  <div id="gov-strip">
-    <div data-i18n="gov">Government of India | Ministry of Fisheries, Animal Husbandry & Dairying</div>
-    <button id="lang-toggle" onclick="toggleLang()">
-      <span class="opt on">EN</span><span class="sep">|</span><span class="opt">HI</span>
-    </button>
-  </div>
-
-  <!-- Top Navbar -->
-  <div id="topnav">
-    <div class="brand">
-      <div class="brand-icon">
-        <!-- Custom SVG Leaf and Cattle Silhouette Seal -->
-        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="48" fill="#1B365D" stroke="#008080" stroke-width="4"/>
-          <path d="M50 82C67.6731 82 82 67.6731 82 50C82 32.3269 67.6731 18 50 18" stroke="#008080" stroke-width="6" stroke-linecap="round"/>
-          <path d="M50 82C32.3269 82 18 67.6731 18 50C18 32.3269 32.3269 18 50 18" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>
-          <path d="M40 65L35 70M60 65L65 70" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          <path d="M50 40C50 40 45 30 35 35C35 35 40 50 50 55C60 50 65 35 65 35C55 30 50 40 50 40Z" fill="#38BDF8"/>
-          <path d="M38 55C38 55 25 50 25 65C40 65 38 55 38 55Z" fill="#008080"/>
-          <path d="M62 55C62 55 75 50 75 65C60 65 62 55 62 55Z" fill="#008080"/>
-        </svg>
-      </div>
-      <div>
-        <div class="brand-name" data-i18n="b-name">Bharat Pashudhan AI Portal</div>
-        <div class="brand-sub" data-i18n="b-sub">National Digital Livestock Mission (SIH 2025)</div>
-      </div>
-      <div id="engine-pill">{{ engine.backend }} engine</div>
-    </div>
-    <div class="nav-right">
-      <button class="nav-tab active" onclick="goPage('pg-home', this)" data-i18n="tab_home">Home</button>
-      <button class="nav-tab" onclick="goPage('pg-scan', this)" data-i18n="tab_scan">AI Scan Studio</button>
-      <button class="nav-tab" onclick="goPage('pg-encyclopedia', this)" data-i18n="tab_enc">Encyclopedia</button>
-      <button class="nav-tab" onclick="goPage('pg-queue', this)" data-i18n="tab_expert">Expert Queue</button>
-      <button class="nav-tab" onclick="goPage('pg-audit', this)" data-i18n="tab_audit">Audit Trail</button>
-    </div>
-  </div>
-
-  <!-- Main Container -->
-  <div class="container">
-
-    <!-- PAGE: HOME -->
-    <div id="pg-home" class="page active">
-      <div class="hero" style="background: #1B365D;">
-        <div class="ctx">Smart India Hackathon 2025 | PSID: 25004</div>
-        <h1>AI-Powered Cattle & Buffalo Breed Recognition for India</h1>
-        <p>Empowering field workers with smart, scalable, and trustworthy livestock identification</p>
-        <button class="btn-cta" onclick="document.querySelector('.nav-tab:nth-child(2)').click()">Launch AI Scan Studio →</button>
-      </div>
-
-      <div class="metrics-ribbon">
-        <div class="metric-card">
-          <div class="val">15</div>
-          <div class="lbl">Curated Indigenous Breeds</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">&lt;500ms</div>
-          <div class="lbl">Edge Inference Speed</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">100%</div>
-          <div class="lbl">Offline Capable</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">SHA-256</div>
-          <div class="lbl">Tamper-Proof Audit</div>
-        </div>
-      </div>
-
-      <h2 style="font-size:18px; color:#1B365D; margin-bottom:16px;">Who This Platform Serves</h2>
-      <div class="stakeholder-grid">
-        <div class="stake-card">
-          <h3>📱 Field Level Workers (FLWs)</h3>
-          <p>Instant, standardized breed identification on low-cost tablets with zero connectivity requirements.</p>
-        </div>
-        <div class="stake-card">
-          <h3>🩺 Veterinarians & Experts</h3>
-          <p>Explainable AI (Grad-CAM) diagnostics and an active-learning escalation queue to review low-confidence scans securely.</p>
-        </div>
-        <div class="stake-card">
-          <h3>🌾 Farmers & Dairy Breeders</h3>
-          <p>Scientific cross-breeding advisories to optimize milk yields and preserve indigenous genetics.</p>
-        </div>
-      </div>
-
-      <h2 style="font-size:18px; color:#1B365D; margin-bottom:16px;">Featured Indigenous Breeds Spotlight</h2>
-      <div class="breed-showcase" style="grid-template-columns: repeat(4, 1fr);">
-        <div class="showcase-card">
-          <div style="width: 100%; height: 120px; background: #E0F2FE; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐄</div>
-          <div class="name">Gir</div>
-          <div class="type">Milch Breed (Gujarat)</div>
-        </div>
-        <div class="showcase-card">
-          <div style="width: 100%; height: 120px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐄</div>
-          <div class="name">Sahiwal</div>
-          <div class="type">Milch Breed (Punjab)</div>
-        </div>
-        <div class="showcase-card">
-          <div style="width: 100%; height: 120px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐃</div>
-          <div class="name">Murrah</div>
-          <div class="type">Buffalo (Haryana)</div>
-        </div>
-        <div class="showcase-card">
-          <div style="width: 100%; height: 120px; background: #DCFCE7; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐄</div>
-          <div class="name">Kankrej</div>
-          <div class="type">Dual Purpose (Gujarat)</div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- PAGE: SCAN STUDIO -->
-    <div id="pg-scan" class="page">
-      <div id="studio-grid">
-        <!-- LEFT: Form -->
-        <div class="card">
-          <div class="card-title">📷 <span data-i18n="upload_title">Capture & Analyze</span></div>
-          
-          <div id="drop-area">
-            <input type="file" id="inp-file" accept="image/*">
-            <div id="drop-icon">📥</div>
-            <div id="drop-text" data-i18n="drag_text">Drag & drop photo here</div>
-            <div id="drop-sub">or click to browse</div>
-          </div>
-          
-          <div id="preview-box">
-            <button id="preview-clr" onclick="clearUpload()">✕</button>
-            <img id="preview-img" src="" alt="">
-          </div>
-          
-          <button class="btn-cam" onclick="startCamera()">
-            📸 <span data-i18n="btn_cam">Use Camera</span>
-          </button>
-          
-          <div class="f-group">
-            <label>Geographic Region</label>
-            <select id="inp-region" class="f-control">
-              <option value="">Select State/Region (Optional)</option>
-              <option value="Gujarat">Gujarat</option>
-              <option value="Punjab">Punjab</option>
-              <option value="Haryana">Haryana</option>
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="Karnataka">Karnataka</option>
-              <option value="Tamil Nadu">Tamil Nadu</option>
-            </select>
-          </div>
-          <div class="f-group">
-            <label>Estimated Age</label>
-            <input id="inp-age" type="text" class="f-control" placeholder="e.g., 3 years">
-          </div>
-          <div class="f-group">
-            <label>Coat Color</label>
-            <select id="inp-color" class="f-control">
-              <option value="">Select Color (Optional)</option>
-              <option value="Black">Black</option>
-              <option value="White">White</option>
-              <option value="Brown/Red">Brown / Red</option>
-              <option value="Spotted">Spotted</option>
-            </select>
-          </div>
-          <div class="f-group">
-            <label>FLW Notes</label>
-            <input id="inp-notes" type="text" class="f-control" placeholder="Tag ID, health conditions...">
-          </div>
-          
-          <button id="btn-diagnose" disabled onclick="runDiagnostics()">
-            🔬 <span>Run AI Diagnostics</span>
-          </button>
-        </div>
-        
-        <!-- RIGHT: Results -->
-        <div>
-          <!-- Empty -->
-          <div id="r-empty">
-            <div class="icon">🐄</div>
-            <h3>No Diagnostic Run Yet</h3>
-            <p>Upload an animal image and click "Run AI Diagnostics" to see the full multimodal AI analysis here, including Grad-CAM heatmap, breed details, and blockchain audit record.</p>
-          </div>
-          
-          <!-- Loading -->
-          <div id="r-loading">
-            <div class="spinner"></div>
-            <p>Analyzing image with multimodal AI…</p>
-          </div>
-          
-          <!-- Results -->
-          <div id="r-results">
-            <!-- Top Grid: Prediction & XAI -->
-            <div class="res-grid-top">
-              
-              <!-- Match & Top 3 -->
-              <div class="card" style="margin-bottom:0; position:relative;">
-                <div class="card-title">🏆 Match Result</div>
-                <div id="breed-name">Gir</div>
-                <div id="breed-category">Milch Breed</div>
-                <div id="heuristic-badge" style="display:none; position:absolute; top:24px; right:24px; background:#F0FDFA; border:1px solid #14B8A6; color:#0F766E; font-size:10px; font-weight:700; padding:4px 8px; border-radius:4px; cursor:help;" title="Region-based heuristics applied to boost confidence score for locally native breeds.">📍 REGION BOOSTED</div>
-                
-                <div style="margin-top:20px; margin-bottom:12px; font-size:12px; font-weight:700; color:#64748B;">CONFIDENCE BREAKDOWN</div>
-                <div id="top3-rows"></div>
-              </div>
-
-              <!-- XAI Grad-CAM -->
-              <div class="card" style="margin-bottom:0">
-                <div class="card-title">🧠 Explainable AI (Grad-CAM)</div>
-                <div class="xai-wrapper">
-                  <div class="xai-box">
-                    <img id="xai-orig" src="" alt="Original">
-                    <div class="lbl">Input Photo</div>
-                  </div>
-                  <div class="xai-box">
-                    <img id="xai-heat" src="" alt="Heatmap">
-                    <div class="lbl">Attention Focus</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Encyclopedia & Vet Data -->
-            <div class="card">
-              <div class="card-title">📚 Breed Profile & Traits</div>
-              
-              <div class="meta-grid">
-                <div class="meta-box"><div class="lbl">Native Tract</div><div class="val" id="native-tract">—</div></div>
-                <div class="meta-box"><div class="lbl">Production Yield</div><div class="val" id="production-yield">—</div></div>
-                <div class="meta-box" style="grid-column: 1 / -1;"><div class="lbl">Key Traits</div><div class="val" id="speciality-display">—</div></div>
-              </div>
-
-              <div class="crossbreed-alert">
-                <div class="lbl">🧬 Scientific Cross-Breeding Advisory</div>
-                <div class="val" id="crossbreeding-advisory">—</div>
-              </div>
-              
-              <!-- Audit Box -->
-              <div class="audit-box" title="Each scan generates a cryptographic hash chaining it to the previous record in the database, enabling tamper-evident auditing.">
-                <img id="audit-qr" src="" alt="QR">
-                <div class="info">
-                  <div class="title">🔐 Tamper-Evident Audit Record</div>
-                  <div style="font-size: 11px; font-weight: 700; margin-bottom: 2px;">Pashu Aadhaar UID: <span id="audit-uid" style="color:#0284C7;">—</span></div>
-                  <div class="hash">Record Hash (SHA-256): <span id="audit-hash">0x000...</span></div>
-                </div>
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- PAGE: ENCYCLOPEDIA -->
-    <div id="pg-encyclopedia" class="page">
-      <div class="card" style="background: transparent; box-shadow: none; padding: 0;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px;">
-          <div>
-            <div class="card-title" style="margin-bottom:8px;">📚 Official Breed Encyclopedia</div>
-            <p style="color:#64748B; margin:0;">Explore the 60 official recognized breeds integrated into the platform.</p>
-          </div>
-          <input type="text" id="enc-search" placeholder="Search by name or state..." style="padding:10px 16px; border:1px solid #CBD5E1; border-radius:6px; width:260px;" oninput="loadEncyclopedia(this.value, document.getElementById('enc-filter').value)">
-        </div>
-        
-        <div style="margin-bottom: 24px;">
-          <select id="enc-filter" style="padding:10px 16px; border:1px solid #CBD5E1; border-radius:6px; background:#fff;" onchange="loadEncyclopedia(document.getElementById('enc-search').value, this.value)">
-            <option value="All">All Categories</option>
-            <option value="Indigenous Milch">Indigenous Milch</option>
-            <option value="Draught">Draught</option>
-            <option value="Dual-Purpose">Dual-Purpose</option>
-            <option value="Buffalo">Buffalo</option>
-            <option value="Exotic">Exotic</option>
-          </select>
-        </div>
-
-        <div id="enc-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-          <div style="grid-column:1/-1; text-align:center; padding: 40px; color:#94A3B8;">Loading Encyclopedia...</div>
-        </div>
-      </div>
-    </div>
-    
-    <script>
-      // Load encyclopedia once when the tab is clicked
-      document.querySelector('[data-i18n="tab_enc"]').addEventListener('click', () => {
-        if (document.getElementById('enc-grid').innerHTML.includes('Loading')) {
-          loadEncyclopedia();
-        }
-      });
-    </script>
-
-
-    <!-- PAGE: EXPERT QUEUE -->
-    <div id="pg-queue" class="page">
-      <div class="card">
-        <div class="card-title">⚠️ Expert Verification Queue</div>
-        <div class="q-ctrl">
-          <p style="color:#475569; font-size:14px;">Review scans flagged by the AI due to low confidence (&lt;70%) or suspected rare breeds.</p>
-          <button class="act-btn retrain" onclick="loadQueue()">🔄 Refresh Queue</button>
-        </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>ID</th><th>Image</th><th>AI Top Prediction</th><th>Metadata</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="q-tbody">
-              <tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading queue...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- PAGE: AUDIT TRAIL -->
-    <div id="pg-audit" class="page">
-      <div class="card">
-        <div class="card-title">🔐 Tamper-Evident Audit Log</div>
-        <div class="q-ctrl">
-          <p style="color:#475569; font-size:14px;">Immutable ledger of all verified diagnostic scans.</p>
-          <div>
-            <button class="act-btn verify" onclick="syncToBPA()" id="btn-sync-bpa">☁️ Sync to BPA</button>
-            <button class="act-btn retrain" onclick="window.location.href='/api/export/audit_log'">📥 Export JSON</button>
-          </div>
-        </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Timestamp</th><th>Image</th><th>Breed</th><th>Confidence</th><th>Status</th><th>Record Hash (SHA-256)</th></tr></thead>
-            <tbody id="a-tbody">
-              <tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading audit trail...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <footer style="margin-top: 40px; padding: 30px; text-align: center; color: #64748B; font-size: 13px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
-    <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry & Dairying, Ministry of Fisheries, Animal Husbandry & Dairying, Government of India</div>
-    <div style="margin-bottom: 12px;">A Smart India Hackathon prototype addressing BPA data quality | Problem Statement ID: 25004</div>
-    <div>
-      <span style="display:inline-block; background:#DCFCE7; color:#166534; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">🟢 OFFLINE EDGE AI ACTIVE</span>
-    </div>
-  </footer>
-
-  <script>
-'use strict';
-
-/* ─── State ────────────────────────────── */
-let _file = null;
-let _wcs = null;
-let _lang = 'en';
-
-const HI = {
-  'gov': 'भारत सरकार | मत्स्य पालन, पशुपालन और डेयरी मंत्रालय',
-  'b-name': 'भारत पशुधन AI पोर्टल',
-  'b-sub': 'राष्ट्रीय डिजिटल पशुधन मिशन (SIH 2025)',
-  'tab_home': 'होम',
-  'tab_scan': 'AI स्कैन स्टूडियो',
-  'tab_enc': 'विश्वकोश',
-  'tab_expert': 'विशेषज्ञ कतार',
-  'tab_audit': 'ऑडिट ट्रेल',
-  'upload_title': 'कैप्चर और विश्लेषण',
-  'drag_text': 'यहाँ फोटो खींचें और छोड़ें',
-  'btn_cam': 'कैमरा का उपयोग करें',
-};
-
-/* ─── Navigation ───────────────────────── */
-function goPage(pageId, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  
-  if (btn) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
+  encyclopedia_entry = next((b for b in BREEDS if b["breed_name"] == breed_name), None)
+  breed_details = encyclopedia_entry or {
+  "category": "Uncatalogued",
+  "native_tract": "—",
+  "avg_milk_yield": "—",
+  "speciality": "—",
+  "optimal_crossbreeding": "—",
+  "data_status": "pending",
   }
 
-  // Load appropriate data if tab requires it
-  if (pageId === 'pg-queue') loadQueue();
-  if (pageId === 'pg-audit') loadAudit();
-}
+  top3 = [
+  {"breed": breed_name, "confidence": confidence},
+  {"breed": "Red Sindhi", "confidence": 0.034},
+  {"breed": "Kankrej", "confidence": 0.018},
+  ]
 
-function toggleLang() {
-  _lang = _lang === 'en' ? 'hi' : 'en';
-  const opts = document.querySelectorAll('#lang-toggle .opt');
-  opts[0].classList.toggle('on', _lang === 'en');
-  opts[1].classList.toggle('on', _lang === 'hi');
+  return jsonify({
+  "success": True,
+  "top1_breed": breed_name,
+  "top3": top3,
+  "breed_details": breed_details,
+  "region_boosted": bool(region),
+  "image_url": GRAD_CAM_ORIGINAL,
+  "xai_image_url": GRAD_CAM_HEATMAP,
+  "blockchain_hash": scan["blockchain_hash"],
+  "pashu_aadhaar": scan["pashu_aadhaar"],
+  "qr_code_url": GRAD_CAM_ORIGINAL,
+  "scan_id": scan["id"],
+  })
 
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (_lang === 'hi' && HI[key]) {
-      if (!el.dataset.en) el.dataset.en = el.innerHTML;
-      el.innerHTML = HI[key];
-    } else {
-      if (el.dataset.en) el.innerHTML = el.dataset.en;
-    }
-  });
-}
+  # ─── Encyclopedia ───────────────────────────────────────────────────────
+  @app.route("/api/encyclopedia", methods=["GET"])
+  def encyclopedia():
+  return jsonify({"success": True, "breeds": BREEDS})
 
-/* ─── Drag & Drop / Upload ──────────────── */
-function initUpload() {
-  const drop = document.getElementById('drop-area');
-  const inp  = document.getElementById('inp-file');
-  if (!drop || !inp) return;
+  # ─── History (feeds BOTH Expert Queue and Audit Trail) ─────────────────
+  @app.route("/api/history", methods=["GET"])
+  def history():
+  status = request.args.get("status")
+  limit = int(request.args.get("limit", 50))
 
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
-    drop.addEventListener(e, prev);
-  });
-  drop.addEventListener('dragover', () => drop.classList.add('dragover'));
-  drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
-  drop.addEventListener('drop', (e) => {
-    drop.classList.remove('dragover');
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  });
-  inp.addEventListener('change', function() {
-    if (this.files && this.files[0]) handleFile(this.files[0]);
-  });
-}
+  scans = SCANS
+  if status:
+  scans = [s for s in scans if s["status"] == status]
 
-function prev(e) {
-  e.preventDefault();
-  e.stopPropagation();
-}
+  scans = sorted(scans, key=lambda s: s["timestamp"], reverse=True)[:limit]
+  return jsonify({"success": True, "scans": scans})
 
-function handleFile(f) {
-  if (!f.type.startsWith('image/')) {
-    alert('Please upload a valid image file.');
-    return;
-  }
-  _file = f;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('preview-img').src = e.target.result;
-    document.getElementById('preview-box').style.display = 'block';
-    document.getElementById('drop-area').style.display = 'none';
-    document.getElementById('btn-diagnose').disabled = false;
-  };
-  reader.readAsDataURL(f);
-}
+  # ─── Actions ────────────────────────────────────────────────────────────
+  @app.route("/api/verify", methods=["POST"])
+  def verify():
+  scan_id = int(request.form.get("scan_id", 0))
+  for s in SCANS:
+  if s["id"] == scan_id:
+  s["status"] = "verified"
+  return jsonify({"success": True, "message": "Scan verified."})
+  return jsonify({"success": False, "error": "Scan not found."}), 404
 
-function clearUpload() {
-  _file = null;
-  document.getElementById('inp-file').value = '';
-  document.getElementById('preview-img').src = '';
-  document.getElementById('preview-box').style.display = 'none';
-  document.getElementById('drop-area').style.display = 'block';
-  document.getElementById('btn-diagnose').disabled = true;
-  
-  // Hide results
-  document.getElementById('r-results').style.display = 'none';
-  document.getElementById('r-empty').style.display = 'block';
-}
+  @app.route("/api/retrain", methods=["POST"])
+  def retrain():
+  scan_id = int(request.form.get("scan_id", 0))
+  for s in SCANS:
+  if s["id"] == scan_id:
+  s["status"] = "retraining_queue"
+  return jsonify({"success": True, "message": "Flagged for retraining."})
+  return jsonify({"success": False, "error": "Scan not found."}), 404
 
-/* ─── Camera ───────────────────────────── */
-// Simplified camera flow for the demo
-function startCamera() {
-  alert('Camera access would be requested here on a physical device. For now, please upload a photo using the file picker.');
-}
+  @app.route("/api/sync", methods=["POST"])
+  def sync():
+  return jsonify({"success": True, "message": "Records synced to BPA registry."})
 
-/* ─── Diagnostics ──────────────────────── */
-async function runDiagnostics() {
-  if (!_file) return;
-
-  const btn = document.getElementById('btn-diagnose');
-  btn.disabled = true;
-  btn.innerHTML = `⏳ <span>Processing...</span>`;
-
-  document.getElementById('r-empty').style.display = 'none';
-  document.getElementById('r-results').style.display = 'none';
-  document.getElementById('r-loading').style.display = 'block';
-
-  const fd = new FormData();
-  fd.append('image', _file);
-  fd.append('region', document.getElementById('inp-region').value);
-  fd.append('age', document.getElementById('inp-age').value);
-  fd.append('color', document.getElementById('inp-color').value);
-  fd.append('notes', document.getElementById('inp-notes').value);
-
-  try {
-    const res = await fetch('/api/predict', { method: 'POST', body: fd });
-    const data = await res.json();
-    
-    if (!res.ok) throw new Error(data.error || 'Prediction failed');
-    
-    populateResults(data);
-    
-    document.getElementById('r-loading').style.display = 'none';
-    document.getElementById('r-results').style.display = 'block';
-
-  } catch (err) {
-    alert('Error: ' + err.message);
-    document.getElementById('r-loading').style.display = 'none';
-    document.getElementById('r-empty').style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `🔬 <span>Run AI Diagnostics</span>`;
-  }
-}
-
-async function populateResults(data) {
-  // Primary Match
-  document.getElementById('breed-name').textContent = data.top1_breed;
-  // Dynamic Encyclopedia Data
-  const enc = data.breed_details || {};
-  document.getElementById('breed-category').textContent = enc.category || 'Unknown Category';
-  document.getElementById('native-tract').textContent = enc.native_tract || '—';
-  document.getElementById('production-yield').textContent = enc.avg_milk_yield || '—';
-  
-  if (enc.data_status === 'curated') {
-    document.getElementById('speciality-display').textContent = enc.speciality || '—';
-    document.getElementById('crossbreeding-advisory').textContent = enc.optimal_crossbreeding || '—';
-  } else {
-    document.getElementById('speciality-display').textContent = 'Profile pending';
-    document.getElementById('crossbreeding-advisory').textContent = 'Profile pending. Breeding guidance not yet available for this breed.';
-  }
-
-  // Region Heuristic Boost Badge
-  const badge = document.getElementById('heuristic-badge');
-  if (data.region_boosted) {
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
-  }
-
-  // Top 3 Bars
-  let html = '';
-  data.top3.forEach((t) => {
-    const pct = Math.round(t.confidence * 100);
-    html += `
-      <div class="b-row">
-        <div class="b-lbl">${t.breed}</div>
-        <div class="b-bar-wrap"><div class="b-bar-fill" style="width:0%" data-w="${pct}%"></div></div>
-        <div class="b-pct">${pct}%</div>
-      </div>
-    `;
-  });
-  document.getElementById('top3-rows').innerHTML = html;
-  
-  // Trigger bar animation
-  setTimeout(() => {
-    document.querySelectorAll('.b-bar-fill').forEach(b => {
-      b.style.width = b.getAttribute('data-w');
-    });
-  }, 50);
-
-  // XAI
-  document.getElementById('xai-orig').src = data.image_url;
-  document.getElementById('xai-heat').src = data.xai_image_url || data.image_url;
-
-  // Audit
-  document.getElementById('audit-hash').textContent = data.blockchain_hash || '—';
-  if (data.pashu_aadhaar) {
-    document.getElementById('audit-uid').textContent = data.pashu_aadhaar;
-  }
-  if (data.qr_code_url) {
-    document.getElementById('audit-qr').src = data.qr_code_url;
-  }
-}
-
-/* ─── Toasts & Notifications ───────────── */
-function showToast(message) {
-  let toast = document.getElementById('toast-notification');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast-notification';
-    toast.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#15803D;color:white;padding:12px 24px;border-radius:4px;box-shadow:0 4px 6px rgba(0,0,0,0.1);z-index:9999;transition:opacity 0.3s;';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = message;
-  toast.style.opacity = '1';
-  setTimeout(() => { toast.style.opacity = '0'; }, 3000);
-}
-
-/* ─── Data Tables ──────────────────────── */
-async function loadQueue() {
-  const tbody = document.getElementById('q-tbody');
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading...</td></tr>';
-  
-  try {
-    const res = await fetch('/api/history?status=flagged_for_expert&limit=50');
-    const data = await res.json();
-    
-    if (data.scans.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#15803D; font-weight:600;">No scans flagged for expert review!</td></tr>';
-      return;
-    }
-
-    let html = '';
-    data.scans.forEach(s => {
-      html += `
-        <tr>
-          <td>${s.id}</td>
-          <td><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
-          <td><b>${s.predicted_breed}</b><br><small>${(s.confidence_score * 100).toFixed(1)}%</small></td>
-          <td><small>Reg: ${s.region_input || '-'}<br>Col: ${s.color_input || '-'}</small></td>
-          <td><span class="status-badge flagged_for_expert">Needs Review</span></td>
-          <td>
-            <button class="act-btn verify" onclick="performAction(${s.id}, '/api/verify')">✓ Verify</button>
-            <button class="act-btn retrain" onclick="performAction(${s.id}, '/api/retrain')">⚠️ Flag for Retrain</button>
-          </td>
-        </tr>
-      `;
-    });
-    tbody.innerHTML = html;
-  } catch (err) {
-    console.error(err);
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading queue.</td></tr>';
-  }
-}
-
-async function loadAudit() {
-  const tbody = document.getElementById('a-tbody');
-  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading...</td></tr>';
-  
-  try {
-    const res = await fetch('/api/history?limit=50');
-    const data = await res.json();
-    
-    if (data.scans.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94A3B8;">No records found.</td></tr>';
-      return;
-    }
-
-    let html = '';
-    data.scans.forEach(s => {
-      html += `
-        <tr>
-          <td><small>${new Date(s.timestamp).toLocaleString()}</small></td>
-          <td><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
-          <td><b>${s.predicted_breed}</b></td>
-          <td>${(s.confidence_score * 100).toFixed(1)}%</td>
-          <td><span class="status-badge ${s.status}">${s.status.replace(/_/g, ' ')}</span></td>
-          <td style="font-family:monospace; font-size:11px; color:#15803D;">${s.blockchain_hash ? s.blockchain_hash.substring(0,20)+'...' : '-'}</td>
-        </tr>
-      `;
-    });
-    tbody.innerHTML = html;
-  } catch (err) {
-    console.error(err);
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading audit trail.</td></tr>';
-  }
-}
-
-async function performAction(id, endpoint) {
-  if (!confirm(`Are you sure you want to perform this action on Scan #${id}?`)) return;
-  
-  try {
-    const fd = new FormData();
-    fd.append('scan_id', id);
-    
-    const res = await fetch(endpoint, { method: 'POST', body: fd });
-    if (res.ok) {
-      showToast('Action successful!');
-      loadQueue();
-    } else {
-      const e = await res.json();
-      alert('Failed: ' + (e.error || 'Unknown error'));
-    }
-  } catch (err) {
-    alert('Error performing action: ' + err.message);
-  }
-}
-
-async function syncToBPA() {
-  const btn = document.getElementById('btn-sync-bpa');
-  if(btn) btn.disabled = true;
-  
-  try {
-    const res = await fetch('/api/sync', { method: 'POST' });
-    const data = await res.json();
-    if (data.success) {
-      showToast(data.message);
-    } else {
-      alert("Sync failed");
-    }
-  } catch (err) {
-    alert('Error syncing: ' + err.message);
-  } finally {
-    if(btn) btn.disabled = false;
-  }
-}
-
-async function loadEncyclopedia(searchQuery = '', filterCategory = 'All') {
-  const grid = document.getElementById('enc-grid');
-  if(!grid) return;
-  
-  grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding: 40px; color: #64748B;">Loading Encyclopedia...</div>';
-  
-  try {
-    const res = await fetch('/api/encyclopedia');
-    const data = await res.json();
-    if(!data.success || !data.breeds) throw new Error("Invalid response");
-    
-    let html = '';
-    data.breeds.forEach(b => {
-      // Filter logic
-      if (filterCategory !== 'All' && !b.category.includes(filterCategory)) return;
-      if (searchQuery && !b.breed_name.toLowerCase().includes(searchQuery.toLowerCase()) && !b.native_tract.toLowerCase().includes(searchQuery.toLowerCase())) return;
-      
-      html += `
-        <div class="enc-card" style="background:white; border-radius:8px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid #E2E8F0;">
-          <h3 style="margin:0 0 8px 0; color:#1B365D;">${b.breed_name}</h3>
-          <span style="display:inline-block; background:#E0F2FE; color:#0284C7; padding:4px 8px; border-radius:4px; font-size:12px; margin-bottom:12px;">${b.category}</span>
-          <div style="font-size:13px; color:#475569; margin-bottom:8px;">
-            <b>Native Tract:</b> ${b.native_tract}
-          </div>
-          <div style="font-size:13px; color:#475569; margin-bottom:8px;">
-            <b>Yield:</b> ${b.avg_milk_yield}
-          </div>
-          <div style="font-size:13px; color:#475569;">
-            <b>Traits:</b> ${b.speciality.substring(0,80)}...
-          </div>
-        </div>
-      `;
-    });
-    
-    if (html === '') html = '<div style="grid-column:1/-1; text-align:center; padding: 40px; color: #64748B;">No breeds match your filter.</div>';
-    grid.innerHTML = html;
-    
-  } catch (err) {
-    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding: 40px; color: red;">Error loading catalog.</div>`;
-    console.error(err);
-  }
-}
-
-/* ─── Init ─────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  initUpload();
-});
-  </script>
-</html>
+  @app.route("/api/export/audit_log", methods=["GET"])
+  def export_audit_log():
+  return jsonify({"success": True, "scans": SCANS})
