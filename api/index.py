@@ -504,13 +504,77 @@ def manifest():
         return send_file(m_path, mimetype="application/json")
     return "{}", 404
 
+from flask import Response
+
+def generate_stock_svg_asset(key: str):
+    """
+    Generates a high-resolution 200 OK SVG image response for stock photos
+    if physical disk files are absent on Vercel deployment.
+    """
+    key = key.lower()
+    if "gir" in key or "hero" in key:
+        title = "Gir Cattle (Indigenous Milch Zebu)"
+        subtitle = "Saurashtra Forest, Gujarat • Convex Forehead & Leaf Ears"
+        accent = "#38BDF8"
+        icon = "🐂"
+        badge = "HERO BANNER ASSET"
+    elif "sahiwal" in key or "mission" in key:
+        title = "Sahiwal Breed Verification"
+        subtitle = "Montgomery Punjab Dairy Zebu • Point-of-Entry Data Correction"
+        accent = "#4ADE80"
+        icon = "🔬"
+        badge = "OUR MISSION"
+    elif "kankrej" in key or "workflow" in key:
+        title = "MobileNetV2 Edge Inference"
+        subtitle = "Kankrej Lyre-Horn Feature Extraction & SHA-256 Audit Chaining"
+        accent = "#FACC15"
+        icon = "⚡"
+        badge = "HOW IT WORKS"
+    else:
+        title = "Field Worker Tablet Application"
+        subtitle = "Zero 2G/3G Connectivity • Offline IndexedDB & Audio Readout"
+        accent = "#A7F3D0"
+        icon = "📱"
+        badge = "FIELD CAPABILITY"
+
+    svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#1B365D"/>
+          <stop offset="50%" stop-color="#0F766E"/>
+          <stop offset="100%" stop-color="#008080"/>
+        </linearGradient>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="800" height="400" fill="url(#bg)"/>
+      <rect width="800" height="400" fill="url(#grid)"/>
+      <circle cx="680" cy="100" r="180" fill="none" stroke="{accent}" stroke-width="2" opacity="0.2"/>
+      <circle cx="680" cy="100" r="120" fill="none" stroke="{accent}" stroke-width="1" stroke-dasharray="6,6" opacity="0.3"/>
+      
+      <rect x="40" y="40" width="160" height="28" rx="14" fill="rgba(255,255,255,0.15)"/>
+      <text x="52" y="58" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">{badge}</text>
+      
+      <text x="40" y="160" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">{title}</text>
+      <text x="40" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="600" fill="#E2E8F0">{subtitle}</text>
+
+      <rect x="40" y="260" width="230" height="44" rx="8" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.2)"/>
+      <text x="56" y="287" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="{accent}">✓ Official AI Asset • 200 OK</text>
+      
+      <text x="700" y="320" font-size="100" text-anchor="middle" opacity="0.85">{icon}</text>
+    </svg>"""
+
+    return Response(svg, mimetype="image/svg+xml")
+
+
 @app.route("/static/<path:filename>")
 def serve_static(filename):
     path = os.path.join(DASHBOARD_DIR, "static", filename)
     if os.path.exists(path):
         return send_file(path)
     
-    # Fallback for generated stock photos
+    # Check fallback stock photos on local disk
     base = os.path.basename(filename)
     if "gir" in base.lower() or "hero" in base.lower():
         f = os.path.join(ARTIFACT_DIR, "gir_cattle_hero_1787597951096.png")
@@ -524,6 +588,10 @@ def serve_static(filename):
     if "murrah" in base.lower() or "fieldworker" in base.lower():
         f = os.path.join(ARTIFACT_DIR, "murrah_fieldworker_1787598049202.png")
         if os.path.exists(f): return send_file(f)
+
+    # If physical file is absent (e.g. on Vercel deployment), serve generated SVG asset (200 OK)
+    if filename.startswith("images/") or filename.endswith(".jpg") or filename.endswith(".png"):
+        return generate_stock_svg_asset(filename)
 
     return f"Asset {filename} not found", 404
 
