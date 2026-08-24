@@ -252,6 +252,23 @@ def predict():
         f"({result['top1_confidence']:.1%}) | {result['backend']}"
     )
 
+    # On Vercel, uploaded files live in /tmp which is not served by Flask's
+    # static folder — use a dedicated /api/uploads/ proxy route instead.
+    _is_vercel = bool(os.environ.get("VERCEL"))
+    def _url(rel: str) -> str:
+        if not rel:
+            return ""
+        return f"/api/uploads/{rel.split('/', 1)[-1]}" if _is_vercel else f"/static/{rel}"
+
+    # Ensure breed_details always has every key the frontend reads
+    _bd_defaults = {
+        "category": "Unknown", "native_tract": "—",
+        "avg_milk_yield": "—", "speciality": "—",
+        "optimal_crossbreeding": "—", "data_status": "pending",
+    }
+    _bd_defaults.update(breed_details)
+    breed_details = _bd_defaults
+
     return jsonify({
         "success":         True,
         "scan_id":         scan_id,
@@ -259,15 +276,14 @@ def predict():
         "top1_confidence": result["top1_confidence"],
         "top3":            result["top3"],
         "needs_expert":    result.get("needs_expert", False),
+        "region_boosted":  result.get("region_boosted", False),
         "status":          status,
         "backend":         result["backend"],
         "inference_ms":    result["inference_ms"],
-        "image_url":       f"/static/{relative_path}",
-        "xai_image_url":   f"/static/{xai_rel_path}" if xai_rel_path else "",
-        "qr_code_url":     f"/static/{qr_relative_path}" if qr_relative_path else "",
+        "image_url":       _url(relative_path),
+        "xai_image_url":   _url(xai_rel_path),
+        "qr_code_url":     _url(qr_relative_path),
         "blockchain_hash": b_hash,
-        "health_status":   "Not yet implemented",
-        "estimated_weight":"Not yet implemented",
         "timestamp":       datetime.utcnow().isoformat(),
         "breed_details":   breed_details,
         "pashu_aadhaar":   f"9800 {uid[:4]} {uid[4:8]}"
@@ -428,6 +444,12 @@ def retrain_scan():
 
 @app.route("/static/uploads/<path:filename>")
 def uploaded_file(filename: str):
+    return send_from_directory(str(UPLOAD_FOLDER), filename)
+
+
+@app.route("/api/uploads/<path:filename>")
+def api_uploaded_file(filename: str):
+    """Serve uploaded files from /tmp on Vercel (read-only static dir workaround)."""
     return send_from_directory(str(UPLOAD_FOLDER), filename)
 
 
