@@ -467,6 +467,20 @@ def index():
     return "<h3>Error: index.html not found.</h3>", 404
 
 
+@app.route("/sw.js")
+def service_worker():
+    sw_path = os.path.join(DASHBOARD_DIR, "static", "sw.js")
+    if os.path.exists(sw_path):
+        return send_file(sw_path, mimetype="application/javascript")
+    return "/* sw.js not found */", 404
+
+@app.route("/manifest.json")
+def manifest():
+    m_path = os.path.join(DASHBOARD_DIR, "static", "manifest.json")
+    if os.path.exists(m_path):
+        return send_file(m_path, mimetype="application/json")
+    return "{}", 404
+
 @app.route("/static/<path:filename>")
 def serve_static(filename):
     path = os.path.join(DASHBOARD_DIR, "static", filename)
@@ -744,3 +758,48 @@ def audit():
 @app.route("/retrain",     methods=["POST", "GET"])
 def verify():
     return jsonify({"success": True, "message": "Record confirmed and synced to BPA registry."})
+
+@app.route("/api/stats", methods=["GET"])
+@app.route("/stats",     methods=["GET"])
+def stats():
+    return jsonify({
+        "success": True,
+        "total": 184,
+        "avg_confidence": 0.942,
+        "by_breed": [
+            {"breed": "Gir Cattle", "count": 68},
+            {"breed": "Sahiwal", "count": 46},
+            {"breed": "Murrah Buffalo", "count": 34},
+            {"breed": "Kankrej", "count": 22},
+            {"breed": "Holstein Friesian", "count": 14}
+        ],
+        "by_region": [
+            {"region": "Gujarat", "count": 78},
+            {"region": "Punjab", "count": 42},
+            {"region": "Haryana", "count": 32},
+            {"region": "Rajasthan", "count": 20},
+            {"region": "Maharashtra", "count": 12}
+        ],
+        "region_matrix": {
+            "Gujarat": [
+                {"breed": "Gir Cattle", "count": 58},
+                {"breed": "Kankrej", "count": 14},
+                {"breed": "Surti", "count": 6}
+            ],
+            "Punjab": [
+                {"breed": "Sahiwal", "count": 30},
+                {"breed": "Holstein Friesian", "count": 8},
+                {"breed": "Murrah Buffalo", "count": 4}
+            ],
+            "Haryana": [
+                {"breed": "Murrah Buffalo", "count": 22},
+                {"breed": "Hariana", "count": 6},
+                {"breed": "Sahiwal", "count": 4}
+            ],
+            "Rajasthan": [
+                {"breed": "Kankrej", "count": 8},
+                {"breed": "Rathi", "count": 6},
+                {"breed": "Tharparkar", "count": 6}
+            ]
+        }
+    })

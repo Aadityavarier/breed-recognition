@@ -1,0 +1,18 @@
+{
+  "name": "Bharat Pashudhan AI Portal",
+  "short_name": "BharatPashudhan",
+  "description": "Digital Livestock Intelligence Platform - Offline-first AI breed recognition & tamper-evident audit ledger.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B365D",
+  "theme_color": "#1B365D",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231B365D' stroke='%23008080' stroke-width='4'/><path d='M50 82C67.6731 82 82 67.6731 82 50C82 32.3269 67.6731 18 50 18' stroke='%23008080' stroke-width='6' stroke-linecap='round'/><path d='M50 82C32.3269 82 18 67.6731 18 50C18 32.3269 32.3269 18 50 18' stroke='%2338BDF8' stroke-width='6' stroke-linecap='round'/><path d='M40 65L35 70M60 65L65 70' stroke='white' stroke-width='4' stroke-linecap='round'/><path d='M50 40C50 40 45 30 35 35C35 35 40 50 50 55C60 50 65 35 65 35C55 30 50 40 50 40Z' fill='%2338BDF8'/><path d='M38 55C38 55 25 50 25 65C40 65 38 55 38 55Z' fill='%23008080'/><path d='M62 55C62 55 75 50 75 65C60 65 62 55 62 55Z' fill='%23008080'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

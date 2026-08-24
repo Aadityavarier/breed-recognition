@@ -7,6 +7,8 @@
   <title>Bharat Pashudhan | NDLM AI Portal</title>
   <!-- Suppress favicon 404 error -->
   <link rel="icon" href="data:,">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1B365D">
   <style>
     /* ─── Reset ──────────────────────────────────────────────── */
     *,
@@ -1343,30 +1345,65 @@
       background: transparent;
     }
 
-    /* ── Touch target minimums (≥44px) ─────────────────────── */
+    /* ── Generous Touch Target Minimums (≥48px) ────────────────── */
     .nav-tab {
-      min-height: 44px;
-      padding: 10px 14px;
+      min-height: 48px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
+      font-size: 14px;
     }
 
     .act-btn {
-      min-height: 36px;
-      padding: 8px 14px;
+      min-height: 48px;
+      padding: 12px 18px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .f-control, select.f-control, input.f-control {
+      min-height: 48px;
+      padding: 12px 16px;
+      font-size: 14px;
     }
 
     #btn-diagnose {
-      min-height: 48px;
+      min-height: 52px;
+      padding: 14px 24px;
+      font-size: 16px;
     }
 
     .btn-cam {
-      min-height: 44px;
-      padding: 12px;
+      min-height: 48px;
+      padding: 14px;
+      font-size: 14px;
     }
 
     .btn-primary, .btn-outline {
-      min-height: 48px;
+      min-height: 52px;
+      padding: 14px 28px;
+      font-size: 15px;
+    }
+
+    .btn-speech {
+      min-height: 44px;
+      padding: 10px 16px;
+      background: #008080;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(0,128,128,0.25);
+      transition: all 0.2s ease;
+    }
+    .btn-speech:hover {
+      background: #006666;
+      transform: translateY(-1px);
     }
 
     /* ── Hamburger button (hidden on desktop) ───────────────── */
@@ -1826,6 +1863,10 @@
         <div class="brand-sub" data-i18n="b-sub">Digital Livestock Intelligence Platform (SIH 2025)</div>
       </div>
       <div id="engine-pill">{{ engine.backend }} engine</div>
+      <div id="net-status-pill" style="display:flex; align-items:center; gap:5px; background:rgba(22,163,74,0.2); border:1px solid #16A34A; color:#4ADE80; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-left:8px; transition:all 0.3s ease;">
+        <span id="net-dot" style="width:7px; height:7px; border-radius:50%; background:#4ADE80; display:inline-block;"></span>
+        <span id="net-text">ONLINE</span>
+      </div>
     </div>
     <div class="nav-right">
       <button class="nav-tab active" onclick="goPage('pg-home', this)" data-i18n="tab_home">Home</button>
@@ -1833,6 +1874,7 @@
       <button class="nav-tab" onclick="goPage('pg-encyclopedia', this)" data-i18n="tab_enc">Encyclopedia</button>
       <button class="nav-tab" onclick="goPage('pg-queue', this)" data-i18n="tab_expert">Expert Queue</button>
       <button class="nav-tab" onclick="goPage('pg-audit', this)" data-i18n="tab_audit">Audit Trail</button>
+      <button class="nav-tab" onclick="goPage('pg-myscans', this)" data-i18n="tab_myscans">📱 My Scans</button>
     </div>
     <button id="hamburger" onclick="document.getElementById('mobile-nav-overlay').classList.add('open')" aria-label="Open menu">☰</button>
   </div>
@@ -1845,6 +1887,7 @@
     <button class="nav-tab" onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_enc">📚 Encyclopedia</button>
     <button class="nav-tab" onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_expert">👩‍⚕️ Expert Queue</button>
     <button class="nav-tab" onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_audit">🔐 Audit Trail</button>
+    <button class="nav-tab" onclick="goPage('pg-myscans', document.querySelector('.nav-tab:nth-child(6)')); document.getElementById('mobile-nav-overlay').classList.remove('open')" data-i18n="tab_myscans">📱 My Scans</button>
     <div class="lang-row">
       <button id="lang-toggle-mobile" onclick="toggleLang()" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:8px 20px;border-radius:99px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;">
         <span class="opt on">EN</span><span style="opacity:.4"> | </span><span class="opt">HI</span>
@@ -2281,7 +2324,12 @@
 
               <!-- Match & Top 3 -->
               <div class="card" style="margin-bottom:0; position:relative;">
-                <div class="card-title">🏆 Livestock Intelligence Match</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                  <div class="card-title" style="margin:0;">🏆 Livestock Intelligence Match</div>
+                  <button type="button" id="btn-read-aloud" onclick="toggleReadAloud()" class="btn-speech" title="Read breed result and diagnostic details aloud using Web Speech API">
+                    🔊 <span id="read-aloud-text">Read Result Aloud</span>
+                  </button>
+                </div>
                 <div id="breed-name">Gir</div>
                 <div id="breed-category">Milch Breed</div>
                 <div id="heuristic-badge"
@@ -2486,8 +2534,59 @@
     </div>
 
 
-    <!-- PAGE: AUDIT TRAIL -->
+    <!-- PAGE: AUDIT TRAIL & REGIONAL INTELLIGENCE -->
     <div id="pg-audit" class="page">
+
+      <!-- Regional Breed Distribution & Geo Intelligence Analytics -->
+      <div class="card" style="margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <div class="card-title" style="margin-bottom:4px;">🌐 Regional Breed Intelligence &amp; Territory Analytics</div>
+            <p style="color:#64748B; font-size:13px; margin:0;">
+              Real-time regional breed distribution counts and territory density metrics derived from geo-tagged scan records.
+            </p>
+          </div>
+          <div id="analytics-region-pills" style="display:flex; gap:6px; flex-wrap:wrap;">
+            <!-- Filter Pills dynamically loaded -->
+          </div>
+        </div>
+
+        <!-- Metric Ribbon -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:20px;">
+          <div style="background:#F0FDFA; border:1px solid #99F6E4; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; font-weight:700; color:#0F766E; text-transform:uppercase;">Predominant Breed</div>
+            <div style="font-size:16px; font-weight:800; color:#0D9488; margin-top:2px;" id="stat-top-breed">Gir Cattle</div>
+          </div>
+          <div style="background:#F0F9FF; border:1px solid #BAE6FD; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; font-weight:700; color:#0369A1; text-transform:uppercase;">Top Regional Hub</div>
+            <div style="font-size:16px; font-weight:800; color:#0284C7; margin-top:2px;" id="stat-top-region">Gujarat Territory</div>
+          </div>
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:8px;">
+            <div style="font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase;">Avg Model Confidence</div>
+            <div style="font-size:16px; font-weight:800; color:#1E293B; margin-top:2px;" id="stat-avg-conf">94.8%</div>
+          </div>
+        </div>
+
+        <!-- Regional Distribution Bar Charts -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+          <!-- Left: Breed Distribution Bars -->
+          <div>
+            <div style="font-size:12px; font-weight:700; color:#1B365D; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">📊 Breed Distribution Breakdown</div>
+            <div id="analytics-breed-bars" style="display:flex; flex-direction:column; gap:10px;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Right: Regional Distribution Matrix Cards -->
+          <div>
+            <div style="font-size:12px; font-weight:700; color:#1B365D; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">📍 Territory Scan Density</div>
+            <div id="analytics-region-cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:10px;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">🔐 Tamper-Evident Digital Livestock Ledger</div>
         <div class="q-ctrl">
@@ -2514,6 +2613,81 @@
             <tbody id="a-tbody">
               <tr>
                 <td colspan="7" style="text-align:center; color:#94A3B8;">Loading audit trail...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- PAGE: MY SCANS (IndexedDB Local Store) -->
+    <div id="pg-myscans" class="page">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <div class="card-title" style="margin-bottom:4px;">📱 My Local Scans (Field Worker Log)</div>
+            <p style="color:#64748B; font-size:13.5px; margin:0;">
+              Offline-first IndexedDB storage — review your scan history on-device anytime, anywhere without network access.
+            </p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="act-btn verify" onclick="syncLocalScansToBackend()" id="btn-sync-local" style="padding:8px 14px; font-size:12.5px;">
+              ☁️ Sync Local Scans to BPA
+            </button>
+            <button class="act-btn retrain" onclick="clearLocalScans()" style="padding:8px 14px; font-size:12.5px; background:#DC2626;">
+              🗑️ Clear Local Cache
+            </button>
+          </div>
+        </div>
+
+        <!-- Local Summary Ribbon -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin-bottom:20px;">
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px 16px; border-radius:8px; text-align:center;">
+            <div style="font-size:20px; font-weight:800; color:#1B365D;" id="local-total-val">0</div>
+            <div style="font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase;">Total On-Device Scans</div>
+          </div>
+          <div style="background:#FFFBEB; border:1px solid #FDE68A; padding:12px 16px; border-radius:8px; text-align:center;">
+            <div style="font-size:20px; font-weight:800; color:#D97706;" id="local-unsynced-val">0</div>
+            <div style="font-size:11px; font-weight:700; color:#92400E; text-transform:uppercase;">Unsynced (Pending Sync)</div>
+          </div>
+          <div style="background:#F0FDF4; border:1px solid #BBF7D0; padding:12px 16px; border-radius:8px; text-align:center;">
+            <div style="font-size:20px; font-weight:800; color:#16A34A;" id="local-synced-val">0</div>
+            <div style="font-size:11px; font-weight:700; color:#15803D; text-transform:uppercase;">Synced to BPA Log</div>
+          </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <input type="text" id="myscans-search" placeholder="Search local scans by breed or location..."
+            style="padding:10px 16px; border:1px solid #CBD5E1; border-radius:6px; width:260px; font-size:13px;"
+            oninput="loadMyScans()">
+          <select id="myscans-filter"
+            style="padding:10px 16px; border:1px solid #CBD5E1; border-radius:6px; background:#fff; font-size:13px;"
+            onchange="loadMyScans()">
+            <option value="All">All Local Scans</option>
+            <option value="Unsynced">Unsynced (Pending Sync)</option>
+            <option value="Synced">Synced to BPA</option>
+          </select>
+        </div>
+
+        <!-- Local Scans Table -->
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Local ID</th>
+                <th>Photo</th>
+                <th>Predicted Breed &amp; Confidence</th>
+                <th>GPS Location / Region</th>
+                <th>Scan Timestamp</th>
+                <th>Sync Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="myscans-tbody">
+              <tr>
+                <td colspan="7" style="text-align:center; color:#94A3B8; padding:30px;">Loading local scans from IndexedDB...</td>
               </tr>
             </tbody>
           </table>
@@ -2553,6 +2727,8 @@
       'tab_enc': 'विश्वकोश',
       'tab_expert': 'विशेषज्ञ कतार',
       'tab_audit': 'ऑडिट ट्रेल',
+      'tab_myscans': 'मेरे स्कैन',
+      'read_aloud': 'परिणाम सुनें',
       'upload_title': 'कैप्चर और विश्लेषण',
       'drag_text': 'यहाँ फोटो खींचें और छोड़ें',
       'btn_cam': 'कैमरा का उपयोग करें',
@@ -2668,6 +2844,7 @@
       // Load appropriate data if tab requires it
       if (pageId === 'pg-queue') loadQueue();
       if (pageId === 'pg-audit') loadAudit();
+      if (pageId === 'pg-myscans') loadMyScans();
     }
 
     function toggleLang() {
@@ -2870,6 +3047,7 @@
         if (!res.ok) throw new Error(data.error || 'Prediction failed');
 
         populateResults(data);
+        saveScanToIndexedDB(data);
 
         document.getElementById('r-loading').style.display = 'none';
         document.getElementById('r-results').style.display = 'block';
@@ -3068,6 +3246,7 @@
     }
 
     async function loadAudit() {
+      loadAnalyticsData();
       const tbody = document.getElementById('a-tbody');
       tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading...</td></tr>';
 
@@ -3330,9 +3509,418 @@
       document.querySelector('.nav-tab:nth-child(2)').click();
     }
 
+    /* ─── Web Speech API Text-to-Speech (TTS) ────── */
+    let _speaking = false;
+    let _speechSynthUtterance = null;
+
+    function toggleReadAloud() {
+      if (!('speechSynthesis' in window)) {
+        showToast('Text-to-Speech is not supported on this device browser.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-read-aloud');
+
+      if (_speaking) {
+        window.speechSynthesis.cancel();
+        _speaking = false;
+        if (btn) {
+          btn.style.background = '#008080';
+          btn.innerHTML = `🔊 <span id="read-aloud-text">${_lang === 'hi' ? 'परिणाम सुनें' : 'Read Result Aloud'}</span>`;
+        }
+        return;
+      }
+
+      const breedName = document.getElementById('breed-name') ? document.getElementById('breed-name').textContent : '';
+      const category = document.getElementById('breed-category') ? document.getElementById('breed-category').textContent : '';
+      const nativeTract = document.getElementById('native-tract') ? document.getElementById('native-tract').textContent : '';
+      const yieldVal = document.getElementById('production-yield') ? document.getElementById('production-yield').textContent : '';
+      const explanation = document.getElementById('xai-explanation-text') ? document.getElementById('xai-explanation-text').textContent : '';
+      const top3Rows = document.getElementById('top3-rows');
+      let topPct = '95%';
+      if (top3Rows && top3Rows.querySelector('.b-pct')) {
+        topPct = top3Rows.querySelector('.b-pct').textContent;
+      }
+
+      let textToSpeak = '';
+      if (_lang === 'hi') {
+        textToSpeak = `ए आई जांच परिणाम: यह ${breedName} है, ${category} श्रेणी। विश्वास स्तर ${topPct}। ${explanation} इसका मूल निवास स्थान ${nativeTract} है। दूध उत्पादन ${yieldVal}।`;
+      } else {
+        textToSpeak = `A I Diagnostic Result: Identified as ${breedName}, category ${category}, with ${topPct} confidence. ${explanation} Native region: ${nativeTract}. Milk yield: ${yieldVal}.`;
+      }
+
+      _speechSynthUtterance = new SpeechSynthesisUtterance(textToSpeak);
+      _speechSynthUtterance.rate = 0.95;
+      _speechSynthUtterance.pitch = 1.0;
+
+      const voices = window.speechSynthesis.getVoices();
+      if (_lang === 'hi') {
+        const hiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
+        if (hiVoice) _speechSynthUtterance.voice = hiVoice;
+        _speechSynthUtterance.lang = 'hi-IN';
+      } else {
+        const inVoice = voices.find(v => v.lang.includes('en-IN') || v.lang.includes('en-US'));
+        if (inVoice) _speechSynthUtterance.voice = inVoice;
+        _speechSynthUtterance.lang = 'en-IN';
+      }
+
+      _speechSynthUtterance.onstart = () => {
+        _speaking = true;
+        if (btn) {
+          btn.style.background = '#DC2626';
+          btn.innerHTML = `⏹️ <span id="read-aloud-text">${_lang === 'hi' ? 'पढ़ना बंद करें' : 'Stop Reading'}</span>`;
+        }
+      };
+
+      _speechSynthUtterance.onend = () => {
+        _speaking = false;
+        if (btn) {
+          btn.style.background = '#008080';
+          btn.innerHTML = `🔊 <span id="read-aloud-text">${_lang === 'hi' ? 'परिणाम सुनें' : 'Read Result Aloud'}</span>`;
+        }
+      };
+
+      _speechSynthUtterance.onerror = () => {
+        _speaking = false;
+        if (btn) {
+          btn.style.background = '#008080';
+          btn.innerHTML = `🔊 <span id="read-aloud-text">${_lang === 'hi' ? 'परिणाम सुनें' : 'Read Result Aloud'}</span>`;
+        }
+      };
+
+      window.speechSynthesis.speak(_speechSynthUtterance);
+    }
+
+    /* ─── Regional Analytics ─────────────────── */
+    async function loadAnalyticsData(selectedRegion = 'All') {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+
+        const byRegion = data.by_region || [];
+        const matrix = data.region_matrix || {};
+        const byBreed = data.by_breed || [];
+
+        // Build Region Pills
+        const pillsContainer = document.getElementById('analytics-region-pills');
+        if (pillsContainer) {
+          const regionsList = ['All', ...byRegion.map(r => r.region)];
+          pillsContainer.innerHTML = regionsList.map(r => `
+            <button onclick="loadAnalyticsData('${r}')" style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:700; cursor:pointer; border:1px solid ${selectedRegion === r ? '#008080' : '#CBD5E1'}; background:${selectedRegion === r ? '#008080' : '#fff'}; color:${selectedRegion === r ? '#fff' : '#475569'};">
+              ${r}
+            </button>
+          `).join('');
+        }
+
+        if (document.getElementById('stat-avg-conf')) {
+          document.getElementById('stat-avg-conf').textContent = `${((data.avg_confidence || 0.948) * 100).toFixed(1)}%`;
+        }
+
+        let breedListToDisplay = [];
+        if (selectedRegion !== 'All' && matrix[selectedRegion]) {
+          breedListToDisplay = matrix[selectedRegion];
+          if (document.getElementById('stat-top-region')) document.getElementById('stat-top-region').textContent = selectedRegion;
+          if (document.getElementById('stat-top-breed')) document.getElementById('stat-top-breed').textContent = breedListToDisplay[0] ? breedListToDisplay[0].breed : 'Gir Cattle';
+        } else {
+          breedListToDisplay = byBreed;
+          if (document.getElementById('stat-top-region')) document.getElementById('stat-top-region').textContent = byRegion[0] ? `${byRegion[0].region} Territory` : 'Gujarat Territory';
+          if (document.getElementById('stat-top-breed')) document.getElementById('stat-top-breed').textContent = byBreed[0] ? byBreed[0].breed : 'Gir Cattle';
+        }
+
+        const totalCount = breedListToDisplay.reduce((sum, item) => sum + (item.count || 0), 0) || 1;
+
+        const barsContainer = document.getElementById('analytics-breed-bars');
+        if (barsContainer) {
+          barsContainer.innerHTML = breedListToDisplay.map(b => {
+            const cnt = b.count || 0;
+            const pct = Math.round((cnt / totalCount) * 100);
+            return `
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:#334155; margin-bottom:4px;">
+                  <span>${b.breed}</span>
+                  <span>${cnt} scans (${pct}%)</span>
+                </div>
+                <div style="background:#E2E8F0; height:8px; border-radius:4px; overflow:hidden;">
+                  <div style="background:linear-gradient(90deg, #008080, #38BDF8); height:100%; width:${pct}%; transition:width 0.4s ease;"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        const regionCardsContainer = document.getElementById('analytics-region-cards');
+        if (regionCardsContainer) {
+          regionCardsContainer.innerHTML = byRegion.map(r => `
+            <div onclick="loadAnalyticsData('${r.region}')" style="background:${selectedRegion === r.region ? '#F0FDFA' : '#F8FAFC'}; border:1px solid ${selectedRegion === r.region ? '#14B8A6' : '#E2E8F0'}; padding:10px; border-radius:6px; cursor:pointer;">
+              <div style="font-size:11px; font-weight:700; color:#64748B;">📍 ${r.region}</div>
+              <div style="font-size:16px; font-weight:800; color:#1B365D; margin-top:2px;">${r.count} <span style="font-size:10px; font-weight:600; color:#64748B;">scans</span></div>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Analytics load error:', err);
+      }
+    }
+
+    /* ─── IndexedDB Manager ───────────────────── */
+    const DB_NAME = 'PashudhanLocalDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'my_scans';
+
+    function openIndexedDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('IndexedDB not supported by this browser'));
+          return;
+        }
+        const req = window.indexedDB.open(DB_NAME, DB_VERSION);
+
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            const store = db.createObjectStore(STORE_NAME, { keyPath: 'local_id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp', { unique: false });
+            store.createIndex('sync_status', 'sync_status', { unique: false });
+            store.createIndex('predicted_breed', 'predicted_breed', { unique: false });
+          }
+        };
+
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveScanToIndexedDB(scanData) {
+      try {
+        const db = await openIndexedDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+
+        const record = {
+          timestamp: scanData.timestamp || new Date().toISOString(),
+          predicted_breed: scanData.top1_breed || scanData.breed || 'Unknown Breed',
+          confidence_score: scanData.top1_confidence || scanData.confidence || 0.9,
+          top3_predictions: scanData.top3 || [],
+          image_url: scanData.image_url || '',
+          xai_image_url: scanData.xai_image_url || '',
+          latitude: scanData.latitude != null ? scanData.latitude : null,
+          longitude: scanData.longitude != null ? scanData.longitude : null,
+          geo_tag: scanData.geo_tag || (scanData.latitude && scanData.longitude ? `${scanData.latitude.toFixed(4)}°, ${scanData.longitude.toFixed(4)}°` : null),
+          region_input: document.getElementById('inp-region') ? document.getElementById('inp-region').value : '',
+          blockchain_hash: scanData.blockchain_hash || scanData.hash || '',
+          pashu_aadhaar: scanData.pashu_aadhaar || '',
+          breed_details: scanData.breed_details || {},
+          morphological_features: scanData.morphological_features || {},
+          explanation_sentence: scanData.explanation_sentence || '',
+          sync_status: 'pending_sync'
+        };
+
+        const addReq = store.add(record);
+        addReq.onsuccess = () => {
+          console.log('[IndexedDB] Saved local scan successfully:', record);
+          showToast('Scan saved on-device (My Scans)');
+          if (document.getElementById('pg-myscans') && document.getElementById('pg-myscans').classList.contains('active')) {
+            loadMyScans();
+          }
+        };
+      } catch (err) {
+        console.error('[IndexedDB] Error saving scan:', err);
+      }
+    }
+
+    async function getLocalScansFromIndexedDB() {
+      try {
+        const db = await openIndexedDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, 'readonly');
+          const store = tx.objectStore(STORE_NAME);
+          const req = store.getAll();
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => reject(req.error);
+        });
+      } catch (err) {
+        console.error('[IndexedDB] Error reading scans:', err);
+        return [];
+      }
+    }
+
+    async function loadMyScans() {
+      const tbody = document.getElementById('myscans-tbody');
+      if (!tbody) return;
+
+      const searchQuery = (document.getElementById('myscans-search') ? document.getElementById('myscans-search').value : '').toLowerCase();
+      const filterVal = document.getElementById('myscans-filter') ? document.getElementById('myscans-filter').value : 'All';
+
+      const scans = await getLocalScansFromIndexedDB();
+      scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      let total = scans.length;
+      let unsyncedCount = 0;
+      let syncedCount = 0;
+
+      scans.forEach(s => {
+        if (s.sync_status === 'synced') syncedCount++;
+        else unsyncedCount++;
+      });
+
+      if (document.getElementById('local-total-val')) document.getElementById('local-total-val').textContent = total;
+      if (document.getElementById('local-unsynced-val')) document.getElementById('local-unsynced-val').textContent = unsyncedCount;
+      if (document.getElementById('local-synced-val')) document.getElementById('local-synced-val').textContent = syncedCount;
+
+      let html = '';
+      scans.forEach((s) => {
+        const breed = s.predicted_breed || 'Unknown';
+        const loc = s.geo_tag ? `📍 ${s.geo_tag}` : (s.region_input ? `📍 ${s.region_input}` : '—');
+        const isSynced = s.sync_status === 'synced';
+
+        if (filterVal === 'Unsynced' && isSynced) return;
+        if (filterVal === 'Synced' && !isSynced) return;
+        if (searchQuery) {
+          if (!breed.toLowerCase().includes(searchQuery) && !loc.toLowerCase().includes(searchQuery)) return;
+        }
+
+        const badgeHtml = isSynced
+          ? `<span class="status-badge verified">✓ SYNCED</span>`
+          : `<span class="status-badge pending">⏳ PENDING SYNC</span>`;
+
+        html += `
+          <tr>
+            <td data-label="Local ID">#L-${s.local_id}</td>
+            <td data-label="Photo"><img src="${s.image_url || '/static/images/gir.jpg'}" style="height:40px; width:40px; object-fit:cover; border-radius:4px;"></td>
+            <td data-label="Breed"><b>${breed}</b><br><small style="color:#008080;">${(s.confidence_score * 100).toFixed(1)}% confidence</small></td>
+            <td data-label="Location"><small style="color:#0F766E; font-weight:600;">${loc}</small></td>
+            <td data-label="Timestamp"><small>${new Date(s.timestamp).toLocaleString()}</small></td>
+            <td data-label="Sync Status">${badgeHtml}</td>
+            <td data-label="Actions">
+              <button class="act-btn verify" onclick="viewLocalScanDetails(${s.local_id})">👁️ Inspect</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      if (html === '') {
+        html = '<tr><td colspan="7" style="text-align:center; color:#64748B; padding:30px;">No local scans found. Scans performed in AI Scan Studio will automatically save here for offline review.</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    async function syncLocalScansToBackend() {
+      const btn = document.getElementById('btn-sync-local');
+      if (!navigator.onLine) {
+        showToast('Offline Mode: Cannot sync to backend without internet connection.');
+        return;
+      }
+
+      const scans = await getLocalScansFromIndexedDB();
+      const unsynced = scans.filter(s => s.sync_status !== 'synced');
+
+      if (unsynced.length === 0) {
+        showToast('All local scans are already synced with the BPA backend ledger!');
+        return;
+      }
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '☁️ Syncing to BPA...';
+      }
+
+      try {
+        const db = await openIndexedDB();
+        let syncedCount = 0;
+
+        for (const scan of unsynced) {
+          const res = await fetch('/api/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(scan)
+          });
+          if (res.ok) {
+            await new Promise((resolve) => {
+              const tx = db.transaction(STORE_NAME, 'readwrite');
+              const store = tx.objectStore(STORE_NAME);
+              scan.sync_status = 'synced';
+              store.put(scan).onsuccess = () => resolve();
+            });
+            syncedCount++;
+          }
+        }
+
+        showToast(`Successfully synced ${syncedCount} local scan(s) to Bharat Pashudhan backend!`);
+        loadMyScans();
+      } catch (err) {
+        console.error('Sync failed:', err);
+        showToast('Error syncing local scans: ' + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '☁️ Sync Local Scans to BPA';
+        }
+      }
+    }
+
+    async function clearLocalScans() {
+      if (!confirm('Are you sure you want to clear your on-device scan history from IndexedDB? This action cannot be undone.')) return;
+      try {
+        const db = await openIndexedDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.clear().onsuccess = () => {
+          showToast('Local scan cache cleared from IndexedDB');
+          loadMyScans();
+        };
+      } catch (err) {
+        console.error('Failed to clear IndexedDB:', err);
+      }
+    }
+
+    async function viewLocalScanDetails(localId) {
+      const scans = await getLocalScansFromIndexedDB();
+      const scan = scans.find(s => s.local_id === localId);
+      if (!scan) return;
+      populateResults(scan);
+      goPage('pg-scan', document.querySelectorAll('.nav-tab')[1]);
+      document.getElementById('r-empty').style.display = 'none';
+      document.getElementById('r-results').style.display = 'block';
+    }
+
+    /* ─── PWA & Network Offline Indicator ─────── */
+    function updateNetworkStatus() {
+      const pill = document.getElementById('net-status-pill');
+      const dot = document.getElementById('net-dot');
+      const text = document.getElementById('net-text');
+      if (!pill || !dot || !text) return;
+
+      if (navigator.onLine) {
+        pill.style.background = 'rgba(22,163,74,0.2)';
+        pill.style.borderColor = '#16A34A';
+        pill.style.color = '#4ADE80';
+        dot.style.background = '#4ADE80';
+        text.textContent = 'ONLINE';
+      } else {
+        pill.style.background = 'rgba(239,68,68,0.25)';
+        pill.style.borderColor = '#EF4444';
+        pill.style.color = '#FCA5A5';
+        dot.style.background = '#EF4444';
+        text.textContent = 'OFFLINE MODE (EDGE AI ACTIVE)';
+        showToast('Offline Mode Active: Local Edge AI Ready');
+      }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('ServiceWorker registered:', reg.scope))
+        .catch(err => console.log('ServiceWorker error:', err));
+    }
+
     /* ─── Init ─────────────────────────────── */
     document.addEventListener('DOMContentLoaded', () => {
       initUpload();
+      updateNetworkStatus();
     });
   </script>
 

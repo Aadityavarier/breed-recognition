@@ -141,6 +141,14 @@ def add_header(response):
     response.headers['Expires'] = '-1'
     return response
 
+@app.route("/sw.js")
+def service_worker():
+    return send_from_directory(app.static_folder, "sw.js", mimetype="application/javascript")
+
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory(app.static_folder, "manifest.json", mimetype="application/json")
+
 @app.route("/")
 def index():
     """Serve the GovTech Dashboard SPA."""
