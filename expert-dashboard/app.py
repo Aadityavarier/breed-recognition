@@ -50,7 +50,7 @@ import hashlib
 from datetime import datetime
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template, request, send_from_directory
+from flask import Flask, jsonify, render_template, request, send_from_directory, session
 
 # ---------------------------------------------------------------------------
 # Dynamic path resolution — all paths relative to THIS file
@@ -92,6 +92,7 @@ app = Flask(
     static_url_path="/static"
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024   # 16 MB upload limit
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "bharat_pashupehchan_expert_auth_secret_2026")
 
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -499,7 +500,15 @@ def update_scan_status():
     """
     Update a scan's status.
     valid: 'pending' | 'verified' | 'flagged_for_expert' | 'retraining_queue'
+    Requires registered Veterinary Expert session.
     """
+    expert = session.get("expert")
+    if not expert:
+        return jsonify({
+            "error": "UNAUTHORIZED: Only authenticated Veterinary Experts can modify scan verification status.",
+            "code": "AUTH_REQUIRED"
+        }), 401
+
     data = request.get_json(silent=True) or {}
     scan_id = data.get("scan_id")
     new_status = data.get("status")

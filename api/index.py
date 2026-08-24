@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import hashlib
-from flask import Flask, request, jsonify, send_file, render_template_string
+from flask import Flask, request, jsonify, send_file, render_template_string, session
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
@@ -32,6 +32,32 @@ for src_name, dst_name in asset_copies.items():
             pass
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "bharat_pashupehchan_expert_auth_secret_2026")
+
+# ── PRODUCTION HARDENING NOTE ──────────────────────────────────────────────
+# DEMO SECURITY GATE ONLY:
+# 1. Passwords in this demo are compared in plain text. Production must use
+#    Argon2id / bcrypt salted password hashing (e.g. werkzeug.security.generate_password_hash).
+# 2. Session secret uses a default fallback key. Production must inject a high-entropy secret.
+# 3. Vet license IDs are mock values. Production should integrate with the National
+#    Veterinary Council Registry API for real-time practitioner verification.
+# 4. API endpoints should enforce IP-based rate limiting (Flask-Limiter) & CSRF tokens.
+# ───────────────────────────────────────────────────────────────────────────
+
+DEMO_VET_ACCOUNTS = {
+    "dr_sharma": {
+        "password": "vet123",
+        "name": "Dr. Rajesh Sharma",
+        "license_id": "VET-GJ-2018-842",
+        "designation": "Senior Veterinary Officer (Saurashtra Zone)"
+    },
+    "dr_patel": {
+        "password": "vet456",
+        "name": "Dr. Ananya Patel",
+        "license_id": "VET-PB-2020-519",
+        "designation": "Livestock Geneticist (Punjab Dairy)"
+    }
+}
 
 # Mock 1x1 transparent/colored base64 image placeholders for Grad-CAM fallback
 GRAD_CAM_ORIGINAL = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
@@ -1106,7 +1132,58 @@ def audit():
     })
 
 
-# ── 5. Verification & Sync Action Routes ──────────────────────────────────────
+# ── 5. Veterinary Expert Auth & Verification Action Routes ───────────────────
+@app.route("/api/login", methods=["POST", "GET"])
+@app.route("/login",     methods=["POST", "GET"])
+def login():
+    if request.method == "GET":
+        expert = session.get("expert")
+        if expert:
+            return jsonify({"success": True, "authenticated": True, "expert": expert})
+        return jsonify({"success": False, "authenticated": False, "message": "POST parameters 'username' and 'password' required for login."})
+
+    data = request.get_json(silent=True) or request.form or {}
+    username = data.get("username", "").strip().lower()
+    password = data.get("password", "").strip()
+
+    account = DEMO_VET_ACCOUNTS.get(username)
+    if account and account["password"] == password:
+        session["expert"] = {
+            "username":    username,
+            "name":        account["name"],
+            "license_id":  account["license_id"],
+            "designation": account["designation"],
+            "logged_in_at":time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        return jsonify({
+            "success": True,
+            "authenticated": True,
+            "message": f"Authenticated successfully as {account['name']} (License #{account['license_id']})",
+            "expert": session["expert"]
+        })
+
+    return jsonify({
+        "success": False,
+        "authenticated": False,
+        "error": "Invalid Veterinary credentials. Check username and password."
+    }), 401
+
+
+@app.route("/api/logout", methods=["POST", "GET"])
+@app.route("/logout",     methods=["POST", "GET"])
+def logout():
+    session.pop("expert", None)
+    return jsonify({"success": True, "authenticated": False, "message": "Logged out successfully."})
+
+
+@app.route("/api/me", methods=["GET"])
+def auth_me():
+    expert = session.get("expert")
+    if expert:
+        return jsonify({"authenticated": True, "expert": expert})
+    return jsonify({"authenticated": False, "expert": None})
+
+
 @app.route("/api/verify",  methods=["POST", "GET"])
 @app.route("/verify",      methods=["POST", "GET"])
 @app.route("/api/sync",    methods=["POST", "GET"])
@@ -1114,7 +1191,40 @@ def audit():
 @app.route("/api/retrain", methods=["POST", "GET"])
 @app.route("/retrain",     methods=["POST", "GET"])
 def verify():
-    return jsonify({"success": True, "message": "Record confirmed and synced to BPA registry."})
+    # Require active Veterinary Expert session
+    expert = session.get("expert")
+    if not expert:
+        return jsonify({
+            "success": False,
+            "authenticated": False,
+            "error": "UNAUTHORIZED: Veterinary Expert authentication required to execute verification actions.",
+            "code": "AUTH_REQUIRED"
+        }), 401
+
+    data = request.get_json(silent=True) or request.form or {}
+    scan_id = data.get("scan_id") or data.get("id") or "SCN-9042"
+    verified_breed = data.get("breed") or data.get("verified_breed") or "Gir Cattle"
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+    # Cryptographically chain verifier identity into SHA-256 hash
+    verifier_name = expert["name"]
+    verifier_license = expert["license_id"]
+    raw_hash_str = f"{scan_id}:{verified_breed}:{verifier_name}:{verifier_license}:{timestamp}"
+    record_hash = hashlib.sha256(raw_hash_str.encode()).hexdigest()
+
+    return jsonify({
+        "success": True,
+        "scan_id": scan_id,
+        "verified_breed": verified_breed,
+        "status": "EXPERT_VERIFIED",
+        "verified_by_name": verifier_name,
+        "verified_by_license_id": verifier_license,
+        "verifier_info": f"Verified by {verifier_name} (License #{verifier_license})",
+        "blockchain_hash": record_hash,
+        "record_hash": record_hash,
+        "timestamp": timestamp,
+        "message": f"Record {scan_id} verified by {verifier_name} (License #{verifier_license}) and cryptographically chained."
+    })
 
 @app.route("/api/stats", methods=["GET"])
 @app.route("/stats",     methods=["GET"])

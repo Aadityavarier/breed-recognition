@@ -1923,7 +1923,14 @@
           </div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:16px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <!-- Expert Login Status Button -->
+          <div id="vet-auth-container">
+            <button id="vet-auth-btn" onclick="openVetAuthModal()" style="background:#0F766E; border:none; color:#FFFFFF; padding:6px 14px; border-radius:99px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all 0.2s;" title="Veterinary Expert Authentication">
+              <span>🔒</span><span id="vet-auth-label">Expert Login</span>
+            </button>
+          </div>
+
           <!-- Language Selector Switch -->
           <button id="lang-toggle" onclick="toggleLang()" style="background:#F1F5F9; border:1px solid #CBD5E1; color:#1E293B; padding:6px 16px; border-radius:99px; font-size:12px; font-weight:700; cursor:pointer;" title="Switch Language / भाषा बदलें">
             <span class="opt on">EN</span><span style="opacity:0.4"> | </span><span class="opt">HI</span>
@@ -2339,6 +2346,7 @@
                   <div style="font-size: 11px; font-weight: 700; margin-bottom: 2px;">Pashu Aadhaar UID: <span
                       id="audit-uid" style="color:#0284C7;">—</span></div>
                   <div id="audit-geo-tag" style="font-size: 11px; font-weight: 700; margin-bottom: 2px; color:#0F766E; display:none;">📍 Geo-Tag: <span id="audit-geo-val">—</span></div>
+                  <div id="audit-verifier-tag" style="font-size: 11px; font-weight: 700; margin-bottom: 2px; color:#15803D; display:none;">👩‍⚕️ Verifier: <span id="audit-verifier-val">—</span></div>
                   <div class="hash">Record Hash (SHA-256): <span id="audit-hash">0x000...</span></div>
                 </div>
               </div>
@@ -2409,6 +2417,16 @@
     <div id="pg-queue" class="page">
       <div class="card">
         <div class="card-title">⚠️ Expert Verification Queue</div>
+        
+        <!-- Auth Status Banner for Queue -->
+        <div id="vet-queue-auth-banner" style="background:#FFFBEB; border:1px solid #FCD34D; color:#B45309; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; font-size:13px; font-weight:600;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:16px;">⚠️</span>
+            <span>READ-ONLY QUEUE: You are not logged in as a Veterinary Expert. Verification actions (Approve/Reclassify) require authentication.</span>
+          </div>
+          <button onclick="openVetAuthModal()" style="background:#B45309; color:#FFFFFF; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">🔑 Log In to Verify</button>
+        </div>
+
         <div class="q-ctrl">
           <p style="color:#475569; font-size:14px;">Review scans flagged by the AI due to low confidence (&lt;70%) or
             suspected rare breeds.</p>
@@ -2606,6 +2624,64 @@
       Ministry of Fisheries, Animal Husbandry &amp; Dairying, Government of India</div>
     <div style="margin-bottom: 12px;">This is a demonstration platform and not an official government service</div>
   </footer>
+
+  <!-- ── VETERINARY EXPERT AUTHENTICATION MODAL ────────────────────────────── -->
+  <div id="vet-auth-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#FFFFFF; border-radius:12px; width:100%; max-width:440px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); overflow:hidden; border:1px solid #E2E8F0;">
+      <div style="background:#1B365D; color:#FFFFFF; padding:18px 24px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">👩‍⚕️</span>
+          <div>
+            <div style="font-size:16px; font-weight:800;">Veterinary Expert Login</div>
+            <div style="font-size:11px; color:#94A3B8;">Bharat Pashu-Pehchaan Governance Gate</div>
+          </div>
+        </div>
+        <button onclick="closeVetAuthModal()" style="background:none; border:none; color:#94A3B8; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+      
+      <div style="padding:24px;">
+        <p style="font-size:13px; color:#64748B; margin-bottom:16px;">Please log in with registered Veterinary Officer credentials to perform verification actions and cryptographically sign breed records.</p>
+        
+        <!-- Quick Demo Login Buttons -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; padding:12px; border-radius:8px; margin-bottom:20px;">
+          <div style="font-size:11px; font-weight:700; color:#475569; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">⚡ Quick Demo Accounts</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button type="button" onclick="quickLogin('dr_sharma', 'vet123')" style="background:#FFFFFF; border:1px solid #CBD5E1; color:#0F172A; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:600; text-align:left; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700; color:#1B365D;">Dr. Rajesh Sharma</div>
+                <div style="font-size:10px; color:#64748B;">Senior Vet Officer • License #VET-GJ-2018-842</div>
+              </div>
+              <span style="font-size:11px; font-weight:700; color:#0F766E;">Login &rarr;</span>
+            </button>
+
+            <button type="button" onclick="quickLogin('dr_patel', 'vet456')" style="background:#FFFFFF; border:1px solid #CBD5E1; color:#0F172A; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:600; text-align:left; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700; color:#1B365D;">Dr. Ananya Patel</div>
+                <div style="font-size:10px; color:#64748B;">Livestock Geneticist • License #VET-PB-2020-519</div>
+              </div>
+              <span style="font-size:11px; font-weight:700; color:#0F766E;">Login &rarr;</span>
+            </button>
+          </div>
+        </div>
+
+        <form id="vet-login-form" onsubmit="handleVetLogin(event)">
+          <div style="margin-bottom:14px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:4px;">Username / Council Username</label>
+            <input type="text" id="vet-username" required placeholder="e.g. dr_sharma" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:6px; font-size:13px; box-sizing:border-box;">
+          </div>
+          
+          <div style="margin-bottom:20px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:4px;">Password</label>
+            <input type="password" id="vet-password" required placeholder="••••••••" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:6px; font-size:13px; box-sizing:border-box;">
+          </div>
+          
+          <div id="vet-login-error" style="display:none; background:#FEF2F2; border:1px solid #FCA5A5; color:#991B1B; padding:8px 12px; border-radius:6px; font-size:12px; margin-bottom:16px;"></div>
+
+          <button type="submit" style="width:100%; background:#1B365D; color:#FFFFFF; border:none; padding:10px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1);">Verify Credentials &amp; Authenticate</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <script>
     'use strict';
@@ -3846,10 +3922,140 @@
         .catch(err => console.log('ServiceWorker error:', err));
     }
 
+    /* ─── Veterinary Expert Authentication ─── */
+    let _currentExpert = null;
+
+    async function checkVetAuth() {
+      try {
+        const res = await fetch('/api/me');
+        const data = await res.json();
+        if (data.authenticated && data.expert) {
+          _currentExpert = data.expert;
+          renderVetAuthUI(true);
+        } else {
+          _currentExpert = null;
+          renderVetAuthUI(false);
+        }
+      } catch (e) {
+        console.warn('Auth check skipped:', e);
+        renderVetAuthUI(false);
+      }
+    }
+
+    function renderVetAuthUI(isLoggedIn) {
+      const btnLabel = document.getElementById('vet-auth-label');
+      const btn = document.getElementById('vet-auth-btn');
+      const banner = document.getElementById('vet-queue-auth-banner');
+
+      if (isLoggedIn && _currentExpert) {
+        if (btnLabel) btnLabel.textContent = `${_currentExpert.name} (${_currentExpert.license_id})`;
+        if (btn) {
+          btn.style.background = '#15803D';
+          btn.onclick = logoutVet;
+          btn.title = `Logged in as ${_currentExpert.name}. Click to logout.`;
+          btn.innerHTML = `<span>👩‍⚕️</span><span>${_currentExpert.name}</span><span style="opacity:0.7;font-size:10px;">(${_currentExpert.license_id})</span><span style="margin-left:4px;opacity:0.9;background:rgba(0,0,0,0.2);padding:2px 6px;border-radius:4px;">Logout</span>`;
+        }
+        if (banner) {
+          banner.style.background = '#F0FDF4';
+          banner.style.borderColor = '#BBF7D0';
+          banner.style.color = '#15803D';
+          banner.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;">✅</span>
+              <span>AUTHENTICATED EXPERT: <b>${_currentExpert.name}</b> (${_currentExpert.designation} • License #${_currentExpert.license_id})</span>
+            </div>
+            <button onclick="logoutVet()" style="background:#15803D; color:#FFFFFF; border:none; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">Logout</button>
+          `;
+        }
+      } else {
+        if (btnLabel) btnLabel.textContent = 'Expert Login';
+        if (btn) {
+          btn.style.background = '#0F766E';
+          btn.onclick = openVetAuthModal;
+          btn.title = 'Veterinary Expert Authentication';
+          btn.innerHTML = `<span>🔒</span><span>Expert Login</span>`;
+        }
+        if (banner) {
+          banner.style.background = '#FFFBEB';
+          banner.style.borderColor = '#FCD34D';
+          banner.style.color = '#B45309';
+          banner.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;">⚠️</span>
+              <span>READ-ONLY QUEUE: You are not logged in as a Veterinary Expert. Verification actions (Approve/Reclassify) require authentication.</span>
+            </div>
+            <button onclick="openVetAuthModal()" style="background:#B45309; color:#FFFFFF; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">🔑 Log In to Verify</button>
+          `;
+        }
+      }
+    }
+
+    function openVetAuthModal() {
+      const m = document.getElementById('vet-auth-modal');
+      if (m) m.style.display = 'flex';
+      const err = document.getElementById('vet-login-error');
+      if (err) err.style.display = 'none';
+    }
+
+    function closeVetAuthModal() {
+      const m = document.getElementById('vet-auth-modal');
+      if (m) m.style.display = 'none';
+    }
+
+    function quickLogin(username, password) {
+      document.getElementById('vet-username').value = username;
+      document.getElementById('vet-password').value = password;
+      document.getElementById('vet-login-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+
+    async function handleVetLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('vet-username').value.trim();
+      const p = document.getElementById('vet-password').value.trim();
+      const errEl = document.getElementById('vet-login-error');
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (data.success) {
+          closeVetAuthModal();
+          showToast(`Welcome ${data.expert.name}! Expert session active.`);
+          checkVetAuth();
+          loadQueue();
+        } else {
+          if (errEl) {
+            errEl.textContent = data.error || 'Authentication failed.';
+            errEl.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = 'Login network error. Retry.';
+          errEl.style.display = 'block';
+        }
+      }
+    }
+
+    async function logoutVet() {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        showToast('Logged out of Veterinary Expert session.');
+        checkVetAuth();
+        loadQueue();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     /* ─── Init ─────────────────────────────── */
     document.addEventListener('DOMContentLoaded', () => {
       initUpload();
       updateNetworkStatus();
+      checkVetAuth();
     });
   </script>
 
