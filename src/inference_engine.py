@@ -119,41 +119,20 @@ def generate_mock_gradcam(image: Image.Image, output_dir: Path) -> str:
         # Red/orange transparent heatmap color
         draw.ellipse((cx - r_x, cy - r_y, cx + r_x, cy + r_y), fill=(255, 69, 0, 110))
 
-    # Composite over original
-    out_img = Image.alpha_composite(image.convert("RGBA"), heatmap).convert("RGB")
+    # Proper Alpha Composite over original
+    base_img = image.convert("RGBA")
+    out_img = Image.alpha_composite(base_img, heatmap)
     
+    # Add explicit text
+    draw_out = ImageDraw.Draw(out_img)
+    draw_out.text((10, 10), "Sample explainability output — pending trained model", fill=(255, 255, 255, 255))
+    
+    out_img = out_img.convert("RGB")
     filename = f"xai_{uuid.uuid4().hex[:8]}.jpg"
     out_path = output_dir / filename
     out_img.save(out_path, format="JPEG", quality=85)
     return filename
 
-
-def generate_vet_estimates(breed: str, age_input: str) -> dict:
-    """
-    Simulates Veterinary Health & Growth Estimation.
-    """
-    # Deterministic generation based on breed string
-    rng = np.random.default_rng(sum(ord(c) for c in breed))
-    
-    # Basic weight heuristic
-    base_weight = 350
-    if "Buffalo" in breed or breed in ["Murrah", "Jaffrabadi", "Nili_Ravi"]:
-        base_weight = 550
-    elif breed in ["Kankrej", "Gir", "Ongole"]:
-        base_weight = 450
-        
-    estimated_weight = int(rng.normal(base_weight, 50))
-    
-    health_status = "Healthy"
-    # Small chance to simulate an active learning / health flag
-    if rng.random() < 0.15:
-        health_status = "Flagged: Skin lesions / Potential LSD risk"
-        
-    return {
-        "estimated_weight_kg": str(estimated_weight),
-        "health_status": health_status,
-        "age_estimation": age_input if age_input else f"{rng.integers(2, 6)} years"
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -265,6 +244,11 @@ class _MockBackend:
 
 
 def _build_backend():
+    import os
+    if os.environ.get("VERCEL"):
+        logger.info("[Engine] Vercel environment detected. Forcing Mock Mode.")
+        return _MockBackend(), "mock"
+
     for path in _ONNX_CANDIDATES:
         if path.exists():
             try: return _ONNXBackend(path), "onnx"
@@ -301,21 +285,18 @@ def run_inference(
     probabilities = _backend.predict(image, region=region, color=color)
     
     # 2. Multimodal Metadata Fusion (Heuristic)
-    # If the user specified a region, we boost breeds native to that region.
-    # In a real app, this would use the breed_encyclopedia table. 
-    # For speed/isolation here, we do a quick heuristic mock boost.
+    region_boosted = False
     if region:
         region_lower = region.lower()
         for idx, breed_name in BREED_MAP.items():
             b_lower = breed_name.lower()
-            # Simple heuristic: if region name is somewhat related (e.g., Gujarat -> Gir/Kankrej)
             if ("gujarat" in region_lower and b_lower in ["gir", "kankrej"]) or \
                ("punjab" in region_lower and b_lower in ["sahiwal", "murrah"]) or \
                ("kerala" in region_lower and b_lower in ["vechur", "kasargod"]):
-                # Boost probability significantly
                 probabilities[idx] *= 1.5 
-        # Re-normalize
-        probabilities /= probabilities.sum()
+                region_boosted = True
+        if region_boosted:
+            probabilities /= probabilities.sum()
 
     # 3. Extract Top-3
     top3_idx = np.argsort(probabilities)[::-1][:3]
@@ -335,10 +316,7 @@ def run_inference(
     if xai_output_dir and xai_output_dir.exists():
         xai_image_filename = generate_mock_gradcam(image, xai_output_dir)
 
-    # 5. Generate Veterinary Estimations
-    vet_data = generate_vet_estimates(top1_breed, age)
-
-    # 6. Dynamic Expert Threshold
+    # 5. Dynamic Expert Threshold
     threshold = EXPERT_THRESHOLD
     if top1_breed in _RARE_BREEDS:
         threshold = max(threshold, 0.75)
@@ -353,7 +331,7 @@ def run_inference(
         "backend": BACKEND_TYPE,
         "inference_ms": inference_ms,
         "xai_image_filename": xai_image_filename,
-        "vet_data": vet_data
+        "region_boosted": region_boosted
     }
 
 

@@ -141,7 +141,7 @@ class TestMockInference:
         result = self._run()
         required = {"top1_breed", "top1_confidence", "top3",
                     "needs_expert", "backend", "inference_ms",
-                    "xai_image_filename", "vet_data"}
+                    "xai_image_filename", "region_boosted"}
         missing = required - set(result.keys())
         assert not missing, f"Missing keys in result: {missing}"
 

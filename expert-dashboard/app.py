@@ -41,6 +41,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from data.db import (                                # noqa: E402
     init_db,
     insert_scan,
+    get_latest_hash,
     get_history,
     get_stats,
     get_total_count,
@@ -68,7 +69,11 @@ app = Flask(
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024   # 16 MB upload limit
 
-UPLOAD_FOLDER   = DASHBOARD_DIR / "static" / "uploads"
+if os.environ.get("VERCEL"):
+    UPLOAD_FOLDER = Path("/tmp/uploads")
+else:
+    UPLOAD_FOLDER = DASHBOARD_DIR / "static" / "uploads"
+    
 ALLOWED_EXTS    = {"jpg", "jpeg", "png", "webp", "bmp"}
 
 logging.basicConfig(
@@ -195,11 +200,13 @@ def predict():
         return jsonify({"error": f"Inference error: {str(exc)}"}), 500
 
     # Determine status
-    status = "flagged_for_expert" if result["needs_expert"] else "pending"
+    status = "flagged_for_expert" if result.get("needs_expert", False) else "pending"
 
-    # Cryptographic Hash (Simulated Blockchain)
+    # Tamper-Evident Audit Log (Cryptographic Hash Chaining)
     uid = uuid.uuid4().hex
-    raw_hash_data = f"{uid}_{result['top1_breed']}_{datetime.utcnow().isoformat()}".encode('utf-8')
+    timestamp_iso = datetime.utcnow().isoformat()
+    previous_hash = get_latest_hash()
+    raw_hash_data = f"{previous_hash}_{uid}_{result['top1_breed']}_{timestamp_iso}".encode('utf-8')
     b_hash = "0x" + hashlib.sha256(raw_hash_data).hexdigest()[:40]
 
     # QR Code Passport
@@ -208,14 +215,12 @@ def predict():
     # XAI Path
     xai_rel_path = f"uploads/{result['xai_image_filename']}" if result.get("xai_image_filename") else ""
     
-    # Vet Data
-    vet_data = result.get("vet_data", {})
-    
     # Encyclopedia Data
     enc_list = get_encyclopedia(result["top1_breed"])
     breed_details = enc_list[0] if enc_list else {
         "category": "Unknown", "native_tract": "Unknown", 
-        "avg_milk_yield": "Unknown", "optimal_crossbreeding": "Unknown"
+        "avg_milk_yield": "Unknown", "optimal_crossbreeding": "Unknown",
+        "data_status": "pending", "source_note": ""
     }
 
     # Persist to DB
@@ -227,12 +232,13 @@ def predict():
         region_input        = region,
         age_input           = age,
         color_input         = color,
-        health_status       = vet_data.get("health_status", ""),
-        estimated_weight_kg = vet_data.get("estimated_weight_kg", ""),
+        health_status       = "",  # Not yet implemented
+        estimated_weight_kg = "",  # Not yet implemented
         blockchain_hash     = b_hash,
         qr_code_path        = qr_relative_path,
         notes               = notes,
         status              = status,
+        timestamp           = timestamp_iso,
     )
 
     logger.info(
@@ -246,7 +252,7 @@ def predict():
         "top1_breed":      result["top1_breed"],
         "top1_confidence": result["top1_confidence"],
         "top3":            result["top3"],
-        "needs_expert":    result["needs_expert"],
+        "needs_expert":    result.get("needs_expert", False),
         "status":          status,
         "backend":         result["backend"],
         "inference_ms":    result["inference_ms"],
@@ -254,8 +260,8 @@ def predict():
         "xai_image_url":   f"/static/{xai_rel_path}" if xai_rel_path else "",
         "qr_code_url":     f"/static/{qr_relative_path}" if qr_relative_path else "",
         "blockchain_hash": b_hash,
-        "health_status":   vet_data.get("health_status", ""),
-        "estimated_weight":vet_data.get("estimated_weight_kg", ""),
+        "health_status":   "Not yet implemented",
+        "estimated_weight":"Not yet implemented",
         "timestamp":       datetime.utcnow().isoformat(),
         "breed_details":   breed_details,
         "pashu_aadhaar":   f"9800 {uid[:4]} {uid[4:8]}"
@@ -323,9 +329,9 @@ def export():
     return resp
 
 
-@app.route("/api/export/decentralized")
-def export_decentralized():
-    """IPFS / Chroma DB schema export for decentralized storage."""
+@app.route("/api/export/audit_log")
+def export_audit_log():
+    """Tamper-Evident Audit Log schema export."""
     records = export_json()
     ipfs_payload = {
         "version": "1.0",

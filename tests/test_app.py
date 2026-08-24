@@ -228,7 +228,7 @@ class TestPredict:
             "top3", "needs_expert", "status", "backend",
             "inference_ms", "image_url", "timestamp",
             "xai_image_url", "qr_code_url", "blockchain_hash",
-            "health_status", "estimated_weight"
+            "region_boosted"
         }
         missing = required - set(data.keys())
         assert not missing, f"Missing keys in /api/predict response: {missing}"
@@ -321,14 +321,14 @@ class TestStatusUpdate:
 
 class TestExport:
     def test_export_returns_200(self, client):
-        res = client.get("/api/export")
+        res = client.get("/api/export/audit_log")
         assert res.status_code == 200
 
     def test_export_content_type_json(self, client):
-        res = client.get("/api/export")
+        res = client.get("/api/export/audit_log")
         assert "application/json" in res.content_type
 
     def test_export_is_list(self, client):
-        res  = client.get("/api/export")
+        res  = client.get("/api/export/audit_log")
         data = json.loads(res.data)
         assert isinstance(data, list)

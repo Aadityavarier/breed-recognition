@@ -1,0 +1,10 @@
+*.pt
+*.onnx
+*.h5
+*.weights
+datasets/
+notebooks/
+venv/
+.env/
+__pycache__/
+expert-dashboard/static/uploads/

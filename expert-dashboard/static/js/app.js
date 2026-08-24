@@ -156,13 +156,27 @@ async function runDiagnostics() {
 async function populateResults(data) {
   // Primary Match
   document.getElementById('breed-name').textContent = data.top1_breed;
-  
   // Dynamic Encyclopedia Data
   const enc = data.breed_details || {};
   document.getElementById('breed-category').textContent = enc.category || 'Unknown Category';
   document.getElementById('native-tract').textContent = enc.native_tract || '—';
   document.getElementById('production-yield').textContent = enc.avg_milk_yield || '—';
-  document.getElementById('crossbreeding-advisory').textContent = enc.optimal_crossbreeding || '—';
+  
+  if (enc.data_status === 'curated') {
+    document.getElementById('speciality-display').textContent = enc.speciality || '—';
+    document.getElementById('crossbreeding-advisory').textContent = enc.optimal_crossbreeding || '—';
+  } else {
+    document.getElementById('speciality-display').textContent = 'Profile pending';
+    document.getElementById('crossbreeding-advisory').textContent = 'Profile pending. Breeding guidance not yet available for this breed.';
+  }
+
+  // Region Heuristic Boost Badge
+  const badge = document.getElementById('heuristic-badge');
+  if (data.region_boosted) {
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
 
   // Top 3 Bars
   let html = '';
@@ -188,10 +202,6 @@ async function populateResults(data) {
   // XAI
   document.getElementById('xai-orig').src = data.image_url;
   document.getElementById('xai-heat').src = data.xai_image_url || data.image_url;
-
-  // Vet Data
-  document.getElementById('weight-display').textContent = data.estimated_weight ? `${data.estimated_weight} kg` : '—';
-  document.getElementById('health-status-display').textContent = data.health_status || '—';
 
   // Audit
   document.getElementById('audit-hash').textContent = data.blockchain_hash || '—';

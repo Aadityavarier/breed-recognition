@@ -96,5 +96,167 @@
     "Kangayam", "Malnad_Gidda", "Krishna_Valley", "Pulikulam",
     "Umblachery", "Alambadi", "Kasargod", "Kherigarh", "Kenkatha",
     "Nagori", "Nimari", "Kalahandi", "Luit_Swamp"
-  ]
+  ],
+  "curated_data": {
+    "Gir": {
+      "breed_name": "Gir",
+      "type": "cattle",
+      "category": "indigenous_cattle_milch",
+      "native_tract": "Gujarat (Saurashtra/Gir forest region)",
+      "avg_milk_yield_kg_lactation": "1200-1800 (up to 3000+ in elite herds)",
+      "traits": ["Distinctive convex/domed forehead", "Long pendulous ears", "Heat and tick resistant", "High butterfat content"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Sahiwal": {
+      "breed_name": "Sahiwal",
+      "type": "cattle",
+      "category": "indigenous_cattle_milch",
+      "native_tract": "Punjab (originally Montgomery district, now in Pakistan; widely reared in Indian Punjab/Haryana)",
+      "avg_milk_yield_kg_lactation": "1800-2500",
+      "traits": ["Reddish-brown coat", "Loose skin, heat tolerant", "One of the best indigenous dairy breeds", "Docile temperament"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Red_Sindhi": {
+      "breed_name": "Red Sindhi",
+      "type": "cattle",
+      "category": "indigenous_cattle_milch",
+      "native_tract": "Sindh region (historically); reared across India, notable herds in Kerala, Karnataka, Punjab",
+      "avg_milk_yield_kg_lactation": "1500-2000",
+      "traits": ["Deep red coat", "Compact body", "Excellent heat tolerance", "Good disease resistance"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Tharparkar": {
+      "breed_name": "Tharparkar",
+      "type": "cattle",
+      "category": "indigenous_cattle_dual",
+      "native_tract": "Rajasthan (Thar desert region, Jaisalmer/Barmer belt)",
+      "avg_milk_yield_kg_lactation": "1400-1800",
+      "traits": ["White/grey coat", "Adapted to arid desert conditions", "Dual purpose - milk and draught", "Hardy under low-input systems"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Kankrej": {
+      "breed_name": "Kankrej",
+      "type": "cattle",
+      "category": "indigenous_cattle_dual",
+      "native_tract": "Gujarat/Rajasthan border (Banaskantha, Kutch region)",
+      "avg_milk_yield_kg_lactation": "1200-1600",
+      "traits": ["Silver-grey coat", "Lyre-shaped horns", "Strong draught capability", "Known ancestor breed of Brahman cattle in the US"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Rathi": {
+      "breed_name": "Rathi",
+      "type": "cattle",
+      "category": "indigenous_cattle_milch",
+      "native_tract": "Rajasthan (Bikaner, Sri Ganganagar region)",
+      "avg_milk_yield_kg_lactation": "1500-2100",
+      "traits": ["Brown-white or black-white patched coat", "Well adapted to arid zones", "Good milk yield among desert breeds"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Ongole": {
+      "breed_name": "Ongole",
+      "type": "cattle",
+      "category": "indigenous_cattle_draught",
+      "native_tract": "Andhra Pradesh (Prakasam/Ongole region)",
+      "avg_milk_yield_kg_lactation": "600-1000",
+      "traits": ["Large, muscular white body", "Prominent hump", "Primarily draught/beef type", "Exported historically to Brazil (basis of Nelore breed)"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Hariana": {
+      "breed_name": "Hariana",
+      "type": "cattle",
+      "category": "indigenous_cattle_dual",
+      "native_tract": "Haryana",
+      "avg_milk_yield_kg_lactation": "1000-1400",
+      "traits": ["White/light grey coat", "Medium-sized, well-suited for draught", "Moderate milk yield"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Kangayam": {
+      "breed_name": "Kangayam",
+      "type": "cattle",
+      "category": "indigenous_cattle_draught",
+      "native_tract": "Tamil Nadu (Kangayam region, Erode/Tiruppur)",
+      "avg_milk_yield_kg_lactation": "500-800",
+      "traits": ["White/grey with dark head and legs", "Strong draught breed", "Used in traditional Jallikattu events"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Murrah": {
+      "breed_name": "Murrah",
+      "type": "buffalo",
+      "category": "indigenous_buffalo",
+      "native_tract": "Haryana (Rohtak, Hisar, Jind belt)",
+      "avg_milk_yield_kg_lactation": "1800-2500 (elite herds higher)",
+      "traits": ["Jet black coat", "Tightly curled horns", "Highest-yielding Indian buffalo breed", "High fat content milk"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Jaffrabadi": {
+      "breed_name": "Jaffarabadi",
+      "type": "buffalo",
+      "category": "indigenous_buffalo",
+      "native_tract": "Gujarat (Gir forest/Junagadh, Saurashtra)",
+      "avg_milk_yield_kg_lactation": "1500-2000",
+      "traits": ["Massive body size", "Broad drooping horns", "Heaviest Indian buffalo breed", "High fat milk"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Mehsana": {
+      "breed_name": "Mehsana",
+      "type": "buffalo",
+      "category": "indigenous_buffalo",
+      "native_tract": "Gujarat (Mehsana, Banaskantha)",
+      "avg_milk_yield_kg_lactation": "1500-2100",
+      "traits": ["Cross between Murrah and Surti origins historically", "Sickle-shaped horns", "Good milk producer"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Surti": {
+      "breed_name": "Surti",
+      "type": "buffalo",
+      "category": "indigenous_buffalo",
+      "native_tract": "Gujarat (Kheda, Anand, Vadodara)",
+      "avg_milk_yield_kg_lactation": "900-1300",
+      "traits": ["Medium size, sickle-shaped flat horns", "Very high fat content milk", "Good feed conversion efficiency"],
+      "data_status": "curated",
+      "source_note": "Verify exact yield figures against ICAR-NBAGR breed registry before submission"
+    },
+    "Frieswal": {
+      "breed_name": "Frieswal",
+      "type": "cattle",
+      "category": "crossbred_dairy",
+      "native_tract": "Developed across India via Indian Army Military Farms and Frieswal Project centers",
+      "avg_milk_yield_kg_lactation": "2500-4000",
+      "traits": ["Cross of Sahiwal/Red Sindhi with Holstein Friesian", "Bred for high milk yield with tropical adaptability", "Widely used in organized dairy farms"],
+      "data_status": "curated",
+      "documented_cross": {
+        "parent_breeds": ["Sahiwal or Red Sindhi", "Holstein Friesian"],
+        "program": "Frieswal Project (Indian Army Remount & Veterinary Corps / ICAR collaboration)",
+        "documented_outcome": "Significantly higher milk yield than pure indigenous breeds while retaining better heat tolerance than pure Holstein Friesian"
+      },
+      "source_note": "Verify exact yield figures and program details against official Frieswal Project / ICAR documentation"
+    },
+    "Karan_Fries": {
+      "breed_name": "Karan Fries",
+      "type": "cattle",
+      "category": "crossbred_dairy",
+      "native_tract": "Developed at NDRI, Karnal, Haryana",
+      "avg_milk_yield_kg_lactation": "3000-4500",
+      "traits": ["Cross of Tharparkar with Holstein Friesian", "Developed for high yield with disease resistance", "Widely adopted in North Indian organized dairies"],
+      "data_status": "curated",
+      "documented_cross": {
+        "parent_breeds": ["Tharparkar", "Holstein Friesian"],
+        "program": "NDRI (National Dairy Research Institute), Karnal",
+        "documented_outcome": "Increased milk yield over Tharparkar with improved heat and disease tolerance compared to pure HF"
+      },
+      "source_note": "Verify exact yield figures and program details against NDRI Karnal published research"
+    }
+  }
 }

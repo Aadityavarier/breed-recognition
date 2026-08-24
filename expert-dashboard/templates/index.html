@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bharat Pashudhan | NDLM AI Portal</title>
+  <!-- Suppress favicon 404 error -->
+  <link rel="icon" href="data:,">
   <style>
     /* ─── Reset ──────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -197,7 +199,18 @@
   <!-- Top Navbar -->
   <div id="topnav">
     <div class="brand">
-      <div class="brand-icon">🐄</div>
+      <div class="brand-icon">
+        <!-- Custom SVG Leaf and Cattle Silhouette Seal -->
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#1B365D" stroke="#008080" stroke-width="4"/>
+          <path d="M50 82C67.6731 82 82 67.6731 82 50C82 32.3269 67.6731 18 50 18" stroke="#008080" stroke-width="6" stroke-linecap="round"/>
+          <path d="M50 82C32.3269 82 18 67.6731 18 50C18 32.3269 32.3269 18 50 18" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>
+          <path d="M40 65L35 70M60 65L65 70" stroke="white" stroke-width="4" stroke-linecap="round"/>
+          <path d="M50 40C50 40 45 30 35 35C35 35 40 50 50 55C60 50 65 35 65 35C55 30 50 40 50 40Z" fill="#38BDF8"/>
+          <path d="M38 55C38 55 25 50 25 65C40 65 38 55 38 55Z" fill="#008080"/>
+          <path d="M62 55C62 55 75 50 75 65C60 65 62 55 62 55Z" fill="#008080"/>
+        </svg>
+      </div>
       <div>
         <div class="brand-name" data-i18n="b-name">Bharat Pashudhan AI Portal</div>
         <div class="brand-sub" data-i18n="b-sub">National Digital Livestock Mission (SIH 2025)</div>
@@ -218,17 +231,17 @@
 
     <!-- PAGE: HOME -->
     <div id="pg-home" class="page active">
-      <div class="hero">
+      <div class="hero" style="background: #1B365D;">
         <div class="ctx">Smart India Hackathon 2025 | PSID: 25004</div>
-        <h1>National Digital Livestock Mission<br>AI Breed Recognition & Registration Platform</h1>
-        <p>Empowering 50,000+ Field Level Workers (FLWs) with offline edge AI to eliminate manual breed registration errors in the Bharat Pashudhan ecosystem.</p>
+        <h1>AI-Powered Cattle & Buffalo Breed Recognition for India</h1>
+        <p>Empowering field workers with smart, scalable, and trustworthy livestock identification</p>
         <button class="btn-cta" onclick="document.querySelector('.nav-tab:nth-child(2)').click()">Launch AI Scan Studio →</button>
       </div>
 
       <div class="metrics-ribbon">
         <div class="metric-card">
-          <div class="val">{{ engine.num_breeds }}</div>
-          <div class="lbl">Recognized Breeds</div>
+          <div class="val">15</div>
+          <div class="lbl">Curated Indigenous Breeds</div>
         </div>
         <div class="metric-card">
           <div class="val">&lt;500ms</div>
@@ -248,7 +261,7 @@
       <div class="stakeholder-grid">
         <div class="stake-card">
           <h3>📱 Field Level Workers (FLWs)</h3>
-          <p>Instant, standardized breed identification on low-cost tablets with zero connectivity requirements for seamless field operations.</p>
+          <p>Instant, standardized breed identification on low-cost tablets with zero connectivity requirements.</p>
         </div>
         <div class="stake-card">
           <h3>🩺 Veterinarians & Experts</h3>
@@ -256,12 +269,12 @@
         </div>
         <div class="stake-card">
           <h3>🌾 Farmers & Dairy Breeders</h3>
-          <p>Scientific cross-breeding advisories to optimize milk yields, preserve indigenous genetics, and monitor herd health.</p>
+          <p>Scientific cross-breeding advisories to optimize milk yields and preserve indigenous genetics.</p>
         </div>
       </div>
 
       <h2 style="font-size:18px; color:#1B365D; margin-bottom:16px;">Featured Indigenous Breeds Spotlight</h2>
-      <div class="breed-showcase">
+      <div class="breed-showcase" style="grid-template-columns: repeat(4, 1fr);">
         <div class="showcase-card">
           <div style="width: 100%; height: 120px; background: #E0F2FE; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐄</div>
           <div class="name">Gir</div>
@@ -281,11 +294,6 @@
           <div style="width: 100%; height: 120px; background: #DCFCE7; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐄</div>
           <div class="name">Kankrej</div>
           <div class="type">Dual Purpose (Gujarat)</div>
-        </div>
-        <div class="showcase-card">
-          <div style="width: 100%; height: 120px; background: #FEE2E2; display: flex; align-items: center; justify-content: center; font-size: 48px;">🐂</div>
-          <div class="name">Khillari</div>
-          <div class="type">Draught Breed (Maharashtra)</div>
         </div>
       </div>
     </div>
@@ -371,10 +379,11 @@
             <div class="res-grid-top">
               
               <!-- Match & Top 3 -->
-              <div class="card" style="margin-bottom:0">
+              <div class="card" style="margin-bottom:0; position:relative;">
                 <div class="card-title">🏆 Match Result</div>
                 <div id="breed-name">Gir</div>
                 <div id="breed-category">Milch Breed</div>
+                <div id="heuristic-badge" style="display:none; position:absolute; top:24px; right:24px; background:#F0FDFA; border:1px solid #14B8A6; color:#0F766E; font-size:10px; font-weight:700; padding:4px 8px; border-radius:4px; cursor:help;" title="Region-based heuristics applied to boost confidence score for locally native breeds.">📍 REGION BOOSTED</div>
                 
                 <div style="margin-top:20px; margin-bottom:12px; font-size:12px; font-weight:700; color:#64748B;">CONFIDENCE BREAKDOWN</div>
                 <div id="top3-rows"></div>
@@ -398,13 +407,12 @@
 
             <!-- Encyclopedia & Vet Data -->
             <div class="card">
-              <div class="card-title">📚 Breed Profile & Veterinary Diagnostics</div>
+              <div class="card-title">📚 Breed Profile & Traits</div>
               
               <div class="meta-grid">
                 <div class="meta-box"><div class="lbl">Native Tract</div><div class="val" id="native-tract">—</div></div>
                 <div class="meta-box"><div class="lbl">Production Yield</div><div class="val" id="production-yield">—</div></div>
-                <div class="meta-box"><div class="lbl">Estimated Weight</div><div class="val" id="weight-display">—</div></div>
-                <div class="meta-box"><div class="lbl">Health Status</div><div class="val" id="health-status-display">—</div></div>
+                <div class="meta-box" style="grid-column: 1 / -1;"><div class="lbl">Key Traits</div><div class="val" id="speciality-display">—</div></div>
               </div>
 
               <div class="crossbreed-alert">
@@ -413,12 +421,12 @@
               </div>
               
               <!-- Audit Box -->
-              <div class="audit-box">
+              <div class="audit-box" title="Each scan generates a cryptographic hash chaining it to the previous record in the database, enabling tamper-evident auditing.">
                 <img id="audit-qr" src="" alt="QR">
                 <div class="info">
-                  <div class="title">🔐 Tamper-Proof Audit Record</div>
+                  <div class="title">🔐 Tamper-Evident Audit Record</div>
                   <div style="font-size: 11px; font-weight: 700; margin-bottom: 2px;">Pashu Aadhaar UID: <span id="audit-uid" style="color:#0284C7;">—</span></div>
-                  <div class="hash" id="audit-hash">0x000...</div>
+                  <div class="hash">Record Hash (SHA-256): <span id="audit-hash">0x000...</span></div>
                 </div>
               </div>
             </div>
@@ -490,17 +498,17 @@
     <!-- PAGE: AUDIT TRAIL -->
     <div id="pg-audit" class="page">
       <div class="card">
-        <div class="card-title">🔐 Decentralized Audit Trail</div>
+        <div class="card-title">🔐 Tamper-Evident Audit Log</div>
         <div class="q-ctrl">
           <p style="color:#475569; font-size:14px;">Immutable ledger of all verified diagnostic scans.</p>
           <div>
             <button class="act-btn verify" onclick="syncToBPA()" id="btn-sync-bpa">☁️ Sync to BPA</button>
-            <button class="act-btn retrain" onclick="window.location.href='/api/export/decentralized'">📥 Export JSON</button>
+            <button class="act-btn retrain" onclick="window.location.href='/api/export/audit_log'">📥 Export JSON</button>
           </div>
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Timestamp</th><th>Image</th><th>Breed</th><th>Confidence</th><th>Status</th><th>Blockchain Hash</th></tr></thead>
+            <thead><tr><th>Timestamp</th><th>Image</th><th>Breed</th><th>Confidence</th><th>Status</th><th>Record Hash (SHA-256)</th></tr></thead>
             <tbody id="a-tbody">
               <tr><td colspan="6" style="text-align:center; color:#94A3B8;">Loading audit trail...</td></tr>
             </tbody>
@@ -513,7 +521,7 @@
 
   <footer style="margin-top: 40px; padding: 30px; text-align: center; color: #64748B; font-size: 13px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
     <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry & Dairying, Ministry of Fisheries, Animal Husbandry & Dairying, Government of India</div>
-    <div style="margin-bottom: 12px;">Developed for Smart India Hackathon 2025 | Problem Statement ID: 25004</div>
+    <div style="margin-bottom: 12px;">A Smart India Hackathon prototype addressing BPA data quality | Problem Statement ID: 25004</div>
     <div>
       <span style="display:inline-block; background:#DCFCE7; color:#166534; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">🟢 OFFLINE EDGE AI ACTIVE</span>
     </div>
