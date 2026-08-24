@@ -1205,8 +1205,6 @@ def auth_me():
 @app.route("/verify",      methods=["POST", "GET"])
 @app.route("/api/sync",    methods=["POST", "GET"])
 @app.route("/sync",        methods=["POST", "GET"])
-@app.route("/api/retrain", methods=["POST", "GET"])
-@app.route("/retrain",     methods=["POST", "GET"])
 def verify():
     # Require active Veterinary Expert session (session or X-Expert-Username header fallback)
     expert = get_active_expert()
@@ -1229,11 +1227,21 @@ def verify():
     raw_hash_str = f"{scan_id}:{verified_breed}:{verifier_name}:{verifier_license}:{timestamp}"
     record_hash = hashlib.sha256(raw_hash_str.encode()).hexdigest()
 
+    # Persist status change and verifier identity into database
+    update_status(
+        scan_id=scan_id,
+        status="verified",
+        notes=f"Verified by {verifier_name} ({verifier_license})",
+        verified_by_name=verifier_name,
+        verified_by_license_id=verifier_license,
+        blockchain_hash=record_hash
+    )
+
     return jsonify({
         "success": True,
         "scan_id": scan_id,
         "verified_breed": verified_breed,
-        "status": "EXPERT_VERIFIED",
+        "status": "verified",
         "verified_by_name": verifier_name,
         "verified_by_license_id": verifier_license,
         "verifier_info": f"Verified by {verifier_name} (License #{verifier_license})",
@@ -1241,6 +1249,39 @@ def verify():
         "record_hash": record_hash,
         "timestamp": timestamp,
         "message": f"Record {scan_id} verified by {verifier_name} (License #{verifier_license}) and cryptographically chained."
+    })
+
+
+@app.route("/api/retrain", methods=["POST", "GET"])
+@app.route("/retrain",     methods=["POST", "GET"])
+def retrain():
+    expert = get_active_expert()
+    if not expert:
+        return jsonify({
+            "success": False,
+            "authenticated": False,
+            "error": "UNAUTHORIZED: Veterinary Expert authentication required.",
+            "code": "AUTH_REQUIRED"
+        }), 401
+
+    data = request.get_json(silent=True) or request.form or {}
+    scan_id = data.get("scan_id") or data.get("id") or "SCN-9042"
+    verifier_name = expert["name"]
+    verifier_license = expert["license_id"]
+
+    update_status(
+        scan_id=scan_id,
+        status="retraining_queue",
+        notes=f"Flagged for retrain by {verifier_name} ({verifier_license})",
+        verified_by_name=verifier_name,
+        verified_by_license_id=verifier_license
+    )
+
+    return jsonify({
+        "success": True,
+        "scan_id": scan_id,
+        "status": "retraining_queue",
+        "message": f"Record {scan_id} flagged for model retraining queue by {verifier_name}."
     })
 
 @app.route("/api/stats", methods=["GET"])

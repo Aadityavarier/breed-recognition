@@ -285,6 +285,8 @@ class TestStatusUpdate:
 
     def test_update_status_to_verified(self, client):
         scan_id = self._create_scan(client)
+        # Login first as demo expert
+        client.post("/api/login", json={"username": "dr_sharma", "password": "vet123"})
         res = client.post(
             "/api/verify",
             json={"scan_id": scan_id},
@@ -293,8 +295,16 @@ class TestStatusUpdate:
         data = json.loads(res.data)
         assert data["success"] is True
 
+        # Assert database persistence via history query
+        hist_res = client.get("/api/history?limit=50")
+        hist_data = json.loads(hist_res.data)
+        matched = [s for s in hist_data["scans"] if str(s["id"]) == str(scan_id) or str(s.get("scan_id")) == str(scan_id)]
+        assert len(matched) > 0, "Verified scan should exist in DB history"
+        assert matched[0]["status"] == "verified", f"Status should be 'verified', got '{matched[0]['status']}'"
+
     def test_update_status_to_retrain(self, client):
         scan_id = self._create_scan(client)
+        client.post("/api/login", json={"username": "dr_sharma", "password": "vet123"})
         res = client.post(
             "/api/retrain",
             json={"scan_id": scan_id},
@@ -303,11 +313,20 @@ class TestStatusUpdate:
         data = json.loads(res.data)
         assert data["success"] is True
 
+        # Assert database persistence
+        hist_res = client.get("/api/history?limit=50")
+        hist_data = json.loads(hist_res.data)
+        matched = [s for s in hist_data["scans"] if str(s["id"]) == str(scan_id) or str(s.get("scan_id")) == str(scan_id)]
+        assert len(matched) > 0
+        assert matched[0]["status"] == "retraining_queue"
+
     def test_update_status_missing_fields(self, client):
+        client.post("/api/login", json={"username": "dr_sharma", "password": "vet123"})
         res = client.post("/api/verify", json={})
         assert res.status_code == 400
 
     def test_update_nonexistent_scan(self, client):
+        client.post("/api/login", json={"username": "dr_sharma", "password": "vet123"})
         res = client.post(
             "/api/verify",
             json={"scan_id": 999999},

@@ -529,21 +529,27 @@ def update_scan_status():
 
 @app.route("/api/verify", methods=["POST"])
 def verify_scan():
-    data = request.get_json(silent=True) or request.form
-    scan_id = data.get("scan_id")
+    data = request.get_json(silent=True) or request.form or {}
+    scan_id = data.get("scan_id") or data.get("id")
     if not scan_id: return jsonify({"error": "scan_id required"}), 400
-    if update_status(int(scan_id), "verified"):
-        return jsonify({"success": True, "scan_id": scan_id})
-    return jsonify({"error": "not found"}), 404
+    expert = session.get("expert")
+    v_name = expert["name"] if expert else None
+    v_lic = expert["license_id"] if expert else None
+    if update_status(scan_id, "verified", verified_by_name=v_name, verified_by_license_id=v_lic):
+        return jsonify({"success": True, "scan_id": scan_id, "status": "verified"})
+    return jsonify({"error": "Scan record not found"}), 404
 
 @app.route("/api/retrain", methods=["POST"])
 def retrain_scan():
-    data = request.get_json(silent=True) or request.form
-    scan_id = data.get("scan_id")
+    data = request.get_json(silent=True) or request.form or {}
+    scan_id = data.get("scan_id") or data.get("id")
     if not scan_id: return jsonify({"error": "scan_id required"}), 400
-    if update_status(int(scan_id), "retraining_queue"):
-        return jsonify({"success": True, "scan_id": scan_id})
-    return jsonify({"error": "not found"}), 404
+    expert = session.get("expert")
+    v_name = expert["name"] if expert else None
+    v_lic = expert["license_id"] if expert else None
+    if update_status(scan_id, "retraining_queue", verified_by_name=v_name, verified_by_license_id=v_lic):
+        return jsonify({"success": True, "scan_id": scan_id, "status": "retraining_queue"})
+    return jsonify({"error": "Scan record not found"}), 404
 
 
 # ── Uploaded images ───────────────────────────────────────────────────────────
