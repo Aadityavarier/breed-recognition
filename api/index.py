@@ -1092,7 +1092,60 @@ def queue():
     })
 
 
-# ── 4. Audit Trail Route ───────────────────────────────────────────────────────
+_DEMO_SCANS_STORE = [
+    {
+        "id":              "SCN-842",
+        "scan_id":         "SCN-842",
+        "timestamp":       "2026-08-24 22:15:10",
+        "image":           "/static/images/gir.jpg",
+        "image_url":       "/static/images/gir.jpg",
+        "image_path":      "/static/images/gir.jpg",
+        "breed":           "Gir Cattle",
+        "predicted_breed": "Gir Cattle",
+        "confidence":      0.648,
+        "confidence_score":0.648,
+        "region_input":    "Gujarat",
+        "color_input":     "Red Speckled",
+        "status":          "flagged_for_expert",
+        "blockchain_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "record_hash":     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+        "id":              "SCN-841",
+        "scan_id":         "SCN-841",
+        "timestamp":       "2026-08-24 21:40:02",
+        "image":           "/static/images/murrah.jpg",
+        "image_url":       "/static/images/murrah.jpg",
+        "image_path":      "/static/images/murrah.jpg",
+        "breed":           "Murrah Buffalo",
+        "predicted_breed": "Murrah",
+        "confidence":      0.661,
+        "confidence_score":0.661,
+        "region_input":    "Haryana",
+        "color_input":     "Jet Black",
+        "status":          "flagged_for_expert",
+        "blockchain_hash": "8f4e2c91b1a7d3e6f0b8c4d2e1a9f3b5c7e8d2a1b4c6e9f0a2d3b5c7e8f1a2b3",
+        "record_hash":     "8f4e2c91b1a7d3e6f0b8c4d2e1a9f3b5c7e8d2a1b4c6e9f0a2d3b5c7e8f1a2b3"
+    },
+    {
+        "id":              "SCN-840",
+        "scan_id":         "SCN-840",
+        "timestamp":       "2026-08-24 20:12:44",
+        "image":           "/static/images/sahiwal.jpg",
+        "image_url":       "/static/images/sahiwal.jpg",
+        "image_path":      "/static/images/sahiwal.jpg",
+        "breed":           "Sahiwal Cattle",
+        "predicted_breed": "Sahiwal",
+        "confidence":      0.613,
+        "confidence_score":0.613,
+        "region_input":    "Punjab",
+        "color_input":     "Reddish Brown",
+        "status":          "flagged_for_expert",
+        "blockchain_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01",
+        "record_hash":     "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01"
+    }
+]
+
 @app.route("/api/audit",       methods=["GET"])
 @app.route("/api/audit-trail", methods=["GET"])
 @app.route("/api/history",     methods=["GET"])
@@ -1100,61 +1153,34 @@ def queue():
 @app.route("/audit-trail",     methods=["GET"])
 @app.route("/history",         methods=["GET"])
 def audit():
-    audit_data = [
-        {
-            "id":              "SCN-842",
-            "timestamp":       "2026-08-24 22:15:10",
-            "image":           "scan_842.jpg",
-            "image_url":       "/static/images/gir.jpg",
-            "image_path":      "/static/images/gir.jpg",
-            "breed":           "Gir Cattle",
-            "predicted_breed": "Gir Cattle",
-            "confidence":      0.948,
-            "confidence_score":0.948,
-            "status":          "verified",
-            "blockchain_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "record_hash":     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "hash":            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        },
-        {
-            "id":              "SCN-841",
-            "timestamp":       "2026-08-24 21:40:02",
-            "image":           "scan_841.jpg",
-            "image_url":       "/static/images/murrah.jpg",
-            "image_path":      "/static/images/murrah.jpg",
-            "breed":           "Murrah Buffalo",
-            "predicted_breed": "Murrah",
-            "confidence":      0.961,
-            "confidence_score":0.961,
-            "status":          "verified",
-            "blockchain_hash": "8f4e2c91b1a7d3e6f0b8c4d2e1a9f3b5c7e8d2a1b4c6e9f0a2d3b5c7e8f1a2b3",
-            "record_hash":     "8f4e2c91b1a7d3e6f0b8c4d2e1a9f3b5c7e8d2a1b4c6e9f0a2d3b5c7e8f1a2b3",
-            "hash":            "8f4e2c91b1a7d3e6f0b8c4d2e1a9f3b5c7e8d2a1b4c6e9f0a2d3b5c7e8f1a2b3"
-        },
-        {
-            "id":              "SCN-840",
-            "timestamp":       "2026-08-24 20:12:44",
-            "image":           "scan_840.jpg",
-            "image_url":       "/static/images/sahiwal.jpg",
-            "image_path":      "/static/images/sahiwal.jpg",
-            "breed":           "Sahiwal Cattle",
-            "predicted_breed": "Sahiwal",
-            "confidence":      0.913,
-            "confidence_score":0.913,
-            "status":          "verified",
-            "blockchain_hash": "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01",
-            "record_hash":     "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01",
-            "hash":            "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01"
-        }
-    ]
+    status_filter = request.args.get("status")
+    
+    try:
+        db_scans = get_history(limit=100, status_filter=status_filter)
+        if db_scans and len(db_scans) > 0:
+            return jsonify({
+                "success": True,
+                "scans": db_scans,
+                "audit": db_scans,
+                "data": db_scans,
+                "items": db_scans
+            })
+    except Exception:
+        pass
+
+    if status_filter:
+        filtered = [s for s in _DEMO_SCANS_STORE if s.get("status") == status_filter]
+    else:
+        filtered = list(_DEMO_SCANS_STORE)
+
     return jsonify({
         "success": True,
-        "audit":   audit_data,
-        "logs":    audit_data,
-        "data":    audit_data,
-        "items":   audit_data,
-        "scans":   audit_data,
-        "records": audit_data
+        "audit":   filtered,
+        "logs":    filtered,
+        "data":    filtered,
+        "items":   filtered,
+        "scans":   filtered,
+        "records": filtered
     })
 
 
@@ -1236,7 +1262,14 @@ def verify():
     raw_hash_str = f"{scan_id}:{verified_breed}:{verifier_name}:{verifier_license}:{timestamp}"
     record_hash = hashlib.sha256(raw_hash_str.encode()).hexdigest()
 
-    # Persist status change and verifier identity into database (fail-safe)
+    # Persist status change and verifier identity into database & demo store
+    str_id = str(scan_id).strip()
+    for s in _DEMO_SCANS_STORE:
+        if s.get("id") == str_id or s.get("scan_id") == str_id or str_id in str(s.get("id")):
+            s["status"] = "verified"
+            s["verified_by_name"] = verifier_name
+            s["verified_by_license_id"] = verifier_license
+
     try:
         update_status(
             scan_id=scan_id,

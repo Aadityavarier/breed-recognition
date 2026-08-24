@@ -3315,6 +3315,17 @@
 
         if (res.ok && data.success !== false) {
           showToast(data.message || 'Action successful!');
+          // Optimistically remove verified row from Expert Queue table
+          const qTable = document.getElementById('q-tbody');
+          if (qTable) {
+            const rows = qTable.querySelectorAll('tr');
+            rows.forEach(r => {
+              if (r.innerText.includes(String(id))) r.remove();
+            });
+            if (qTable.querySelectorAll('tr').length === 0) {
+              qTable.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#15803D; font-weight:600;">No scans flagged for expert review!</td></tr>';
+            }
+          }
           loadQueue();
           loadAudit();
         } else {
