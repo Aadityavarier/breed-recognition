@@ -22,6 +22,29 @@ import json
 import logging
 import os
 import sys
+
+# ── Auto-copy local static image assets if missing in static/images ───────────
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_IMAGES_DIR = os.path.join(BASE_DIR, "expert-dashboard", "static", "images")
+os.makedirs(STATIC_IMAGES_DIR, exist_ok=True)
+ARTIFACT_DIR = r"C:\Users\revathi\.gemini\antigravity\brain\f95dc097-e0da-45b5-804a-5efa86b85230"
+
+asset_copies = {
+    "gir_cattle_hero_1787597951096.png": "gir_hero.jpg",
+    "sahiwal_mission_1787597966043.png": "sahiwal_mission.jpg",
+    "kankrej_workflow_1787598031296.png": "kankrej_workflow.jpg",
+    "murrah_fieldworker_1787598049202.png": "murrah_fieldworker.jpg"
+}
+
+for src_name, dst_name in asset_copies.items():
+    src_path = os.path.join(ARTIFACT_DIR, src_name)
+    dst_path = os.path.join(STATIC_IMAGES_DIR, dst_name)
+    if os.path.exists(src_path) and (not os.path.exists(dst_path) or os.path.getsize(dst_path) == 0):
+        try:
+            import shutil
+            shutil.copyfile(src_path, dst_path)
+        except Exception:
+            pass
 import uuid
 import hashlib
 from datetime import datetime
@@ -117,17 +140,30 @@ def _safe_filename(original: str) -> str:
 
 
 def _generate_qr_code(scan_id_str: str, breed: str, b_hash: str) -> str:
-    """Generate QR code and save it, return filename."""
-    if not HAS_QR:
+    """Generate QR code and return Base64 Data URL or saved path."""
+    qr_payload = {
+        "pashu_aadhaar": f"PA-{scan_id_str.upper()}",
+        "breed": breed,
+        "hash": b_hash,
+        "verified_by": "Bharat Pashu-Pehchaan AI Engine"
+    }
+    try:
+        from api.index import generate_qr_code_b64
+        return generate_qr_code_b64(qr_payload)
+    except Exception:
+        pass
+
+    try:
+        import qrcode, io, base64
+        qr = qrcode.QRCode(version=1, box_size=6, border=2)
+        qr.add_data(json.dumps(qr_payload))
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="#1B365D", back_color="#FFFFFF")
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("utf-8")
+    except Exception:
         return ""
-    qr_data = f"BPA-SCAN-{scan_id_str} | Breed: {breed} | Hash: {b_hash}"
-    qr = qrcode.QRCode(version=1, box_size=4, border=2)
-    qr.add_data(qr_data)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    filename = f"qr_{uuid.uuid4().hex[:8]}.png"
-    img.save(str(UPLOAD_FOLDER / filename))
-    return f"uploads/{filename}"
 
 
 # ---------------------------------------------------------------------------
@@ -323,7 +359,7 @@ def predict():
         "inference_ms":           result["inference_ms"],
         "image_url":              _url(relative_path),
         "xai_image_url":          _url(xai_rel_path),
-        "qr_code_url":            _url(qr_relative_path),
+        "qr_code_url":            qr_relative_path if qr_relative_path.startswith("data:") else _url(qr_relative_path),
         "blockchain_hash":        b_hash,
         "timestamp":              datetime.utcnow().isoformat(),
         "latitude":               latitude,
