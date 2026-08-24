@@ -70,6 +70,11 @@ app = Flask(
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024   # 16 MB upload limit
 
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static", "uploads")
+os.makedirs(STATIC_UPLOAD_DIR, exist_ok=True)
+
 if os.environ.get("VERCEL"):
     UPLOAD_FOLDER = Path("/tmp/uploads")
 else:
