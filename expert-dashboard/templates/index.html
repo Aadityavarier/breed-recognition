@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bharat Pashupehchan | Digital Livestock Intelligence Platform</title>
+  <title>Bharat Pashu-Pehchaan | Digital Livestock Intelligence Platform</title>
   <!-- Suppress favicon 404 error -->
   <link rel="icon" href="data:,">
   <link rel="manifest" href="/manifest.json">
@@ -1859,7 +1859,7 @@
         </svg>
       </div>
       <div>
-        <div class="brand-name" data-i18n="b-name">Bharat Pashupehchan</div>
+        <div class="brand-name" data-i18n="b-name">Bharat Pashu-Pehchaan</div>
         <div class="brand-sub" data-i18n="b-sub">Digital Livestock Intelligence Platform</div>
       </div>
       <div id="engine-pill">{{ engine.backend }} engine</div>
@@ -1898,287 +1898,198 @@
   <!-- Main Container -->
   <div class="container">
 
-    <!-- PAGE: HOME -->
+    <!-- PAGE: HOME (Government Digital Portal Style) -->
     <div id="pg-home" class="page active">
 
-      <!-- ❶ HERO -->
-      <div class="home-hero">
-        <div class="badge" data-i18n="hero_badge">Digital Livestock Intelligence &amp; Breed Verification</div>
-        <h1 data-i18n="hero_h1">AI-Powered Digital Livestock<br><span>Intelligence Platform</span> for India</h1>
-        <p class="sub" data-i18n="hero_sub">Building a real-time, geo-tagged livestock intelligence layer across India — fixing data quality at the point of entry with instant, offline, and tamper-proof AI scans.</p>
-        <div class="cta-row">
-          <button class="btn-primary" onclick="document.querySelector('.nav-tab:nth-child(2)').click()" data-i18n="hero_cta1">🔬 Launch AI Scan Studio</button>
-          <button class="btn-outline" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2">↓ How it works</button>
+      <!-- ❶ TOP IDENTITY BAR (White background header strip) -->
+      <div class="gov-portal-header" style="background:#FFFFFF; border-bottom:2px solid #E2E8F0; padding:12px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; box-shadow:0 1px 4px rgba(0,0,0,0.05); margin-bottom:0; border-radius:8px 8px 0 0;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <!-- Custom Original App Logo Mark (Teal & Navy) -->
+          <div style="width:48px; height:48px; background:linear-gradient(135deg, #1B365D, #008080); border-radius:8px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,128,128,0.25);">
+            <svg width="30" height="30" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="44" stroke="#38BDF8" stroke-width="6"/>
+              <path d="M50 82C67.6731 82 82 67.6731 82 50C82 32.3269 67.6731 18 50 18" stroke="#008080" stroke-width="6"/>
+              <path d="M50 40C50 40 45 30 35 35C35 35 40 50 50 55C60 50 65 35 65 35C55 30 50 40 50 40Z" fill="#38BDF8"/>
+              <path d="M38 55C38 55 25 50 25 65C40 65 38 55 38 55Z" fill="#008080"/>
+              <path d="M62 55C62 55 75 50 75 65C60 65 62 55 62 55Z" fill="#008080"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:20px; font-weight:800; color:#1B365D; letter-spacing:-0.3px; line-height:1.2;" data-i18n="b-name">Bharat Pashu-Pehchaan</div>
+            <div style="font-size:12px; font-weight:600; color:#008080;" data-i18n="b-sub">Digital Livestock Intelligence &amp; Breed Verification Platform</div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:16px;">
+          <!-- Quick Status Indicator -->
+          <div style="display:flex; align-items:center; gap:6px; background:#F0FDF4; border:1px solid #BBF7D0; color:#15803D; font-size:11px; font-weight:700; padding:4px 12px; border-radius:99px;">
+            <span style="width:7px; height:7px; border-radius:50%; background:#16A34A; display:inline-block;"></span>
+            <span>OFFLINE EDGE AI READY</span>
+          </div>
+
+          <!-- Language Selector Switch -->
+          <button id="lang-toggle" onclick="toggleLang()" style="background:#F1F5F9; border:1px solid #CBD5E1; color:#1E293B; padding:6px 16px; border-radius:99px; font-size:12px; font-weight:700; cursor:pointer;" title="Switch Language / भाषा बदलें">
+            <span class="opt on">EN</span><span style="opacity:0.4"> | </span><span class="opt">HI</span>
+          </button>
         </div>
       </div>
 
-      <!-- Metrics strip -->
-      <div class="home-metrics">
-        <div class="hm-card">
-          <div class="hm-val">15</div>
-          <div class="hm-lbl" data-i18n="m1">Curated Indigenous Breeds</div>
-        </div>
-        <div class="hm-card">
-          <div class="hm-val">&lt;500ms</div>
-          <div class="hm-lbl" data-i18n="m2">Edge Inference Speed</div>
-        </div>
-        <div class="hm-card">
-          <div class="hm-val">100%</div>
-          <div class="hm-lbl" data-i18n="m3">Works Offline</div>
-        </div>
-        <div class="hm-card">
-          <div class="hm-val">SHA-256</div>
-          <div class="hm-lbl" data-i18n="m4">Tamper-Proof Audit Trail</div>
-        </div>
-      </div>
+      <!-- ❷ HERO BANNER WITH REAL PHOTOGRAPHY OVERLAY -->
+      <div style="position:relative; min-height:360px; background:url('/static/images/gir_hero.jpg') center/cover no-repeat; border-radius:0 0 12px 12px; overflow:hidden; display:flex; align-items:center; margin-bottom:28px; box-shadow:0 4px 20px rgba(0,0,0,0.12);">
+        <!-- Dark gradient overlay for crisp legibility -->
+        <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.65) 60%, rgba(15,23,42,0.3) 100%);"></div>
 
-      <!-- ❷ WHY THIS PLATFORM EXISTS -->
-      <div class="home-section alt">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="section-label" data-i18n="prob_label">The Problem</div>
-          <h2 class="section-title" data-i18n="prob_title">India's livestock data has a quality crisis</h2>
-          <p class="section-sub" data-i18n="prob_sub">The Bharat Pashudhan App registers over 300 million cattle and buffalo across India. But manual breed entry by field workers — under time pressure, without reference standards — produces systematic misregistration that flows through the entire policy chain.</p>
-          <div class="problem-grid">
-            <div class="problem-card">
-              <div class="icon-box" style="background:#FEF2F2;">❌</div>
-              <div>
-                <h4 data-i18n="pc1_h">Wrong breed → Wrong subsidy</h4>
-                <p data-i18n="pc1_p">PM-KISAN, Rashtriya Gokul Mission, and state dairy schemes disburse benefits based on registered breed. A misidentified Sahiwal registered as a crossbreed disqualifies the farmer from indigenous cattle incentives worth ₹10,000–₹50,000 per animal.</p>
-              </div>
-            </div>
-            <div class="problem-card">
-              <div class="icon-box" style="background:#FFF7ED;">📋</div>
-              <div>
-                <h4 data-i18n="pc2_h">Manual records enable fraud</h4>
-                <p data-i18n="pc2_p">Without a photo-verified, tamper-evident audit trail, phantom animal registrations and duplicate claims are difficult to detect. Field-level data entry without any AI cross-check is a known vulnerability in livestock insurance programs.</p>
-              </div>
-            </div>
-            <div class="problem-card">
-              <div class="icon-box" style="background:#F0FDF4;">🧬</div>
-              <div>
-                <h4 data-i18n="pc3_h">Indigenous genetics are being lost</h4>
-                <p data-i18n="pc3_p">Breeds like Vechur, Punganur, and Alambadi number in the thousands — not millions. Without accurate breed-level census data, conservation and cross-breeding programs cannot be targeted to the right districts and herds.</p>
-              </div>
-            </div>
-            <div class="problem-card">
-              <div class="icon-box" style="background:#EFF6FF;">📡</div>
-              <div>
-                <h4 data-i18n="pc4_h">AI must work where internet doesn't</h4>
-                <p data-i18n="pc4_p">75% of India's livestock is registered in rural areas with intermittent or zero connectivity. Any AI solution that requires a cloud API call at the point of identification is not deployable at scale across India.</p>
-              </div>
-            </div>
+        <div style="position:relative; z-index:2; padding:40px 32px; max-width:760px;">
+          <h1 style="color:#FFFFFF; font-size:32px; font-weight:800; line-height:1.25; margin-bottom:12px; text-shadow:0 2px 4px rgba(0,0,0,0.3);" data-i18n="hero_h1">
+            Bharat Pashu-Pehchaan
+          </h1>
+          <p style="color:#E2E8F0; font-size:16px; line-height:1.55; margin-bottom:24px; max-width:640px;" data-i18n="hero_sub">
+            Offline AI-powered breed identification for accurate livestock data at the point of entry — empowering field workers to eliminate breed misregistration and protect indigenous genetics across India.
+          </p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn-primary" onclick="goPage('pg-scan', document.querySelectorAll('.nav-tab')[1])" style="min-height:50px; padding:14px 28px; font-size:15px; background:linear-gradient(135deg, #008080, #0F766E); border:none; box-shadow:0 4px 14px rgba(0,128,128,0.4);" data-i18n="hero_cta1">
+              🔬 Launch AI Scan Studio
+            </button>
+            <button class="btn-outline" onclick="document.getElementById('platform-features').scrollIntoView({behavior:'smooth'})" style="min-height:50px; padding:14px 24px; font-size:14px; border:2px solid #FFFFFF; color:#FFFFFF; background:rgba(255,255,255,0.1); backdrop-filter:blur(4px);" data-i18n="hero_cta2">
+              ↓ Explore Platform
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- ❸ HOW IT WORKS -->
-      <div class="home-section" id="how-it-works">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="section-label" data-i18n="flow_label">The Solution</div>
-          <h2 class="section-title" data-i18n="flow_title">From photo to verified record — entirely offline</h2>
-          <p class="section-sub" data-i18n="flow_sub">A four-step pipeline that runs on a low-cost Android tablet, no internet required.</p>
-          <div class="flow-steps">
-            <div class="flow-step">
-              <div class="flow-num">1</div>
-              <div class="flow-icon">📸</div>
-              <h4 data-i18n="fs1_h">FLW takes a photo</h4>
-              <p data-i18n="fs1_p">Field-level worker captures a standard-angle photo of the animal using the BPA camera within the app. No specialist training required.</p>
-            </div>
-            <div class="flow-step">
-              <div class="flow-num">2</div>
-              <div class="flow-icon">🤖</div>
-              <h4 data-i18n="fs2_h">On-device AI identifies breed</h4>
-              <p data-i18n="fs2_p">A quantised MobileNetV2 model runs entirely on-device in under 500ms. Region and coat colour metadata further refine the prediction with a heuristic fusion layer.</p>
-            </div>
-            <div class="flow-step">
-              <div class="flow-num">3</div>
-              <div class="flow-icon">✅</div>
-              <h4 data-i18n="fs3_h">Auto-verify or expert review</h4>
-              <p data-i18n="fs3_p">High-confidence results are auto-accepted. Low-confidence or rare-breed scans are routed to a veterinarian expert queue, with a Grad-CAM explainability overlay.</p>
-            </div>
-            <div class="flow-step">
-              <div class="flow-num">4</div>
-              <div class="flow-icon">☁️</div>
-              <h4 data-i18n="fs4_h">Synced to BPA on reconnect</h4>
-              <p data-i18n="fs4_p">Verified records — each with a SHA-256 hash chain, QR passport, and Pashu Aadhaar ID — are batch-synced to Bharat Pashudhan when connectivity returns.</p>
-            </div>
-          </div>
+      <!-- ❸ STATS RIBBON (Dark Teal Cards) -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:32px;">
+        <div style="background:linear-gradient(135deg, #0F766E, #008080); color:#FFFFFF; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(15,118,110,0.2); text-align:center;">
+          <div style="font-size:32px; font-weight:800; line-height:1; margin-bottom:4px;">15</div>
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.9;" data-i18n="stat_b1">Indigenous Breeds Covered</div>
+        </div>
+        <div style="background:linear-gradient(135deg, #0F766E, #008080); color:#FFFFFF; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(15,118,110,0.2); text-align:center;">
+          <div style="font-size:32px; font-weight:800; line-height:1; margin-bottom:4px;">&lt; 500ms</div>
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.9;" data-i18n="stat_b2">On-Device AI Speed</div>
+        </div>
+        <div style="background:linear-gradient(135deg, #0F766E, #008080); color:#FFFFFF; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(15,118,110,0.2); text-align:center;">
+          <div style="font-size:32px; font-weight:800; line-height:1; margin-bottom:4px;">100%</div>
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.9;" data-i18n="stat_b3">Offline Edge Capable</div>
+        </div>
+        <div style="background:linear-gradient(135deg, #0F766E, #008080); color:#FFFFFF; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(15,118,110,0.2); text-align:center;">
+          <div style="font-size:32px; font-weight:800; line-height:1; margin-bottom:4px;" id="home-scans-stat">184+</div>
+          <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.9;" data-i18n="stat_b4">Scans Verified</div>
         </div>
       </div>
 
-      <!-- ❹ WHO IT'S FOR -->
-      <div class="home-section alt">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="section-label" data-i18n="who_label">Who It's For</div>
-          <h2 class="section-title" data-i18n="who_title">Built for every link in India's livestock chain</h2>
-          <p class="section-sub" data-i18n="who_sub">Three different stakeholders, one integrated platform — each with a dedicated workflow.</p>
-          <div class="stake-grid-new">
-            <div class="stake-new">
-              <div class="stake-head">
-                <div class="stake-icon" style="background:#E0F2FE;">📱</div>
-                <div>
-                  <h3 data-i18n="st1_h">Field Level Workers</h3>
-                  <div class="stake-role" data-i18n="st1_role">FLWs &amp; Paravets</div>
-                </div>
-              </div>
-              <div class="stake-body">
-                <p data-i18n="st1_p">The frontline of India's livestock data system — working across hundreds of villages daily with basic smartphones and unreliable connectivity.</p>
-                <ul class="benefit-list">
-                  <li data-i18n="st1_b1">Identify any of 15 indigenous breeds instantly — no manual lookup or memory required</li>
-                  <li data-i18n="st1_b2">Works fully offline — 2G, 3G, or no signal at all</li>
-                  <li data-i18n="st1_b3">Hindi and regional language UI toggle</li>
-                  <li data-i18n="st1_b4">Auto-generates a Pashu Aadhaar ID and QR code for each animal</li>
-                </ul>
-              </div>
-            </div>
-            <div class="stake-new">
-              <div class="stake-head">
-                <div class="stake-icon" style="background:#F0FDF4;">🩺</div>
-                <div>
-                  <h3 data-i18n="st2_h">Veterinarians &amp; Experts</h3>
-                  <div class="stake-role" data-i18n="st2_role">Expert Review Panel</div>
-                </div>
-              </div>
-              <div class="stake-body">
-                <p data-i18n="st2_p">Specialists who validate borderline predictions and maintain the scientific integrity of the breed census data.</p>
-                <ul class="benefit-list">
-                  <li data-i18n="st2_b1">Dedicated Expert Queue tab — only receives low-confidence scans that need review</li>
-                  <li data-i18n="st2_b2">Grad-CAM XAI overlay shows exactly which features the AI used — accountable, explainable decisions</li>
-                  <li data-i18n="st2_b3">One-click Verify or Flag for Retraining actions</li>
-                  <li data-i18n="st2_b4">Full SHA-256 audit trail — every decision is permanently logged and tamper-evident</li>
-                </ul>
-              </div>
-            </div>
-            <div class="stake-new">
-              <div class="stake-head">
-                <div class="stake-icon" style="background:#FEF3C7;">🌾</div>
-                <div>
-                  <h3 data-i18n="st3_h">Farmers &amp; Dairy Breeders</h3>
-                  <div class="stake-role" data-i18n="st3_role">Livestock Owners</div>
-                </div>
-              </div>
-              <div class="stake-body">
-                <p data-i18n="st3_p">The ultimate beneficiaries — small and marginal farmers whose livelihoods depend on correct breed registration.</p>
-                <ul class="benefit-list">
-                  <li data-i18n="st3_b1">Correct breed registration ensures access to the right government subsidy schemes</li>
-                  <li data-i18n="st3_b2">Accurate livestock insurance coverage based on verified breed value</li>
-                  <li data-i18n="st3_b3">Science-based crossbreeding advisory from the Encyclopedia to optimise milk yield</li>
-                  <li data-i18n="st3_b4">A tamper-proof QR-coded identity for each animal — reducing theft and fraud</li>
-                </ul>
-              </div>
+      <!-- ❹ THREE-CARD INFO ROW WITH REAL PHOTOGRAPHY -->
+      <div id="platform-features" style="margin-bottom:36px;">
+        <div style="margin-bottom:20px; text-align:center;">
+          <h2 style="font-size:22px; font-weight:800; color:#1B365D; margin-bottom:6px;" data-i18n="feat_head">
+            Digital Livestock Intelligence Architecture
+          </h2>
+          <p style="font-size:14px; color:#64748B; margin:0;" data-i18n="feat_sub">
+            How offline AI at the point of data entry transforms national livestock management.
+          </p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+          
+          <!-- Card 1: Our Mission -->
+          <div class="card" style="margin-bottom:0; padding:0; overflow:hidden; display:flex; flex-direction:column; border:1px solid #E2E8F0;">
+            <div style="height:180px; background:url('/static/images/sahiwal_mission.jpg') center/cover no-repeat;"></div>
+            <div style="padding:20px; flex:1; display:flex; flex-direction:column;">
+              <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;" data-i18n="c1_tag">Our Mission</div>
+              <h3 style="font-size:17px; font-weight:800; color:#1B365D; margin-bottom:8px;" data-i18n="c1_h">Fixing Breed Data at Point of Entry</h3>
+              <p style="font-size:13.5px; color:#475569; line-height:1.55; margin-bottom:16px; flex:1;" data-i18n="c1_p">
+                Manual breed registration often leads to errors affecting subsidy allocation and insurance claims. Bharat Pashu-Pehchaan provides instant, objective AI validation right when data is recorded in the field.
+              </p>
+              <button onclick="goPage('pg-scan', document.querySelectorAll('.nav-tab')[1])" style="background:none; border:none; color:#008080; font-size:13px; font-weight:700; cursor:pointer; padding:0; text-align:left; display:inline-flex; align-items:center; gap:4px;">
+                Learn more &rarr;
+              </button>
             </div>
           </div>
+
+          <!-- Card 2: How It Works -->
+          <div class="card" style="margin-bottom:0; padding:0; overflow:hidden; display:flex; flex-direction:column; border:1px solid #E2E8F0;">
+            <div style="height:180px; background:url('/static/images/kankrej_workflow.jpg') center/cover no-repeat;"></div>
+            <div style="padding:20px; flex:1; display:flex; flex-direction:column;">
+              <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;" data-i18n="c2_tag">How It Works</div>
+              <h4 style="font-size:17px; font-weight:800; color:#1B365D; margin-bottom:8px;" data-i18n="c2_h">Photo to Verified Audit Record</h4>
+              <p style="font-size:13.5px; color:#475569; line-height:1.55; margin-bottom:16px; flex:1;" data-i18n="c2_p">
+                Field Level Workers capture a single photo. Quantized MobileNetV2 identifies morphological features offline, outputs confidence scores, flags ambiguous cases for expert review, and generates SHA-256 audit hashes.
+              </p>
+              <button onclick="goPage('pg-audit', document.querySelectorAll('.nav-tab')[4])" style="background:none; border:none; color:#008080; font-size:13px; font-weight:700; cursor:pointer; padding:0; text-align:left; display:inline-flex; align-items:center; gap:4px;">
+                View Audit Ledger &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: Built For Field Workers -->
+          <div class="card" style="margin-bottom:0; padding:0; overflow:hidden; display:flex; flex-direction:column; border:1px solid #E2E8F0;">
+            <div style="height:180px; background:url('/static/images/murrah_fieldworker.jpg') center/cover no-repeat;"></div>
+            <div style="padding:20px; flex:1; display:flex; flex-direction:column;">
+              <div style="font-size:11px; font-weight:700; color:#008080; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;" data-i18n="c3_tag">Field Capability</div>
+              <h3 style="font-size:17px; font-weight:800; color:#1B365D; margin-bottom:8px;" data-i18n="c3_h">Built for Zero-Connectivity Field Use</h3>
+              <p style="font-size:13.5px; color:#475569; line-height:1.55; margin-bottom:16px; flex:1;" data-i18n="c3_p">
+                Designed for low-cost Android smartphones and tablets in remote rural areas. Runs 100% offline with IndexedDB local caching, Web Speech audio readout for accessibility, and automatic cloud sync when online.
+              </p>
+              <button onclick="goPage('pg-myscans', document.querySelectorAll('.nav-tab')[5])" style="background:none; border:none; color:#008080; font-size:13px; font-weight:700; cursor:pointer; padding:0; text-align:left; display:inline-flex; align-items:center; gap:4px;">
+                Explore My Scans &rarr;
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- ❺ WHY IT MATTERS -->
-      <div class="home-section dark">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="section-label" data-i18n="impact_label">Public Impact</div>
-          <h2 class="section-title" data-i18n="impact_title">Why accurate breed data is a national priority</h2>
-          <p class="section-sub" data-i18n="impact_sub">India has the world's largest livestock population. The quality of this data directly affects ₹15,000+ crore in annual government expenditure on animal husbandry schemes.</p>
-          <div class="impact-grid">
-            <div class="impact-card">
-              <span class="ic-icon">📊</span>
-              <h4 data-i18n="ic1_h">Better Livestock Census</h4>
-              <p data-i18n="ic1_p">Accurate breed-level data improves the 20th Livestock Census, enabling evidence-based national breeding policy and district-level resource allocation.</p>
-            </div>
-            <div class="impact-card">
-              <span class="ic-icon">💰</span>
-              <h4 data-i18n="ic2_h">Fair Subsidy Disbursal</h4>
-              <p data-i18n="ic2_p">Breed-correct registration ensures Rashtriya Gokul Mission incentives and state dairy bonuses actually reach the farmers who own high-value indigenous cattle.</p>
-            </div>
-            <div class="impact-card">
-              <span class="ic-icon">🧬</span>
-              <h4 data-i18n="ic3_h">Indigenous Genetics Preserved</h4>
-              <p data-i18n="ic3_p">Knowing exactly where rare breeds like Vechur or Punganur exist allows targeted conservation programs and regulated semen supply — preventing irreversible genetic erosion.</p>
-            </div>
-            <div class="impact-card">
-              <span class="ic-icon">🛡️</span>
-              <h4 data-i18n="ic4_h">Reduced Livestock Fraud</h4>
-              <p data-i18n="ic4_p">Photo-verified, hash-chained records make duplicate insurance claims and phantom animal registrations detectable — protecting the integrity of the entire BPA dataset.</p>
-            </div>
+      <!-- ❺ EXPLORE THE PLATFORM (Quick-link cards replacing login/QR) -->
+      <div class="card" style="margin-bottom:32px; background:linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:20px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="exp_title">
+            Explore Platform Features
+          </h2>
+          <p style="font-size:13.5px; color:#64748B; margin:0;" data-i18n="exp_sub">
+            Direct access to core diagnostic, encyclopedia, verification, and audit tools.
+          </p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;">
+          
+          <div onclick="goPage('pg-scan', document.querySelectorAll('.nav-tab')[1])" style="background:#FFFFFF; border:1px solid #E2E8F0; padding:18px; border-radius:8px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#008080'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='#E2E8F0'; this.style.transform='none';">
+            <div style="font-size:24px; margin-bottom:8px;">🔬</div>
+            <div style="font-size:15px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="qc1_h">AI Scan Studio</div>
+            <div style="font-size:12px; color:#64748B;" data-i18n="qc1_p">Upload or capture cattle photo for instant offline AI breed diagnosis &amp; Grad-CAM heatmaps.</div>
           </div>
+
+          <div onclick="goPage('pg-encyclopedia', document.querySelectorAll('.nav-tab')[2])" style="background:#FFFFFF; border:1px solid #E2E8F0; padding:18px; border-radius:8px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#008080'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='#E2E8F0'; this.style.transform='none';">
+            <div style="font-size:24px; margin-bottom:8px;">📚</div>
+            <div style="font-size:15px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="qc2_h">Breed Encyclopedia</div>
+            <div style="font-size:12px; color:#64748B;" data-i18n="qc2_p">Explore rich profiles, traits, milk yield, and crossbreeding advisories for 60 Indian breeds.</div>
+          </div>
+
+          <div onclick="goPage('pg-queue', document.querySelectorAll('.nav-tab')[3])" style="background:#FFFFFF; border:1px solid #E2E8F0; padding:18px; border-radius:8px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#008080'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='#E2E8F0'; this.style.transform='none';">
+            <div style="font-size:24px; margin-bottom:8px;">👩‍⚕️</div>
+            <div style="font-size:15px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="qc3_h">Expert Queue</div>
+            <div style="font-size:12px; color:#64748B;" data-i18n="qc3_p">Veterinary verification workflow for low-confidence or rare breed scan cases.</div>
+          </div>
+
+          <div onclick="goPage('pg-audit', document.querySelectorAll('.nav-tab')[4])" style="background:#FFFFFF; border:1px solid #E2E8F0; padding:18px; border-radius:8px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#008080'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='#E2E8F0'; this.style.transform='none';">
+            <div style="font-size:24px; margin-bottom:8px;">🔐</div>
+            <div style="font-size:15px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="qc4_h">Audit &amp; Analytics</div>
+            <div style="font-size:12px; color:#64748B;" data-i18n="qc4_p">Tamper-evident SHA-256 digital ledger &amp; regional breed distribution analytics.</div>
+          </div>
+
+          <div onclick="goPage('pg-myscans', document.querySelectorAll('.nav-tab')[5])" style="background:#FFFFFF; border:1px solid #E2E8F0; padding:18px; border-radius:8px; cursor:pointer; transition:all 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#008080'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='#E2E8F0'; this.style.transform='none';">
+            <div style="font-size:24px; margin-bottom:8px;">📱</div>
+            <div style="font-size:15px; font-weight:800; color:#1B365D; margin-bottom:4px;" data-i18n="qc5_h">My Scans (IndexedDB)</div>
+            <div style="font-size:12px; color:#64748B;" data-i18n="qc5_p">Review your local on-device scan history offline and sync to the cloud on demand.</div>
+          </div>
+
         </div>
       </div>
 
-      <!-- ❻ BREED SHOWCASE -->
-      <div class="home-section">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="section-label" data-i18n="breed_label">Breed Spotlight</div>
-          <h2 class="section-title" data-i18n="breed_title">15 Curated Indigenous Breeds</h2>
-          <p class="section-sub" data-i18n="breed_sub">Every breed in this platform was selected based on ICAR breed registers, conservation status, and economic significance to Indian dairy and agriculture.</p>
-          <div class="breed-strip">
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#E0F2FE;">🐄</div>
-              <div class="bc-name">Gir</div>
-              <div class="bc-type">Milch · Gujarat</div>
-              <div class="bc-role" data-i18n="br1">Highest milk yield among Indian zebu cattle; exported to Brazil and Israel for tropical dairy programs.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#FEF3C7;">🐄</div>
-              <div class="bc-name">Sahiwal</div>
-              <div class="bc-type">Milch · Punjab</div>
-              <div class="bc-role" data-i18n="br2">India's premier dairy zebu; tick-resistant and heat-tolerant — the backbone of Punjab and Haryana dairy economies.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#F1F5F9;">🐃</div>
-              <div class="bc-name">Murrah</div>
-              <div class="bc-type">Buffalo · Haryana</div>
-              <div class="bc-role" data-i18n="br3">World's highest-yielding buffalo breed; produces milk with 7%+ fat, critical for Indian ghee and paneer industries.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#DCFCE7;">🐄</div>
-              <div class="bc-name">Kankrej</div>
-              <div class="bc-type">Dual Purpose · Gujarat</div>
-              <div class="bc-role" data-i18n="br4">Hardy dual-purpose breed; excellent draught power plus moderate milk yield; parent of the American Brahman.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#FFF7ED;">🐄</div>
-              <div class="bc-name">Khillari</div>
-              <div class="bc-type">Draught · Maharashtra</div>
-              <div class="bc-role" data-i18n="br5">Renowned for speed and endurance; preferred bullocks for the Deccan plateau's hard, rocky soils.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#F0FDF4;">🐄</div>
-              <div class="bc-name">Hariana</div>
-              <div class="bc-type">Dual Purpose · Haryana</div>
-              <div class="bc-role" data-i18n="br6">Versatile dual-purpose breed widely used in UP and Haryana; significant in government cattle development programs.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#F5F3FF;">🐄</div>
-              <div class="bc-name">Kangayam</div>
-              <div class="bc-type">Draught · Tamil Nadu</div>
-              <div class="bc-role" data-i18n="br7">Critically endangered; one of the last pure draught breeds of South India with exceptional disease resistance.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#FEF2F2;">🐄</div>
-              <div class="bc-name">Vechur</div>
-              <div class="bc-type">Milch · Kerala</div>
-              <div class="bc-role" data-i18n="br8">World's smallest cattle breed; high A2 milk fat; near-extinct and under active conservation by Kerala Veterinary University.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#E0F2FE;">🐄</div>
-              <div class="bc-name">Red Sindhi</div>
-              <div class="bc-type">Milch · Sindh origin</div>
-              <div class="bc-role" data-i18n="br9">High heat and tick tolerance; a key breed in India's tropical dairy belt from Gujarat to West Bengal.</div>
-            </div>
-            <div class="breed-card-new">
-              <div class="bc-emoji" style="background:#F0FDF4;">🐄</div>
-              <div class="bc-name">Ongole</div>
-              <div class="bc-type">Dual Purpose · Andhra Pradesh</div>
-              <div class="bc-role" data-i18n="br10">Iconic draught breed of coastal Andhra; exported globally as Nellore cattle to Brazil and the USA.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ❼ FOOTER -->
+      <!-- ❻ FOOTER (Department & Portal Footer) -->
       <footer class="home-footer">
         <div style="max-width:1100px; margin:0 auto;">
           <div class="footer-grid">
             <div class="footer-brand">
-              <h4 data-i18n="foot_brand">Bharat Pashupehchan</h4>
+              <h4 data-i18n="foot_brand">Bharat Pashu-Pehchaan</h4>
               <p data-i18n="foot_blurb">India is home to 43 recognised cattle breeds and 13 buffalo breeds — the highest diversity of any country. This platform supports the accurate identification and conservation of these breeds, which are uniquely adapted to India's diverse agro-climatic zones and are irreplaceable genetic resources for drought tolerance, disease resistance, and high-fat A2 milk production.</p>
             </div>
             <div class="footer-col">
@@ -2189,11 +2100,6 @@
                 <li><button onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)'))" data-i18n="tab_enc">Encyclopedia</button></li>
                 <li><button onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)'))" data-i18n="tab_expert">Expert Queue</button></li>
                 <li><button onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)'))" data-i18n="tab_audit">Audit Trail</button></li>
-              </ul>
-            </div>
-            <div class="footer-col">
-              <h5 data-i18n="foot_about_h">About</h5>
-              <ul>
                 <li><button onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="foot_how">How it Works</button></li>
                 <li><button onclick="goPage('pg-myscans', document.querySelector('.nav-tab:nth-child(6)'))" data-i18n="tab_myscans">My Scans</button></li>
                 <li><button onclick="window.open('https://dahd.gov.in','_blank')" data-i18n="foot_dahd">DAHD Ministry</button></li>
@@ -2719,7 +2625,7 @@
 
     const HI = {
       'gov': 'भारत सरकार | मत्स्य पालन, पशुपालन और डेयरी मंत्रालय',
-      'b-name': 'भारत पशुपहचान',
+      'b-name': 'भारत पशु-पहचान',
       'b-sub': 'डिजिटल पशुधन इंटेलिजेंस प्लेटफॉर्म',
       'tab_home': 'होम',
       'tab_scan': 'AI स्कैन स्टूडियो',
@@ -2817,17 +2723,34 @@
       'br8': 'दुनिया की सबसे छोटी मवेशी नस्ल; A2 दूध वसा; केरल पशु चिकित्सा विश्वविद्यालय द्वारा संरक्षण।',
       'br9': 'उच्च गर्मी और टिक सहनशीलता; गुजरात से पश्चिम बंगाल तक उष्णकटिबंधीय डेयरी।',
       'br10': 'तटीय आंध्र की प्रतिष्ठित भार नस्ल; ब्राजील और अमेरिका को नेल्लोर मवेशी के रूप में निर्यात।',
-      // Footer
-      'foot_brand': 'भारत पशुपहचान',
-      'foot_blurb': 'भारत में 43 मान्यता प्राप्त मवेशी नस्लें और 13 भैंस नस्लें हैं — किसी भी देश में सर्वाधिक विविधता। यह मंच इन नस्लों की सटीक पहचान और संरक्षण का समर्थन करता है।',
-      'foot_nav_h': 'नेविगेट करें',
-      'foot_about_h': 'के बारे में',
-      'foot_how': 'यह कैसे काम करता है',
-      'foot_sih': 'मेरे स्कैन',
-      'foot_dahd': 'DAHD मंत्रालय',
-      'foot_bpa': 'भारत पशुधन ऐप',
-      'foot_ministry': 'पशुपालन और डेयरी विभाग · मत्स्य पालन, पशुपालन और डेयरी मंत्रालय · भारत सरकार',
-      'foot_proto': 'यह एक प्रदर्शन मंच है और आधिकारिक सरकारी सेवा नहीं है',
+      // New Home strings
+      'stat_b1': 'स्वदेशी नस्लें',
+      'stat_b2': 'ऑन-डिवाइस AI गति',
+      'stat_b3': 'ऑफलाइन कार्य क्षमता',
+      'stat_b4': 'सत्यापित स्कैन',
+      'feat_head': 'डिजिटल पशुधन इंटेलिजेंस आर्किटेक्चर',
+      'feat_sub': 'डेटा प्रविष्टि बिंदु पर ऑफलाइन AI राष्ट्रीय पशुधन प्रबंधन को कैसे बदलता है।',
+      'c1_tag': 'हमारा मिशन',
+      'c1_h': 'प्रविष्टि बिंदु पर नस्ल डेटा सुधारना',
+      'c1_p': 'मैन्युअल नस्ल प्रविष्टि अक्सर गलतियों का कारण बनती है जो सब्सिडी आवंटन और बीमा दावों को प्रभावित करती हैं। भारत पशु-पहचान क्षेत्र में डेटा रिकॉर्ड करते समय तुरंत AI सत्यापन प्रदान करता है।',
+      'c2_tag': 'यह कैसे काम करता है',
+      'c2_h': 'फोटो से सत्यापित ऑडिट रिकॉर्ड तक',
+      'c2_p': 'क्षेत्र कार्यकर्ता एक फोटो लेते हैं। क्वांटाइज्ड MobileNetV2 शारीरिक विशेषताओं की पहचान करता है, आत्मविश्वास स्कोर उत्पन्न करता है, और SHA-256 ऑडिट हैश बनाता है।',
+      'c3_tag': 'क्षेत्र क्षमता',
+      'c3_h': 'शून्य-कनेक्टिविटी क्षेत्र उपयोग के लिए निर्मित',
+      'c3_p': 'दूरस्थ ग्रामीण क्षेत्रों में कम लागत वाले एंड्रॉइड स्मार्टफोन और टैबलेट के लिए डिज़ाइन किया गया। IndexedDB लोकल कैशिंग और स्पीच ऑडियो रीडआउट के साथ 100% ऑफलाइन चलता है।',
+      'exp_title': 'प्लेटफ़ॉर्म सुविधाओं का अन्वेषण करें',
+      'exp_sub': 'मुख्य नैदानिक, विश्वकोश, सत्यापन और ऑडिट टूल तक सीधी पहुंच।',
+      'qc1_h': 'AI स्कैन स्टूडियो',
+      'qc1_p': 'त्वरित ऑन-डिवाइस नस्ल निदान और XAI हीटमैप के लिए फोटो अपलोड करें।',
+      'qc2_h': 'नस्ल विश्वकोश',
+      'qc2_p': '60 भारतीय नस्लों के समृद्ध प्रोफाइल, लक्षण, दूध उत्पादन और क्रॉसब्रीडिंग सलाह देखें।',
+      'qc3_h': 'विशेषज्ञ कतार',
+      'qc3_p': 'कम आत्मविश्वास वाले स्कैन मामलों के लिए पशु चिकित्सा सत्यापन कार्यप्रवाह।',
+      'qc4_h': 'ऑडिट और एनालिटिक्स',
+      'qc4_p': 'छेड़छाड़-रोधी SHA-256 डिजिटल बहीखाता और क्षेत्रीय नस्ल विश्लेषण।',
+      'qc5_h': 'मेरे स्कैन (IndexedDB)',
+      'qc5_p': 'अपने स्थानीय स्कैन इतिहास को ऑफलाइन देखें और मांग पर क्लाउड पर सिंक करें।',
     };
 
     /* ─── Navigation ───────────────────────── */

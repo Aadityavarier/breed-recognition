@@ -481,11 +481,29 @@ def manifest():
         return send_file(m_path, mimetype="application/json")
     return "{}", 404
 
+ARTIFACT_DIR = r"C:\Users\revathi\.gemini\antigravity\brain\f95dc097-e0da-45b5-804a-5efa86b85230"
+
 @app.route("/static/<path:filename>")
 def serve_static(filename):
     path = os.path.join(DASHBOARD_DIR, "static", filename)
     if os.path.exists(path):
         return send_file(path)
+    
+    # Fallback for generated stock photos
+    base = os.path.basename(filename)
+    if "gir" in base.lower() or "hero" in base.lower():
+        f = os.path.join(ARTIFACT_DIR, "gir_cattle_hero_1787597951096.png")
+        if os.path.exists(f): return send_file(f)
+    if "sahiwal" in base.lower() or "mission" in base.lower():
+        f = os.path.join(ARTIFACT_DIR, "sahiwal_mission_1787597966043.png")
+        if os.path.exists(f): return send_file(f)
+    if "kankrej" in base.lower() or "workflow" in base.lower():
+        f = os.path.join(ARTIFACT_DIR, "kankrej_workflow_1787598031296.png")
+        if os.path.exists(f): return send_file(f)
+    if "murrah" in base.lower() or "fieldworker" in base.lower():
+        f = os.path.join(ARTIFACT_DIR, "murrah_fieldworker_1787598049202.png")
+        if os.path.exists(f): return send_file(f)
+
     return f"Asset {filename} not found", 404
 
 
