@@ -3,7 +3,6 @@ import sys
 import sqlite3
 from flask import Flask, render_template, request, jsonify
 
-# Base paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
 DB_PATH = os.path.join(BASE_DIR, "data", "cattle_records.db")
@@ -15,6 +14,13 @@ app = Flask(
     static_url_path="/static"
 )
 
+# Mock context object to satisfy Jinja template variables
+class MockEngine:
+    name = "TFLite INT8 Runtime (Cloud Sandbox)"
+    version = "v2.14"
+    status = "Active"
+    quantization = "INT8"
+
 def get_db():
     if os.path.exists(DB_PATH):
         try:
@@ -25,13 +31,20 @@ def get_db():
             return None
     return None
 
-# Handle root URL, index path, and rewritten serverless invocations
 @app.route("/")
 @app.route("/api/index.py")
 @app.route("/index")
 def index():
     try:
-        return render_template("index.html")
+        # Pass all template variables expected by index.html
+        return render_template(
+            "index.html",
+            engine=MockEngine(),
+            total_breeds=60,
+            active_learning_count=12,
+            verified_count=48,
+            threshold=0.70
+        )
     except Exception as err:
         return f"Template Render Error: {str(err)}", 500
 
