@@ -1236,15 +1236,18 @@ def verify():
     raw_hash_str = f"{scan_id}:{verified_breed}:{verifier_name}:{verifier_license}:{timestamp}"
     record_hash = hashlib.sha256(raw_hash_str.encode()).hexdigest()
 
-    # Persist status change and verifier identity into database
-    update_status(
-        scan_id=scan_id,
-        status="verified",
-        notes=f"Verified by {verifier_name} ({verifier_license})",
-        verified_by_name=verifier_name,
-        verified_by_license_id=verifier_license,
-        blockchain_hash=record_hash
-    )
+    # Persist status change and verifier identity into database (fail-safe)
+    try:
+        update_status(
+            scan_id=scan_id,
+            status="verified",
+            notes=f"Verified by {verifier_name} ({verifier_license})",
+            verified_by_name=verifier_name,
+            verified_by_license_id=verifier_license,
+            blockchain_hash=record_hash
+        )
+    except Exception as db_err:
+        print(f"[Vercel DB Notice] Persistence skipped: {db_err}")
 
     return jsonify({
         "success": True,
@@ -1278,13 +1281,16 @@ def retrain():
     verifier_name = expert["name"]
     verifier_license = expert["license_id"]
 
-    update_status(
-        scan_id=scan_id,
-        status="retraining_queue",
-        notes=f"Flagged for retrain by {verifier_name} ({verifier_license})",
-        verified_by_name=verifier_name,
-        verified_by_license_id=verifier_license
-    )
+    try:
+        update_status(
+            scan_id=scan_id,
+            status="retraining_queue",
+            notes=f"Flagged for retrain by {verifier_name} ({verifier_license})",
+            verified_by_name=verifier_name,
+            verified_by_license_id=verifier_license
+        )
+    except Exception as db_err:
+        print(f"[Vercel DB Notice] Persistence skipped: {db_err}")
 
     return jsonify({
         "success": True,

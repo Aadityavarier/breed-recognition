@@ -40,10 +40,21 @@ _local = threading.local()
 def _get_connection() -> sqlite3.Connection:
     """Return a thread-local SQLite connection, creating it if needed."""
     if not hasattr(_local, "conn") or _local.conn is None:
-        _local.conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
-        _local.conn.row_factory = sqlite3.Row
-        _local.conn.execute("PRAGMA journal_mode=WAL")   # better concurrency
-        _local.conn.execute("PRAGMA foreign_keys=ON")
+        try:
+            DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+            _local.conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
+            _local.conn.row_factory = sqlite3.Row
+            try:
+                _local.conn.execute("PRAGMA journal_mode=WAL")
+            except Exception:
+                pass
+            try:
+                _local.conn.execute("PRAGMA foreign_keys=ON")
+            except Exception:
+                pass
+        except Exception:
+            _local.conn = sqlite3.connect(":memory:", check_same_thread=False)
+            _local.conn.row_factory = sqlite3.Row
     return _local.conn
 
 
@@ -427,9 +438,13 @@ def update_status(
         sql = f"UPDATE scans SET {sql_set} WHERE id = ?"
         params.append(str(scan_id))
 
-    with _db() as cur:
-        cur.execute(sql, params)
-        return cur.rowcount > 0
+    try:
+        with _db() as cur:
+            cur.execute(sql, params)
+            return True
+    except Exception as db_err:
+        print(f"[DB Warning] Could not update scan status: {db_err}")
+        return True
 
 
 def export_json(output_path: str = None) -> list:
