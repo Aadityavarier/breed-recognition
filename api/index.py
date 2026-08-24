@@ -483,6 +483,16 @@ def serve_static(filename):
 def predict():
     region = request.form.get("region", "Gujarat")
     color  = request.form.get("color", "Reddish Brown")
+    lat_raw = request.form.get("latitude", "").strip()
+    lon_raw = request.form.get("longitude", "").strip()
+    try:
+        latitude = float(lat_raw) if lat_raw else None
+    except ValueError:
+        latitude = None
+    try:
+        longitude = float(lon_raw) if lon_raw else None
+    except ValueError:
+        longitude = None
 
     # Simple demo logic — in production this comes from the inference engine
     if "Gujarat" in region or "Red" in color:
@@ -497,6 +507,8 @@ def predict():
     profile = get_breed_profile(breed_name)
     timestamp   = time.strftime("%Y-%m-%d %H:%M:%S")
     record_hash = hashlib.sha256(f"{breed_name}{timestamp}".encode()).hexdigest()
+
+    geo_tag = f"{latitude:.4f}°, {longitude:.4f}°" if (latitude is not None and longitude is not None) else None
 
     response_payload = {
         "success": True,
@@ -536,6 +548,10 @@ def predict():
         },
         "image_url":     GRAD_CAM_ORIGINAL,
         "xai_image_url": GRAD_CAM_HEATMAP,
+        # Location
+        "latitude":          latitude,
+        "longitude":         longitude,
+        "geo_tag":           geo_tag,
         # Audit
         "region_boosted":    "Gujarat" in region or "Punjab" in region,
         "status":            "AUTO_VERIFIED",

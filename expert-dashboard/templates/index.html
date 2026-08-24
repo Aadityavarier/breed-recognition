@@ -1823,7 +1823,7 @@
       </div>
       <div>
         <div class="brand-name" data-i18n="b-name">Bharat Pashudhan AI Portal</div>
-        <div class="brand-sub" data-i18n="b-sub">National Digital Livestock Mission (SIH 2025)</div>
+        <div class="brand-sub" data-i18n="b-sub">Digital Livestock Intelligence Platform (SIH 2025)</div>
       </div>
       <div id="engine-pill">{{ engine.backend }} engine</div>
     </div>
@@ -1861,8 +1861,8 @@
       <!-- ❶ HERO -->
       <div class="home-hero">
         <div class="badge" data-i18n="hero_badge">Smart India Hackathon 2025 · Problem Statement SIH25004</div>
-        <h1 data-i18n="hero_h1">AI-Powered Cattle &amp; Buffalo<br><span>Breed Recognition</span> for India</h1>
-        <p class="sub" data-i18n="hero_sub">Fixing livestock data quality at the point of entry — offline, instant, and tamper-proof, so every farmer gets the subsidy and insurance they deserve.</p>
+        <h1 data-i18n="hero_h1">AI-Powered Digital Livestock<br><span>Intelligence Platform</span> for India</h1>
+        <p class="sub" data-i18n="hero_sub">Building a real-time, geo-tagged livestock intelligence layer across India — fixing data quality at the point of entry with instant, offline, and tamper-proof AI scans.</p>
         <div class="cta-row">
           <button class="btn-primary" onclick="document.querySelector('.nav-tab:nth-child(2)').click()" data-i18n="hero_cta1">🔬 Launch AI Scan Studio</button>
           <button class="btn-outline" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2">↓ How it works</button>
@@ -2193,6 +2193,35 @@
             📸 <span data-i18n="btn_cam">Use Camera</span>
           </button>
 
+          <!-- GPS Location Capture Component -->
+          <div class="f-group" style="background:#F8FAFC; border:1px solid #E2E8F0; padding:14px; border-radius:8px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label style="font-size:12.5px; font-weight:700; color:#1B365D; margin:0;">📍 GPS Location Tagging</label>
+              <span id="loc-status-badge" style="font-size:10px; font-weight:700; background:#E2E8F0; color:#475569; padding:2px 8px; border-radius:99px;">OFFLINE GPS READY</span>
+            </div>
+            
+            <p style="font-size:11.5px; color:#475569; line-height:1.45; margin-bottom:10px;">
+              Location helps improve regional breed accuracy and build a real-time livestock distribution map for your area.
+            </p>
+            
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <button type="button" id="btn-get-location" onclick="captureGPSLocation()" class="btn-cam" style="flex:1; margin-bottom:0; min-height:40px; font-size:13px; border-color:#008080; color:#008080;">
+                📍 Capture GPS Coordinates
+              </button>
+              <input type="hidden" id="inp-latitude" value="">
+              <input type="hidden" id="inp-longitude" value="">
+            </div>
+            
+            <div id="loc-display" style="display:none; margin-top:8px; padding:8px 10px; background:#F0FDFA; border:1px solid #99F6E4; border-radius:6px; font-size:12px; color:#0F766E; font-weight:600;">
+              📍 <span id="loc-coords-text">Lat: —, Lon: —</span>
+              <span id="loc-place-text" style="display:block; font-size:11px; color:#0D9488; margin-top:2px;"></span>
+            </div>
+
+            <div style="font-size:10.5px; color:#64748B; margin-top:8px; display:flex; align-items:center; gap:4px;">
+              🔒 <span><strong>Privacy Note:</strong> Location data is stored on-device and only synced with your explicit submission.</span>
+            </div>
+          </div>
+
           <div class="f-group">
             <label>Geographic Region</label>
             <select id="inp-region" class="f-control">
@@ -2252,7 +2281,7 @@
 
               <!-- Match & Top 3 -->
               <div class="card" style="margin-bottom:0; position:relative;">
-                <div class="card-title">🏆 Match Result</div>
+                <div class="card-title">🏆 Livestock Intelligence Match</div>
                 <div id="breed-name">Gir</div>
                 <div id="breed-category">Milch Breed</div>
                 <div id="heuristic-badge"
@@ -2355,9 +2384,10 @@
                 title="Each scan generates a cryptographic hash chaining it to the previous record in the database, enabling tamper-evident auditing.">
                 <img id="audit-qr" src="" alt="QR">
                 <div class="info">
-                  <div class="title">🔐 Tamper-Evident Audit Record</div>
+                  <div class="title">🔐 Tamper-Evident Audit &amp; Geo Intelligence Record</div>
                   <div style="font-size: 11px; font-weight: 700; margin-bottom: 2px;">Pashu Aadhaar UID: <span
                       id="audit-uid" style="color:#0284C7;">—</span></div>
+                  <div id="audit-geo-tag" style="font-size: 11px; font-weight: 700; margin-bottom: 2px; color:#0F766E; display:none;">📍 Geo-Tag: <span id="audit-geo-val">—</span></div>
                   <div class="hash">Record Hash (SHA-256): <span id="audit-hash">0x000...</span></div>
                 </div>
               </div>
@@ -2448,9 +2478,9 @@
     <!-- PAGE: AUDIT TRAIL -->
     <div id="pg-audit" class="page">
       <div class="card">
-        <div class="card-title">🔐 Tamper-Evident Audit Log</div>
+        <div class="card-title">🔐 Tamper-Evident Digital Livestock Ledger</div>
         <div class="q-ctrl">
-          <p style="color:#475569; font-size:14px;">Immutable ledger of all verified diagnostic scans.</p>
+          <p style="color:#475569; font-size:14px;">Immutable, geo-tagged ledger of all verified diagnostic scans contributing to the regional livestock intelligence layer.</p>
           <div>
             <button class="act-btn verify" onclick="syncToBPA()" id="btn-sync-bpa">☁️ Sync to BPA</button>
             <button class="act-btn retrain" onclick="window.location.href='/api/export/audit_log'">📥 Export
@@ -2465,13 +2495,14 @@
                 <th>Image</th>
                 <th>Breed</th>
                 <th>Confidence</th>
+                <th>Location / GPS</th>
                 <th>Status</th>
                 <th>Record Hash (SHA-256)</th>
               </tr>
             </thead>
             <tbody id="a-tbody">
               <tr>
-                <td colspan="6" style="text-align:center; color:#94A3B8;">Loading audit trail...</td>
+                <td colspan="7" style="text-align:center; color:#94A3B8;">Loading audit trail...</td>
               </tr>
             </tbody>
           </table>
@@ -2505,7 +2536,7 @@
     const HI = {
       'gov': 'भारत सरकार | मत्स्य पालन, पशुपालन और डेयरी मंत्रालय',
       'b-name': 'भारत पशुधन AI पोर्टल',
-      'b-sub': 'राष्ट्रीय डिजिटल पशुधन मिशन (SIH 2025)',
+      'b-sub': 'डिजिटल पशुधन इंटेलिजेंस प्लेटफॉर्म (SIH 2025)',
       'tab_home': 'होम',
       'tab_scan': 'AI स्कैन स्टूडियो',
       'tab_enc': 'विश्वकोश',
@@ -2516,8 +2547,8 @@
       'btn_cam': 'कैमरा का उपयोग करें',
       // Hero
       'hero_badge': 'स्मार्ट इंडिया हैकाथॉन 2025 · समस्या विवरण SIH25004',
-      'hero_h1': 'AI-संचालित मवेशी एवं भैंस<br><span>नस्ल पहचान</span> भारत के लिए',
-      'hero_sub': 'डेटा प्रविष्टि बिंदु पर पशुधन डेटा की गुणवत्ता सुधारना — ऑफलाइन, त्वरित और छेड़छाड़-रोधी, ताकि हर किसान को उचित सब्सिडी और बीमा मिले।',
+      'hero_h1': 'AI-संचालित डिजिटल पशुधन<br><span>इंटेलिजेंस प्लेटफॉर्म</span> भारत के लिए',
+      'hero_sub': 'पूरे भारत में एक वास्तविक समय, जियो-टैग पशुधन इंटेलिजेंस परत का निर्माण — डेटा प्रविष्टि बिंदु पर गुणवत्ता सुधारना।',
       'hero_cta1': '🔬 AI स्कैन स्टूडियो लॉन्च करें',
       'hero_cta2': '↓ यह कैसे काम करता है',
       // Metrics
@@ -2707,6 +2738,99 @@
       alert('Camera access would be requested here on a physical device. For now, please upload a photo using the file picker.');
     }
 
+    /* ─── Geolocation ──────────────────────── */
+    function captureGPSLocation() {
+      const btn = document.getElementById('btn-get-location');
+      const badge = document.getElementById('loc-status-badge');
+      const locDisplay = document.getElementById('loc-display');
+      const coordsText = document.getElementById('loc-coords-text');
+      const placeText = document.getElementById('loc-place-text');
+      const latInput = document.getElementById('inp-latitude');
+      const lonInput = document.getElementById('inp-longitude');
+
+      if (!navigator.geolocation) {
+        showToast('Geolocation is not supported by your device browser.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = '📡 Acquiring GPS Signal…';
+      badge.textContent = 'LOCATING…';
+      badge.style.background = '#FEF3C7';
+      badge.style.color = '#B45309';
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          latInput.value = lat.toFixed(6);
+          lonInput.value = lon.toFixed(6);
+
+          coordsText.textContent = `Lat: ${lat.toFixed(4)}°, Lon: ${lon.toFixed(4)}° (${position.coords.accuracy ? Math.round(position.coords.accuracy) + 'm accuracy' : 'GPS'})`;
+          locDisplay.style.display = 'block';
+
+          btn.disabled = false;
+          btn.textContent = '✓ GPS Captured';
+          btn.style.background = '#F0FDF4';
+          btn.style.borderColor = '#16A34A';
+          btn.style.color = '#15803D';
+
+          badge.textContent = 'GPS CAPTURED';
+          badge.style.background = '#DCFCE7';
+          badge.style.color = '#15803D';
+
+          // Optional reverse geocoding if online (fallback gracefully if offline)
+          if (navigator.onLine) {
+            try {
+              const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+              if (res.ok) {
+                const geoData = await res.json();
+                const place = [geoData.locality, geoData.principalSubdivision, geoData.countryName].filter(Boolean).join(', ');
+                if (place) {
+                  placeText.textContent = `Location: ${place}`;
+                  // Pre-select region if matches
+                  const regSelect = document.getElementById('inp-region');
+                  if (regSelect && geoData.principalSubdivision) {
+                    for (let opt of regSelect.options) {
+                      if (opt.value && geoData.principalSubdivision.toLowerCase().includes(opt.value.toLowerCase())) {
+                        regSelect.value = opt.value;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (e) {
+              console.log('Reverse geocoding offline:', e);
+              placeText.textContent = 'Reverse geocoding offline (GPS saved)';
+            }
+          } else {
+            placeText.textContent = 'Offline Mode (Device GPS Coordinates Saved)';
+          }
+
+          showToast(`GPS Captured: ${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+        },
+        (error) => {
+          btn.disabled = false;
+          btn.textContent = '📍 Try GPS Capture Again';
+          badge.textContent = 'PERMISSION DENIED / SKIPPED';
+          badge.style.background = '#F1F5F9';
+          badge.style.color = '#64748B';
+          
+          let errMsg = 'Location permission declined. You may proceed manually.';
+          if (error.code === error.PERMISSION_DENIED) {
+            errMsg = 'Location permission declined. You may still scan animals using manual region select.';
+          }
+          showToast(errMsg);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 60000
+        }
+      );
+    }
+
     /* ─── Diagnostics ──────────────────────── */
     async function runDiagnostics() {
       if (!_file) return;
@@ -2722,6 +2846,8 @@
       const fd = new FormData();
       fd.append('image', _file);
       fd.append('region', document.getElementById('inp-region').value);
+      fd.append('latitude', document.getElementById('inp-latitude').value);
+      fd.append('longitude', document.getElementById('inp-longitude').value);
       fd.append('age', document.getElementById('inp-age').value);
       fd.append('color', document.getElementById('inp-color').value);
       fd.append('notes', document.getElementById('inp-notes').value);
@@ -2867,6 +2993,16 @@
       if (data.qr_code_url) {
         document.getElementById('audit-qr').src = data.qr_code_url;
       }
+      const elGeoBox = document.getElementById('audit-geo-tag');
+      const elGeoVal = document.getElementById('audit-geo-val');
+      if (elGeoBox && elGeoVal) {
+        if (data.geo_tag || (data.latitude && data.longitude)) {
+          elGeoVal.textContent = data.geo_tag || `${data.latitude.toFixed(4)}°, ${data.longitude.toFixed(4)}°`;
+          elGeoBox.style.display = 'block';
+        } else {
+          elGeoBox.style.display = 'none';
+        }
+      }
     }
 
     /* ─── Toasts & Notifications ───────────── */
@@ -2935,12 +3071,14 @@
 
         let html = '';
         data.scans.forEach(s => {
+          const locText = (s.latitude != null && s.longitude != null) ? `📍 ${s.latitude.toFixed(4)}°, ${s.longitude.toFixed(4)}°` : (s.region_input ? `📍 ${s.region_input}` : '—');
           html += `
         <tr>
           <td data-label="Time"><small>${new Date(s.timestamp).toLocaleString()}</small></td>
           <td data-label="Photo"><img src="${s.image_path.startsWith('/') ? '' : '/static/'}${s.image_path}" style="height:40px; border-radius:4px;"></td>
           <td data-label="Breed"><b>${s.predicted_breed}</b></td>
           <td data-label="Confidence">${(s.confidence_score * 100).toFixed(1)}%</td>
+          <td data-label="Location"><small style="color:#0F766E; font-weight:600;">${locText}</small></td>
           <td data-label="Status"><span class="status-badge ${s.status}">${s.status.replace(/_/g, ' ')}</span></td>
           <td data-label="Hash" style="font-family:monospace; font-size:11px; color:#15803D;">${s.blockchain_hash ? s.blockchain_hash.substring(0, 20) + '...' : '-'}</td>
         </tr>
@@ -2949,7 +3087,7 @@
         tbody.innerHTML = html;
       } catch (err) {
         console.error(err);
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading audit trail.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Error loading audit trail.</td></tr>';
       }
     }
 

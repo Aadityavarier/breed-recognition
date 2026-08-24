@@ -183,6 +183,18 @@ def predict():
     age = request.form.get("age", "").strip()
     color = request.form.get("color", "").strip()
     notes = request.form.get("notes", "").strip()
+    
+    # Parse GPS coordinates if available
+    lat_raw = request.form.get("latitude", "").strip()
+    lon_raw = request.form.get("longitude", "").strip()
+    try:
+        latitude = float(lat_raw) if lat_raw else None
+    except ValueError:
+        latitude = None
+    try:
+        longitude = float(lon_raw) if lon_raw else None
+    except ValueError:
+        longitude = None
 
     # Save image
     safe_name    = _safe_filename(file.filename)
@@ -248,12 +260,47 @@ def predict():
     _bd_defaults.update(breed_details)
     breed_details = _bd_defaults
 
+    # Persist to DB including GPS location data
+    scan_id = insert_scan(
+        image_path          = relative_path,
+        predicted_breed     = result["top1_breed"],
+        confidence_score    = result["top1_confidence"],
+        top3_predictions    = result["top3"],
+        region_input        = region,
+        latitude            = latitude,
+        longitude           = longitude,
+        age_input           = age,
+        color_input         = color,
+        health_status       = "",  # Not yet implemented
+        estimated_weight_kg = "",  # Not yet implemented
+        blockchain_hash     = b_hash,
+        qr_code_path        = qr_relative_path,
+        notes               = notes,
+        status              = status,
+        timestamp           = timestamp_iso,
+    )
+
+    logger.info(
+        f"Scan #{scan_id} | {result['top1_breed']} "
+        f"({result['top1_confidence']:.1%}) | Lat: {latitude}, Lon: {longitude} | {result['backend']}"
+    )
+
+    # On Vercel, uploaded files live in /tmp which is not served by Flask's
+    # static folder — use a dedicated /api/uploads/ proxy route instead.
+    _is_vercel = bool(os.environ.get("VERCEL"))
+    def _url(rel: str) -> str:
+        if not rel:
+            return ""
+        return f"/api/uploads/{rel.split('/', 1)[-1]}" if _is_vercel else f"/static/{rel}"
+
     morph_features = prof.get("morphological_features", {
         "cranial_structure": "Standard profile",
         "horn_curvature": "Standard profile",
         "dewlap": "Standard profile"
     })
     expl_sentence = prof.get("explanation_sentence", f"Classification for {result['top1_breed']} driven by attention on head, horn, and body morphological features.")
+
+    geo_tag = f"{latitude:.4f}°, {longitude:.4f}°" if (latitude is not None and longitude is not None) else None
 
     return jsonify({
         "success":                True,
@@ -271,6 +318,9 @@ def predict():
         "qr_code_url":            _url(qr_relative_path),
         "blockchain_hash":        b_hash,
         "timestamp":              datetime.utcnow().isoformat(),
+        "latitude":               latitude,
+        "longitude":              longitude,
+        "geo_tag":                geo_tag,
         "breed_details":          breed_details,
         "morphological_features": morph_features,
         "explanation_sentence":   expl_sentence,
