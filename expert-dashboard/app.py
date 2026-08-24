@@ -544,7 +544,7 @@ def api_uploaded_file(filename: str):
 
 if __name__ == "__main__":
     print("\n" + "=" * 64)
-    print("  🏛️  Bharat Pashudhan AI Dashboard (GovTech Upgrade)")
+    print("  🏛️  Bharat Pashupehchan Dashboard")
     print("=" * 64)
     engine = get_engine_status()
     print(f"  Backend    : {engine['backend'].upper()}")

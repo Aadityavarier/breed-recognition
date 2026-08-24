@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bharat Pashudhan | NDLM AI Portal</title>
+  <title>Bharat Pashupehchan | Digital Livestock Intelligence Platform</title>
   <!-- Suppress favicon 404 error -->
   <link rel="icon" href="data:,">
   <link rel="manifest" href="/manifest.json">
@@ -1859,8 +1859,8 @@
         </svg>
       </div>
       <div>
-        <div class="brand-name" data-i18n="b-name">Bharat Pashudhan AI Portal</div>
-        <div class="brand-sub" data-i18n="b-sub">Digital Livestock Intelligence Platform (SIH 2025)</div>
+        <div class="brand-name" data-i18n="b-name">Bharat Pashupehchan</div>
+        <div class="brand-sub" data-i18n="b-sub">Digital Livestock Intelligence Platform</div>
       </div>
       <div id="engine-pill">{{ engine.backend }} engine</div>
       <div id="net-status-pill" style="display:flex; align-items:center; gap:5px; background:rgba(22,163,74,0.2); border:1px solid #16A34A; color:#4ADE80; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-left:8px; transition:all 0.3s ease;">
@@ -1903,7 +1903,7 @@
 
       <!-- ❶ HERO -->
       <div class="home-hero">
-        <div class="badge" data-i18n="hero_badge">Smart India Hackathon 2025 · Problem Statement SIH25004</div>
+        <div class="badge" data-i18n="hero_badge">Digital Livestock Intelligence &amp; Breed Verification</div>
         <h1 data-i18n="hero_h1">AI-Powered Digital Livestock<br><span>Intelligence Platform</span> for India</h1>
         <p class="sub" data-i18n="hero_sub">Building a real-time, geo-tagged livestock intelligence layer across India — fixing data quality at the point of entry with instant, offline, and tamper-proof AI scans.</p>
         <div class="cta-row">
@@ -2178,7 +2178,7 @@
         <div style="max-width:1100px; margin:0 auto;">
           <div class="footer-grid">
             <div class="footer-brand">
-              <h4 data-i18n="foot_brand">Bharat Pashudhan AI Portal</h4>
+              <h4 data-i18n="foot_brand">Bharat Pashupehchan</h4>
               <p data-i18n="foot_blurb">India is home to 43 recognised cattle breeds and 13 buffalo breeds — the highest diversity of any country. This platform supports the accurate identification and conservation of these breeds, which are uniquely adapted to India's diverse agro-climatic zones and are irreplaceable genetic resources for drought tolerance, disease resistance, and high-fat A2 milk production.</p>
             </div>
             <div class="footer-col">
@@ -2195,7 +2195,7 @@
               <h5 data-i18n="foot_about_h">About</h5>
               <ul>
                 <li><button onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="foot_how">How it Works</button></li>
-                <li><button onclick="window.open('https://sih.gov.in','_blank')" data-i18n="foot_sih">SIH 2025 Portal</button></li>
+                <li><button onclick="goPage('pg-myscans', document.querySelector('.nav-tab:nth-child(6)'))" data-i18n="tab_myscans">My Scans</button></li>
                 <li><button onclick="window.open('https://dahd.gov.in','_blank')" data-i18n="foot_dahd">DAHD Ministry</button></li>
                 <li><button onclick="window.open('https://bharatpashudhan.gov.in','_blank')" data-i18n="foot_bpa">Bharat Pashudhan App</button></li>
               </ul>
@@ -2204,7 +2204,7 @@
           <hr class="footer-divider">
           <div class="footer-bottom">
             <p data-i18n="foot_ministry">Department of Animal Husbandry &amp; Dairying · Ministry of Fisheries, Animal Husbandry &amp; Dairying · Government of India</p>
-            <span class="prototype-badge" data-i18n="foot_proto">⚠ SIH 2025 Prototype — Not an Official Government Platform</span>
+            <span class="prototype-badge" data-i18n="foot_proto">This is a demonstration platform and not an official government service</span>
           </div>
         </div>
       </footer>
@@ -2699,10 +2699,9 @@
 
   <footer
     style="margin-top: 40px; padding: 30px; text-align: center; color: #64748B; font-size: 13px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
-    <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry & Dairying,
-      Ministry of Fisheries, Animal Husbandry & Dairying, Government of India</div>
-    <div style="margin-bottom: 12px;">A Smart India Hackathon prototype addressing BPA data quality | Problem Statement
-      ID: 25004</div>
+    <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry &amp; Dairying,
+      Ministry of Fisheries, Animal Husbandry &amp; Dairying, Government of India</div>
+    <div style="margin-bottom: 12px;">This is a demonstration platform and not an official government service</div>
     <div>
       <span
         style="display:inline-block; background:#DCFCE7; color:#166534; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">🟢
@@ -2720,8 +2719,8 @@
 
     const HI = {
       'gov': 'भारत सरकार | मत्स्य पालन, पशुपालन और डेयरी मंत्रालय',
-      'b-name': 'भारत पशुधन AI पोर्टल',
-      'b-sub': 'डिजिटल पशुधन इंटेलिजेंस प्लेटफॉर्म (SIH 2025)',
+      'b-name': 'भारत पशुपहचान',
+      'b-sub': 'डिजिटल पशुधन इंटेलिजेंस प्लेटफॉर्म',
       'tab_home': 'होम',
       'tab_scan': 'AI स्कैन स्टूडियो',
       'tab_enc': 'विश्वकोश',
@@ -2733,7 +2732,7 @@
       'drag_text': 'यहाँ फोटो खींचें और छोड़ें',
       'btn_cam': 'कैमरा का उपयोग करें',
       // Hero
-      'hero_badge': 'स्मार्ट इंडिया हैकाथॉन 2025 · समस्या विवरण SIH25004',
+      'hero_badge': 'डिजिटल पशुधन इंटेलिजेंस और नस्ल सत्यापन',
       'hero_h1': 'AI-संचालित डिजिटल पशुधन<br><span>इंटेलिजेंस प्लेटफॉर्म</span> भारत के लिए',
       'hero_sub': 'पूरे भारत में एक वास्तविक समय, जियो-टैग पशुधन इंटेलिजेंस परत का निर्माण — डेटा प्रविष्टि बिंदु पर गुणवत्ता सुधारना।',
       'hero_cta1': '🔬 AI स्कैन स्टूडियो लॉन्च करें',
@@ -2819,16 +2818,16 @@
       'br9': 'उच्च गर्मी और टिक सहनशीलता; गुजरात से पश्चिम बंगाल तक उष्णकटिबंधीय डेयरी।',
       'br10': 'तटीय आंध्र की प्रतिष्ठित भार नस्ल; ब्राजील और अमेरिका को नेल्लोर मवेशी के रूप में निर्यात।',
       // Footer
-      'foot_brand': 'भारत पशुधन AI पोर्टल',
+      'foot_brand': 'भारत पशुपहचान',
       'foot_blurb': 'भारत में 43 मान्यता प्राप्त मवेशी नस्लें और 13 भैंस नस्लें हैं — किसी भी देश में सर्वाधिक विविधता। यह मंच इन नस्लों की सटीक पहचान और संरक्षण का समर्थन करता है।',
       'foot_nav_h': 'नेविगेट करें',
       'foot_about_h': 'के बारे में',
       'foot_how': 'यह कैसे काम करता है',
-      'foot_sih': 'SIH 2025 पोर्टल',
+      'foot_sih': 'मेरे स्कैन',
       'foot_dahd': 'DAHD मंत्रालय',
       'foot_bpa': 'भारत पशुधन ऐप',
       'foot_ministry': 'पशुपालन और डेयरी विभाग · मत्स्य पालन, पशुपालन और डेयरी मंत्रालय · भारत सरकार',
-      'foot_proto': '⚠ SIH 2025 प्रोटोटाइप — यह आधिकारिक सरकारी प्लेटफॉर्म नहीं है',
+      'foot_proto': 'यह एक प्रदर्शन मंच है और आधिकारिक सरकारी सेवा नहीं है',
     };
 
     /* ─── Navigation ───────────────────────── */
