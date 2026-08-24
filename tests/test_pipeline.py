@@ -249,3 +249,29 @@ class TestEngineStatus:
         from src.inference_engine import get_engine_status
         s = get_engine_status()
         assert 0.5 <= s["expert_threshold"] <= 0.9
+
+
+# ---------------------------------------------------------------------------
+# Confidence Variance Tests
+# ---------------------------------------------------------------------------
+
+class TestConfidenceVariance:
+    def test_confidence_scores_and_predictions_vary_per_image(self):
+        """Distinct images must yield varying confidence scores and/or predictions."""
+        from src.inference_engine import run_inference
+        from PIL import Image as PILImage
+
+        img1 = PILImage.new("RGB", (224, 224), (255, 30, 30))     # Bright Red
+        img2 = PILImage.new("RGB", (224, 224), (30, 255, 30))     # Bright Green
+        img3 = PILImage.new("RGB", (224, 224), (20, 20, 20))      # Dark Grey
+
+        res1 = run_inference(img1, region="Gujarat", color="Red")
+        res2 = run_inference(img2, region="Punjab", color="White")
+        res3 = run_inference(img3, region="Karnataka", color="Black")
+
+        c1 = round(res1["top1_confidence"], 3)
+        c2 = round(res2["top1_confidence"], 3)
+        c3 = round(res3["top1_confidence"], 3)
+
+        distinct_confs = {c1, c2, c3}
+        assert len(distinct_confs) >= 2, f"Confidence scores must vary per image, got: {c1}, {c2}, {c3}"

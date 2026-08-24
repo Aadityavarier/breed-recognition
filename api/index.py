@@ -811,28 +811,62 @@ def predict():
     except ValueError:
         longitude = None
 
-    # Simple demo logic — in production this comes from the inference engine
-    if "Gujarat" in region or "Red" in color:
-        breed_name = "Gir Cattle"
-    elif "Punjab" in region or "Haryana" in region:
-        breed_name = "Sahiwal"
-    elif "buffalo" in color.lower():
-        breed_name = "Murrah"
-    else:
-        breed_name = "Holstein Friesian"
+    # ── Process uploaded image for real photo, dynamic inference and Grad-CAM ──
+    orig_b64, heat_b64 = None, None
+    file_obj = request.files.get("image") or request.files.get("file")
+    
+    top1_conf = 0.885
+    breed_name = None
+    top3_list = []
+    needs_expert = False
+    backend_mode = "simulated"
+
+    if file_obj:
+        try:
+            from PIL import Image as PILImage
+            from src.inference_engine import run_inference
+            file_bytes = file_obj.read()
+            file_obj.seek(0)
+            orig_b64, heat_b64 = process_uploaded_image(file_obj)
+            
+            pil_img = PILImage.open(io.BytesIO(file_bytes))
+            inf_res = run_inference(pil_img, region=region, color=color)
+            breed_name = inf_res.get("top1_breed")
+            top1_conf = round(float(inf_res.get("top1_confidence", 0.885)), 3)
+            top3_list = inf_res.get("top3", [])
+            needs_expert = inf_res.get("needs_expert", top1_conf < 0.70)
+            backend_mode = inf_res.get("backend", "simulated")
+        except Exception as exc:
+            print("[Inference Integration Error]:", exc)
+
+    if not breed_name:
+        if "Gujarat" in region or "Red" in color:
+            breed_name = "Gir Cattle"
+        elif "Punjab" in region or "Haryana" in region:
+            breed_name = "Sahiwal"
+        elif "buffalo" in color.lower():
+            breed_name = "Murrah"
+        else:
+            breed_name = "Holstein Friesian"
+
+    if not top3_list:
+        alt1 = "Sahiwal" if breed_name != "Sahiwal" else "Red Sindhi"
+        alt2 = "Kankrej" if breed_name != "Kankrej" else "Gir Cattle"
+        rem = round((1.0 - top1_conf), 3)
+        c2 = round(rem * 0.65, 3)
+        c3 = round(rem - c2, 3)
+        top3_list = [
+            {"breed": breed_name, "confidence": top1_conf},
+            {"breed": alt1,       "confidence": c2},
+            {"breed": alt2,       "confidence": c3}
+        ]
 
     profile = get_breed_profile(breed_name)
     timestamp   = time.strftime("%Y-%m-%d %H:%M:%S")
-    record_hash = hashlib.sha256(f"{breed_name}{timestamp}".encode()).hexdigest()
+    record_hash = hashlib.sha256(f"{breed_name}{top1_conf}{timestamp}".encode()).hexdigest()
     pashu_uid   = f"PA-{record_hash[:8].upper()}"
 
     geo_tag = f"{latitude:.4f}°, {longitude:.4f}°" if (latitude is not None and longitude is not None) else None
-
-    # ── Process uploaded image for real photo and Grad-CAM ──
-    orig_b64, heat_b64 = None, None
-    file_obj = request.files.get("image") or request.files.get("file")
-    if file_obj:
-        orig_b64, heat_b64 = process_uploaded_image(file_obj)
 
     # Fallback to stock sample photo if no file uploaded
     if not orig_b64:
@@ -849,6 +883,7 @@ def predict():
     qr_payload = {
         "pashu_aadhaar": pashu_uid,
         "breed": breed_name,
+        "confidence": top1_conf,
         "hash": record_hash,
         "timestamp": timestamp,
         "verified_by": "Bharat Pashu-Pehchaan AI Engine"
@@ -861,13 +896,13 @@ def predict():
         # ── keys expected by populateResults() ──
         "top1_breed": breed_name,
         "category": profile["category"],
-        "confidence": 0.948,
+        "confidence": top1_conf,
+        "confidence_score": top1_conf,
         "top_prediction": breed_name,
-        "top3": [
-            {"breed": breed_name,   "confidence": 0.948},
-            {"breed": "Red Sindhi", "confidence": 0.034},
-            {"breed": "Kankrej",    "confidence": 0.018}
-        ],
+        "needs_expert": needs_expert,
+        "backend_mode": backend_mode,
+        "inference_note": "Simulated inference engine — pending trained model weights" if backend_mode == "mock" else "Live neural network inference",
+        "top3": top3_list,
         # Full enriched breed details block
         "breed_details": {
             "category":             profile["category"],
