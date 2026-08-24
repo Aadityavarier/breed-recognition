@@ -66,6 +66,7 @@ app = Flask(
     __name__,
     template_folder=str(DASHBOARD_DIR / "templates"),
     static_folder=str(DASHBOARD_DIR / "static"),
+    static_url_path="/static"
 )
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024   # 16 MB upload limit
 
