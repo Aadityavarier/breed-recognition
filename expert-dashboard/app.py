@@ -341,47 +341,23 @@ def predict():
 @app.route("/api/encyclopedia")
 def encyclopedia():
     """Fetch breed encyclopedia data enriched with full breed profiles."""
-    breed_name = request.args.get("breed")
     try:
-        from api.index import BREED_PROFILES
+        from api.index import catalog as api_catalog
+        return api_catalog()
     except Exception:
-        BREED_PROFILES = {}
+        pass
 
-    if BREED_PROFILES:
-        breeds_data = []
-        for name, p in BREED_PROFILES.items():
-            if breed_name and breed_name.lower() not in name.lower():
-                continue
-            breeds_data.append({
-                "id":                     str(len(breeds_data) + 1),
-                "breed_name":             name,
-                "name":                   name,
-                "breed":                  name,
-                "category":               p["category"],
-                "origin":                 p["native_states"][0] if p["native_states"] else "India",
-                "native_tract":           p["native_tract"],
-                "native_states":          p["native_states"],
-                "avg_milk_yield":         p["avg_milk_yield"],
-                "milk_yield":             p["avg_milk_yield"],
-                "production_yield":       p["avg_milk_yield"],
-                "speciality":             p["speciality"],
-                "traits":                 p["speciality"],
-                "purpose":                p["purpose"],
-                "temperament":            p["temperament"],
-                "disease_resistance":     p["disease_resistance"],
-                "optimal_crossbreeding":  p["optimal_crossbreeding"],
-                "crossbreeding_partners": p["crossbreeding_partners"],
-                "morphological_features": p["morphological_features"],
-                "explanation_sentence":   p["explanation_sentence"],
-                "image_url":              f"/static/images/{name.lower().replace(' ','_')}.jpg"
-            })
-        return jsonify({"success": True, "breeds": breeds_data})
-
+    breed_name = request.args.get("breed")
     data = get_encyclopedia(breed_name)
     for b in data:
-        b["breed_name"] = b.get("breed_name") or b.get("name") or b.get("breed")
-        b["avg_milk_yield"] = b.get("avg_milk_yield") or b.get("milk_yield") or "—"
-        b["speciality"] = b.get("speciality") or b.get("traits") or "—"
+        b_name = b.get("breed_name") or b.get("name") or b.get("breed") or "Unknown Breed"
+        b["breed_name"] = b_name
+        b["name"] = b_name
+        b["breed"] = b_name
+        b["avg_milk_yield"] = b.get("avg_milk_yield") or b.get("avg_milk_yield_kg_lactation") or b.get("milk_yield") or "—"
+        b["milk_yield"] = b["avg_milk_yield"]
+        b["speciality"] = b.get("speciality") or b.get("traits") or b.get("key_traits") or b.get("description") or "—"
+        b["traits"] = b["speciality"]
     return jsonify({"success": True, "breeds": data})
 
 

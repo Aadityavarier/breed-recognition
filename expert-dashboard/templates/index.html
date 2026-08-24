@@ -3259,53 +3259,63 @@
       try {
         const res = await fetch('/api/encyclopedia');
         const data = await res.json();
-        if (!data.success || !data.breeds) throw new Error("Invalid response");
+        const rawBreeds = data.breeds || data.catalog || data.data || data.items || [];
+        if (!Array.isArray(rawBreeds) || rawBreeds.length === 0) {
+          grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding: 40px; color: #64748B;">No breeds catalog found.</div>';
+          return;
+        }
 
         let html = '';
-        data.breeds.forEach((b, idx) => {
-          const name = b.breed_name || b.name || b.breed || 'Unknown Breed';
-          const cat = b.category || 'Indigenous Cattle';
-          const tract = b.native_tract || '—';
-          const yieldVal = b.avg_milk_yield || b.milk_yield || '—';
-          const spec = b.speciality || b.traits || '—';
-          const purpose = b.purpose || 'Milch';
+        rawBreeds.forEach((b, idx) => {
+          try {
+            const name = (b && (b.breed_name || b.name || b.breed)) ? String(b.breed_name || b.name || b.breed) : 'Unknown Breed';
+            const cat = (b && b.category) ? String(b.category) : 'Indigenous Cattle';
+            const tract = (b && b.native_tract) ? String(b.native_tract) : '—';
+            const yieldVal = (b && (b.avg_milk_yield || b.milk_yield || b.production_yield)) ? String(b.avg_milk_yield || b.milk_yield || b.production_yield) : '—';
+            const specRaw = (b && (b.speciality || b.traits || b.key_traits || b.description)) ? String(b.speciality || b.traits || b.key_traits || b.description) : '—';
+            const spec = specRaw.length > 80 ? specRaw.substring(0, 80) + '…' : specRaw;
+            const purpose = (b && b.purpose) ? String(b.purpose) : 'Milch';
 
-          // Filter logic
-          if (filterCategory !== 'All' && !cat.toLowerCase().includes(filterCategory.toLowerCase())) return;
-          if (searchQuery) {
-            const q = searchQuery.toLowerCase();
-            if (!name.toLowerCase().includes(q) && !tract.toLowerCase().includes(q) && !cat.toLowerCase().includes(q)) return;
+            // Filter logic
+            if (filterCategory !== 'All' && !cat.toLowerCase().includes(filterCategory.toLowerCase())) return;
+            if (searchQuery) {
+              const q = searchQuery.toLowerCase();
+              const statesStr = Array.isArray(b.native_states) ? b.native_states.join(' ').toLowerCase() : '';
+              if (!name.toLowerCase().includes(q) && !tract.toLowerCase().includes(q) && !cat.toLowerCase().includes(q) && !statesStr.includes(q)) return;
+            }
+
+            // Cache breed data globally for modal lookup
+            window._encBreedsCache = window._encBreedsCache || {};
+            window._encBreedsCache[idx] = b;
+
+            html += `
+          <div class="enc-card" onclick="openEncModal(${idx})" style="background:white; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid #E2E8F0; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; justify-content:space-between;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                <span style="display:inline-block; background:#F0FDFA; color:#0F766E; border:1px solid #CCFBF1; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:700;">${cat}</span>
+                <span style="font-size:11px; color:#64748B; font-weight:600;">⚙️ ${purpose}</span>
+              </div>
+              <h3 style="margin:0 0 10px 0; color:#1B365D; font-size:17px; font-weight:800;">${name}</h3>
+              
+              <div style="font-size:12.5px; color:#475569; margin-bottom:6px;">
+                <b>📍 Native Tract:</b> ${tract}
+              </div>
+              <div style="font-size:12.5px; color:#475569; margin-bottom:10px;">
+                <b>🥛 Milk Yield:</b> ${yieldVal}
+              </div>
+              <div style="font-size:12px; color:#64748B; line-height:1.45; margin-bottom:14px;">
+                ${spec}
+              </div>
+            </div>
+
+            <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:4px; text-align:right;">
+              <span style="color:#008080; font-size:12px; font-weight:700;">🔍 View Full Profile &amp; Crossbreeding →</span>
+            </div>
+          </div>
+        `;
+          } catch (itemErr) {
+            console.warn("Console warning: Error parsing single breed item, skipping render:", itemErr, b);
           }
-
-          // Cache breed data globally for modal lookup
-          window._encBreedsCache = window._encBreedsCache || {};
-          window._encBreedsCache[idx] = b;
-
-          html += `
-        <div class="enc-card" onclick="openEncModal(${idx})" style="background:white; border-radius:10px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid #E2E8F0; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; justify-space-between;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)'">
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-              <span style="display:inline-block; background:#F0FDFA; color:#0F766E; border:1px solid #CCFBF1; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:700;">${cat}</span>
-              <span style="font-size:11px; color:#64748B; font-weight:600;">⚙️ ${purpose}</span>
-            </div>
-            <h3 style="margin:0 0 10px 0; color:#1B365D; font-size:17px; font-weight:800;">${name}</h3>
-            
-            <div style="font-size:12.5px; color:#475569; margin-bottom:6px;">
-              <b>📍 Native Tract:</b> ${tract}
-            </div>
-            <div style="font-size:12.5px; color:#475569; margin-bottom:10px;">
-              <b>🥛 Milk Yield:</b> ${yieldVal}
-            </div>
-            <div style="font-size:12px; color:#64748B; line-height:1.45; margin-bottom:14px;">
-              ${spec.length > 80 ? spec.substring(0, 80) + '…' : spec}
-            </div>
-          </div>
-
-          <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:4px; text-align:right;">
-            <span style="color:#008080; font-size:12px; font-weight:700;">🔍 View Full Profile &amp; Crossbreeding →</span>
-          </div>
-        </div>
-      `;
         });
 
         if (html === '') html = '<div style="grid-column:1/-1; text-align:center; padding: 40px; color: #64748B;">No breeds match your filter.</div>';

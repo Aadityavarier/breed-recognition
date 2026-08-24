@@ -697,37 +697,115 @@ def predict():
 
 # ── 2. Encyclopedia / Breed Info Route ────────────────────────────────────────
 @app.route("/api/breeds",       methods=["GET"])
+# ── 60 Complete Indian Cattle & Buffalo Breeds Dataset ─────────────────────────
+ALL_60_BREEDS_DATA = [
+    ("Gir Cattle", "Indigenous Milch Cattle", "Saurashtra (Gir Forest), Gujarat", ["Gujarat"], "2,000 – 3,200 kg / lactation", "Highest milk yield among Indian zebu; A2 β-casein milk; heat-tolerant; exported to Brazil and Israel.", "Milch"),
+    ("Sahiwal", "Indigenous Milch Cattle", "Montgomery district, Punjab; Rajasthan/UP", ["Punjab", "Rajasthan", "Uttar Pradesh"], "2,500 – 3,200 kg / lactation", "India's premier dairy zebu; tick-resistant; heat-tolerant; high butterfat content (4.5%).", "Milch"),
+    ("Murrah Buffalo", "Indigenous Buffalo", "Rohtak, Hisar, Jind districts, Haryana", ["Haryana", "Punjab", "Delhi"], "2,200 – 3,500 kg / lactation", "World's highest-yielding buffalo breed; milk fat >7% — critical for ghee and paneer industry.", "Milch Buffalo"),
+    ("Kankrej", "Indigenous Dual-Purpose Cattle", "Banaskantha, Mehsana, Kutch, Gujarat", ["Gujarat", "Rajasthan"], "1,400 – 2,200 kg / lactation", "Dual-purpose (milk + draught); parent of American Brahman; extremely hardy in arid zones.", "Dual Purpose"),
+    ("Khillari", "Indigenous Draught Cattle", "Sholapur, Satara, Sangli, Maharashtra", ["Maharashtra", "Karnataka"], "700 – 900 kg / lactation", "Renowned for speed and stamina on rocky Deccan terrain; premier draught breed.", "Draught"),
+    ("Hariana", "Indigenous Dual-Purpose Cattle", "Rohtak, Hisar, Gurgaon, Haryana", ["Haryana", "Uttar Pradesh", "Delhi"], "1,200 – 1,800 kg / lactation", "Versatile dual-purpose breed widely used in government dairy & agricultural programs.", "Dual Purpose"),
+    ("Kangayam", "Indigenous Draught Cattle", "Erode, Tiruppur, Karur, Tamil Nadu", ["Tamil Nadu"], "600 – 900 kg / lactation", "Critically endangered South Indian draught breed; exceptional heat and disease resistance.", "Draught"),
+    ("Tharparkar", "Indigenous Dual-Purpose Cattle", "Barmer, Jodhpur, Thar Desert, Rajasthan", ["Rajasthan"], "1,600 – 2,400 kg / lactation", "Best milk yield among Indian desert breeds; unmatched drought and tick tolerance.", "Dual Purpose"),
+    ("Rathi", "Indigenous Milch Cattle", "Bikaner, Ganganagar, Hanumangarh, Rajasthan", ["Rajasthan"], "1,400 – 2,100 kg / lactation", "Best milch breed of Rajasthan; distinctive brown-spotted coat; heat-tolerant A2 producer.", "Milch"),
+    ("Red Sindhi", "Indigenous Milch Cattle", "Kerala, Karnataka, Tamil Nadu dairy belts", ["Kerala", "Karnataka", "Tamil Nadu"], "1,800 – 2,600 kg / lactation", "High heat and tick tolerance; uniform deep-red coat; significant A2 milk production.", "Milch"),
+    ("Ongole", "Indigenous Dual-Purpose Cattle", "Ongole, Guntur, Prakasam, Andhra Pradesh", ["Andhra Pradesh", "Telangana"], "1,300 – 1,800 kg / lactation", "Iconic draught breed of coastal Andhra; massive body; exported globally as Nellore cattle.", "Dual Purpose"),
+    ("Vechur", "Indigenous Milch Cattle (Endangered)", "Kottayam, Ernakulam, Kerala", ["Kerala"], "500 – 900 kg / lactation", "World's smallest cattle breed; high A2 milk fat (4.5%+); under active university conservation.", "Milch"),
+    ("Holstein Friesian", "Exotic Dairy Cattle", "Netherlands origin; widespread in India", ["Punjab", "Haryana", "Maharashtra"], "6,000 – 9,000 kg / lactation", "World's highest-yielding dairy cattle; widely used in national crossbreeding programmes.", "Exotic Milch"),
+    ("Jersey", "Exotic Dairy Cattle", "Channel Islands origin; widespread in India", ["Kerala", "Tamil Nadu", "Himachal Pradesh"], "4,000 – 6,000 kg / lactation", "Highest butterfat percentage (5-6%); excellent adaptability in hill stations and small farms.", "Exotic Milch"),
+    ("Surti Buffalo", "Indigenous Buffalo", "Kaira, Vadodara, Surat, Gujarat", ["Gujarat"], "1,700 – 2,500 kg / lactation", "Premier milk-fat buffalo breed of Gujarat (8.5–9% fat); sickle-shaped horns; coastal adapted.", "Milch Buffalo"),
+    ("Hallikar", "Indigenous Draught Cattle", "Hassan, Mandya, Mysore, Karnataka", ["Karnataka"], "600 – 900 kg / lactation", "Origin of Amritmahal; famous for iron-grey coat, long vertical horns, and intense field endurance.", "Draught"),
+    ("Amritmahal", "Indigenous Draught Cattle", "Chitradurga, Chikmagalur, Hassan, Karnataka", ["Karnataka"], "500 – 800 kg / lactation", "Historical royal draught cattle of Mysore; extreme stamina, fierce temperament, and speed.", "Draught"),
+    ("Bargur", "Indigenous Draught Cattle", "Bargur hills, Erode district, Tamil Nadu", ["Tamil Nadu"], "450 – 750 kg / lactation", "Semi-wild hill cattle breed; brown with white patches; agile on rocky Tamil Nadu hill terrains.", "Draught"),
+    ("Umblachery", "Indigenous Draught Cattle", "Nagapattinam, Tiruvarur, Tanjore, Tamil Nadu", ["Tamil Nadu"], "500 – 800 kg / lactation", "Coastal Tamil Nadu paddy field draught breed; calves born red change to grey at 6 months.", "Draught"),
+    ("Deoni", "Indigenous Dual-Purpose Cattle", "Latur, Nanded, Bidar (MH/KA border)", ["Maharashtra", "Karnataka"], "1,000 – 1,500 kg / lactation", "Popular dual-purpose breed of Marathwada; black and white spotted coat; docile temperament.", "Dual Purpose"),
+    ("Dangi", "Indigenous Dual-Purpose Cattle", "Nashik, Ahmednagar, Konkan, Maharashtra", ["Maharashtra"], "800 – 1,200 kg / lactation", "Heavy rainfall and hilly forest terrain specialist; secretes oil-rich skin for rain protection.", "Dual Purpose"),
+    ("Nimari", "Indigenous Dual-Purpose Cattle", "Nimar region, Narmada valley, MP", ["Madhya Pradesh"], "900 – 1,300 kg / lactation", "Cross of Gir and Khillari genetics; copper-red spotted coat with strong draught capability.", "Dual Purpose"),
+    ("Ponwar", "Indigenous Draught Cattle", "Pilibhit, Lakhimpur Kheri, Uttar Pradesh", ["Uttar Pradesh"], "500 – 800 kg / lactation", "Terai region draught cattle; small compact body, black and white patches, energetic nature.", "Draught"),
+    ("Kenkatha", "Indigenous Draught Cattle", "Bundelkhand region, UP & MP border", ["Uttar Pradesh", "Madhya Pradesh"], "500 – 750 kg / lactation", "Hardy Bundelkhand draught breed; thrives on coarse dry foliage in hilly terrain.", "Draught"),
+    ("Kherigarh", "Indigenous Draught Cattle", "Kheri district, Uttar Pradesh", ["Uttar Pradesh"], "450 – 700 kg / lactation", "White coat draught breed of UP Terai; active walker across riverine floodplains.", "Draught"),
+    ("Malvi", "Indigenous Draught Cattle", "Malwa plateau, Ujjain, Shajapur, MP", ["Madhya Pradesh"], "800 – 1,200 kg / lactation", "Silver-grey draught cattle of Malwa; short lyre horns, broad chest, steady plow pulling power.", "Draught"),
+    ("Nagori", "Indigenous Draught Cattle", "Nagaur district, Rajasthan", ["Rajasthan"], "600 – 900 kg / lactation", "Famous fast-trotting draught breed of Rajasthan; fine bone structure, high agility.", "Draught"),
+    ("Bachaur", "Indigenous Draught Cattle", "Sitamarhi, Madhubani, Bihar", ["Bihar"], "500 – 800 kg / lactation", "Compact draught cattle of North Bihar; well-adapted to swampy Gangetic floodplains.", "Draught"),
+    ("Siri", "Indigenous Dual-Purpose Cattle", "Sikkim & Darjeeling hills", ["Sikkim", "West Bengal"], "800 – 1,200 kg / lactation", "Himalayan hill cattle breed; thick furry coat, high altitude cold resistance.", "Dual Purpose"),
+    ("Mewati", "Indigenous Dual-Purpose Cattle", "Mewat region, HR & RJ border", ["Haryana", "Rajasthan", "Uttar Pradesh"], "1,000 – 1,400 kg / lactation", "Docile dual-purpose breed of Mewat; white coat, dark neck, reliable milk and plow capacity.", "Dual Purpose"),
+    ("Belahi", "Indigenous Dual-Purpose Cattle", "Panchkula, Ambala, Haryana & HP foothills", ["Haryana", "Himachal Pradesh"], "800 – 1,200 kg / lactation", "Migratory foothill cattle; reddish coat, medium build, adapted to seasonal hill migration.", "Dual Purpose"),
+    ("Ghumusari", "Indigenous Draught Cattle", "Ganjam, Kandhamal, Odisha", ["Odisha"], "450 – 700 kg / lactation", "Small hardy draught cattle of Odisha hills; docility and strong disease immunity.", "Draught"),
+    ("Binjharpuri", "Indigenous Dual-Purpose Cattle", "Jajpur, Bhadrak, Kendrapara, Odisha", ["Odisha"], "1,000 – 1,500 kg / lactation", "Premier dairy-draught breed of coastal Odisha; white coat with black markings.", "Dual Purpose"),
+    ("Khariar", "Indigenous Draught Cattle", "Nuapada, Kalahandi, Odisha", ["Odisha"], "400 – 650 kg / lactation", "Small compact draught cattle of western Odisha; thrives on native forest grazing.", "Draught"),
+    ("Motu", "Indigenous Draught Cattle", "Malkangiri, Koraput, Odisha & AP border", ["Odisha", "Andhra Pradesh"], "350 – 600 kg / lactation", "Miniature hill draught cattle; dark brown coat, exceptional tick and heat immunity.", "Draught"),
+    ("Pulikulam", "Indigenous Draught Cattle", "Sivaganga, Madurai, Tamil Nadu", ["Tamil Nadu"], "400 – 650 kg / lactation", "Migratory Tamil Nadu breed used in Jallikattu; dark grey coat, fierce speed.", "Draught"),
+    ("Kosali", "Indigenous Draught Cattle", "Chhattisgarh plains, Raipur, Bilaspur", ["Chhattisgarh"], "400 – 700 kg / lactation", "Hardy draught cattle of Chhattisgarh; highly resistant to tropical field diseases.", "Draught"),
+    ("Shahabadi", "Indigenous Draught Cattle", "Bhojpur, Rohtas, Bihar", ["Bihar"], "500 – 800 kg / lactation", "Gangetic plain agricultural draught cattle; docile, resilient in hot summer fields.", "Draught"),
+    ("Punganur", "Indigenous Milch Cattle (Endangered)", "Chittoor district, Andhra Pradesh", ["Andhra Pradesh"], "300 – 600 kg / lactation", "Ultra-rare miniature zebu cattle (knee-high); milk fat up to 8%; active conservation.", "Milch"),
+    ("Kasaragod Dwarf", "Indigenous Milch Cattle", "Kasaragod district, Kerala", ["Kerala"], "400 – 700 kg / lactation", "Kerala native dwarf cattle; mineral-rich A2 milk; exceptional disease resistance.", "Milch"),
+    ("Jaffarabadi Buffalo", "Indigenous Buffalo", "Gir forest, Junagadh, Gujarat", ["Gujarat"], "2,200 – 3,000 kg / lactation", "Massive buffalo breed; heavy drooping horns, high milk fat, powerful frame.", "Milch Buffalo"),
+    ("Bhadawari Buffalo", "Indigenous Buffalo", "Etawah, Agra (UP) & Bhind (MP)", ["Uttar Pradesh", "Madhya Pradesh"], "1,200 – 1,800 kg / lactation", "Copper-coloured buffalo with highest milk fat content in the world (up to 13%).", "Milch Buffalo"),
+    ("Nili-Ravi Buffalo", "Indigenous Buffalo", "Firozpur, Amritsar, Punjab", ["Punjab"], "2,000 – 2,800 kg / lactation", "Punjabi buffalo breed known for walled eyes (white irises) and white leg markings.", "Milch Buffalo"),
+    ("Pandharpuri Buffalo", "Indigenous Buffalo", "Solapur, Sangli, Kolhapur, Maharashtra", ["Maharashtra"], "1,500 – 2,200 kg / lactation", "Famous for long sword-like horns extending down to shoulders; rapid milker.", "Milch Buffalo"),
+    ("Marathwadi Buffalo", "Indigenous Buffalo", "Parbhani, Beed, Jalna, Maharashtra", ["Maharashtra"], "1,200 – 1,800 kg / lactation", "Drought-hardy buffalo of Marathwada; low water requirement, reliable yield.", "Milch Buffalo"),
+    ("Nagpuri Buffalo", "Indigenous Buffalo", "Nagpur, Wardha, Vidarbha, Maharashtra", ["Maharashtra"], "1,100 – 1,600 kg / lactation", "Long flat sword horns; adapted to extreme summer heat of Vidarbha region.", "Milch Buffalo"),
+    ("Toda Buffalo", "Indigenous Buffalo (Endangered)", "Nilgiri hills, Tamil Nadu", ["Tamil Nadu"], "800 – 1,200 kg / lactation", "High-altitude Nilgiri hill buffalo cared for by Toda tribe; thick hair coat.", "Milch Buffalo"),
+    ("Banni Buffalo", "Indigenous Buffalo", "Kutch salt flats, Gujarat", ["Gujarat"], "2,000 – 2,700 kg / lactation", "Night-grazing desert buffalo; survives harsh saline climate and heat.", "Milch Buffalo"),
+    ("Chhattisgarhi Buffalo", "Indigenous Buffalo", "Plains of Chhattisgarh", ["Chhattisgarh"], "1,000 – 1,500 kg / lactation", "Hardy local buffalo breed; medium build, dark grey coat, steady milk output.", "Milch Buffalo"),
+    ("Gojri Buffalo", "Indigenous Buffalo", "Punjab & Himachal Pradesh foothills", ["Punjab", "Himachal Pradesh"], "1,400 – 2,000 kg / lactation", "Migratory hill buffalo kept by Gujjar nomads; thick skin, terrain agile.", "Milch Buffalo"),
+    ("Kalahandi Buffalo", "Indigenous Buffalo", "Kalahandi, Rayagada, Odisha", ["Odisha"], "800 – 1,300 kg / lactation", "Hilly Odisha buffalo; strong disease immunity, dual milk and field work.", "Milch Buffalo"),
+    ("Luit Buffalo", "Indigenous Buffalo", "Brahmaputra valley, Assam", ["Assam"], "700 – 1,100 kg / lactation", "Swamp-riverine buffalo of Assam; swamp wallowing specialist, hardy build.", "Milch Buffalo"),
+    ("Sambalpuri Buffalo", "Indigenous Buffalo", "Sambalpur, Bargarh, Odisha", ["Odisha"], "1,100 – 1,700 kg / lactation", "Large black buffalo of western Odisha; high milk fat, riverine grazing.", "Milch Buffalo"),
+    ("Bargur Buffalo", "Indigenous Buffalo", "Bargur hills, Tamil Nadu", ["Tamil Nadu"], "600 – 900 kg / lactation", "Hill buffalo breed of Erode; agile climber, high butterfat content.", "Milch Buffalo"),
+    ("Manda Buffalo", "Indigenous Buffalo", "Koraput, Odisha & AP border", ["Odisha", "Andhra Pradesh"], "600 – 950 kg / lactation", "Copper-tinted coat, small ears; parasite resistant in eastern ghats.", "Milch Buffalo"),
+    ("Alambadi", "Indigenous Draught Cattle", "Dharmapuri, Krishnagiri, Tamil Nadu", ["Tamil Nadu"], "500 – 800 kg / lactation", "Grey draught cattle of Cauvery basin; long backward-curved horns, active plow.", "Draught"),
+    ("Killar", "Indigenous Draught Cattle", "Southern Maharashtra border", ["Maharashtra"], "650 – 900 kg / lactation", "Hardy rocky-soil plow breed; steel-grey coat, muscular neck, agile movement.", "Draught"),
+    ("Krishna Valley", "Indigenous Dual-Purpose Cattle", "Krishna river basin, KA & MH", ["Karnataka", "Maharashtra"], "1,200 – 1,800 kg / lactation", "Massive draught-dairy breed; broad chest, large hump, heavy field pulling power.", "Dual Purpose"),
+    ("Gangatiri", "Indigenous Dual-Purpose Cattle", "Varanasi, Ghazipur, Gangetic belt, UP & Bihar", ["Uttar Pradesh", "Bihar"], "1,100 – 1,600 kg / lactation", "White Gangetic plain cattle; docile, thrives on floodplain vegetation, good A2 milk.", "Dual Purpose"),
+    ("Badri Cattle", "Indigenous Milch Cattle", "Garhwal & Kumaon hills, Uttarakhand", ["Uttarakhand"], "400 – 800 kg / lactation", "First certified hill cattle of Uttarakhand; small body, grazes medicinal alpine herbs.", "Milch")
+]
+
+
 @app.route("/api/catalog",      methods=["GET"])
 @app.route("/breeds",           methods=["GET"])
 @app.route("/catalog",          methods=["GET"])
 @app.route("/encyclopedia",     methods=["GET"])
 @app.route("/api/encyclopedia", methods=["GET"])
 def catalog():
+    search_q = request.args.get("breed", "").strip().lower() or request.args.get("search", "").strip().lower()
+    cat_q    = request.args.get("category", "").strip().lower()
+
     breeds_data = []
-    for name, p in BREED_PROFILES.items():
+    for idx, (name, cat, tract, states, yld, spec, purpose) in enumerate(ALL_60_BREEDS_DATA, 1):
+        if search_q and search_q not in name.lower() and not any(search_q in st.lower() for st in states) and search_q not in tract.lower():
+            continue
+        if cat_q and cat_q not in cat.lower():
+            continue
+
+        # Get enriched profile if curated
+        p = get_breed_profile(name)
+
         breeds_data.append({
-            "id":                     str(len(breeds_data) + 1),
+            "id":                     str(idx),
             "breed_name":             name,
             "name":                   name,
             "breed":                  name,
-            "category":               p["category"],
-            "origin":                 p["native_states"][0] if p["native_states"] else "India",
-            "native_tract":           p["native_tract"],
-            "native_states":          p["native_states"],
-            "avg_milk_yield":         p["avg_milk_yield"],
-            "milk_yield":             p["avg_milk_yield"],
-            "production_yield":       p["avg_milk_yield"],
-            "speciality":             p["speciality"],
-            "traits":                 p["speciality"],
-            "purpose":                p["purpose"],
-            "temperament":            p["temperament"],
-            "disease_resistance":     p["disease_resistance"],
-            "optimal_crossbreeding":  p["optimal_crossbreeding"],
-            "crossbreeding_partners": p["crossbreeding_partners"],
-            "morphological_features": p["morphological_features"],
-            "explanation_sentence":   p["explanation_sentence"],
+            "category":               cat,
+            "origin":                 states[0] if states else "India",
+            "native_tract":           tract,
+            "native_states":          states,
+            "avg_milk_yield":         yld,
+            "milk_yield":             yld,
+            "production_yield":       yld,
+            "speciality":             spec,
+            "traits":                 spec,
+            "key_traits":             spec,
+            "purpose":                purpose,
+            "temperament":            p.get("temperament", "Docile, adaptable"),
+            "disease_resistance":     p.get("disease_resistance", "High tick & heat immunity"),
+            "optimal_crossbreeding":  p.get("optimal_crossbreeding", f"Jersey × {name} gives improved milk yield while retaining local heat tolerance."),
+            "crossbreeding_partners": p.get("crossbreeding_partners", [{"breed": "Jersey", "benefit": "Improves lactation yield"}, {"breed": "Sahiwal", "benefit": "Enhances A2 milk fat"}]),
+            "morphological_features": p.get("morphological_features", {"cranial_structure": "Distinctive head profile", "horn_curvature": "Characteristic horn shape", "coat": "Native coat coloration"}),
+            "explanation_sentence":   p.get("explanation_sentence", f"Identified as {name} based on head profile and native coat traits."),
             "image_url":              f"/static/images/{name.lower().replace(' ','_')}.jpg"
         })
+
     return jsonify({
         "success": True,
         "breeds":  breeds_data,
