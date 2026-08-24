@@ -79,4 +79,13 @@ desktop.ini
 temp/
 
 # YOLO / inference outputs
-runs/
+runs/venv/
+.venv/
+__pycache__/
+*.pt
+*.onnx
+*.weights
+*.h5
+datasets/
+notebooks/
+expert-dashboard/static/uploads/
