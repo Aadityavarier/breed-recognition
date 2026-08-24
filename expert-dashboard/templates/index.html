@@ -1924,12 +1924,6 @@
         </div>
 
         <div style="display:flex; align-items:center; gap:16px;">
-          <!-- Quick Status Indicator -->
-          <div style="display:flex; align-items:center; gap:6px; background:#F0FDF4; border:1px solid #BBF7D0; color:#15803D; font-size:11px; font-weight:700; padding:4px 12px; border-radius:99px;">
-            <span style="width:7px; height:7px; border-radius:50%; background:#16A34A; display:inline-block;"></span>
-            <span>OFFLINE EDGE AI READY</span>
-          </div>
-
           <!-- Language Selector Switch -->
           <button id="lang-toggle" onclick="toggleLang()" style="background:#F1F5F9; border:1px solid #CBD5E1; color:#1E293B; padding:6px 16px; border-radius:99px; font-size:12px; font-weight:700; cursor:pointer;" title="Switch Language / भाषा बदलें">
             <span class="opt on">EN</span><span style="opacity:0.4"> | </span><span class="opt">HI</span>
@@ -2611,11 +2605,6 @@
     <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry &amp; Dairying,
       Ministry of Fisheries, Animal Husbandry &amp; Dairying, Government of India</div>
     <div style="margin-bottom: 12px;">This is a demonstration platform and not an official government service</div>
-    <div>
-      <span
-        style="display:inline-block; background:#DCFCE7; color:#166534; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:700;">🟢
-        OFFLINE EDGE AI ACTIVE</span>
-    </div>
   </footer>
 
   <script>
@@ -3842,8 +3831,8 @@
         pill.style.borderColor = '#EF4444';
         pill.style.color = '#FCA5A5';
         dot.style.background = '#EF4444';
-        text.textContent = 'OFFLINE MODE (EDGE AI ACTIVE)';
-        showToast('Offline Mode Active: Local Edge AI Ready');
+        text.textContent = 'OFFLINE MODE';
+        showToast('Offline Mode Active');
       }
     }
 
