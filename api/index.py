@@ -1,19 +1,13 @@
 import os
 import sys
 import sqlite3
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_file, render_template_string
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
-STATIC_DIR = os.path.join(DASHBOARD_DIR, "static")
-DB_PATH = os.path.join(BASE_DIR, "data", "cattle_records.db")
+TEMPLATE_PATH = os.path.join(DASHBOARD_DIR, "templates", "index.html")
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(DASHBOARD_DIR, "templates"),
-    static_folder=STATIC_DIR,
-    static_url_path="/static"
-)
+app = Flask(__name__)
 
 class MockEngine:
     name = "TFLite INT8 Runtime (Cloud Sandbox)"
@@ -21,48 +15,33 @@ class MockEngine:
     status = "Active"
     quantization = "INT8"
 
-def get_db():
-    if os.path.exists(DB_PATH):
-        try:
-            conn = sqlite3.connect(DB_PATH)
-            conn.row_factory = sqlite3.Row
-            return conn
-        except Exception:
-            return None
-    return None
-
-@app.route("/static/<path:filename>")
-def serve_static(filename):
-    return send_from_directory(STATIC_DIR, filename)
-
 @app.route("/")
 @app.route("/api/index.py")
-@app.route("/index")
 def index():
-    try:
-        return render_template(
-            "index.html",
+    # Read index.html directly from filesystem
+    if os.path.exists(TEMPLATE_PATH):
+        with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
+            content = f.read()
+        return render_template_string(
+            content,
             engine=MockEngine(),
             total_breeds=60,
             active_learning_count=12,
             verified_count=48,
             threshold=0.70
         )
-    except Exception as err:
-        return f"Template Render Error: {str(err)}", 500
+    return "<h3>Error: expert-dashboard/templates/index.html not found.</h3>", 404
+
+# Catch-all route to serve static assets (CSS, JS, images)
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    static_file_path = os.path.join(DASHBOARD_DIR, "static", filename)
+    if os.path.exists(static_file_path):
+        return send_file(static_file_path)
+    return f"Static asset {filename} not found", 404
 
 @app.route("/api/history", methods=["GET"])
 def history():
-    conn = get_db()
-    if conn:
-        try:
-            cur = conn.cursor()
-            cur.execute("SELECT * FROM scans ORDER BY id DESC LIMIT 20")
-            rows = cur.fetchall()
-            conn.close()
-            return jsonify({"success": True, "scans": [dict(r) for r in rows]})
-        except Exception:
-            pass
     return jsonify({
         "success": True,
         "scans": [
@@ -81,7 +60,6 @@ def history():
 def predict():
     region = request.form.get("region", "Gujarat")
     color = request.form.get("color", "Reddish Brown")
-    
     predicted_breed = "Gir Cattle" if ("Gujarat" in region or "Red" in color) else "Sahiwal"
 
     return jsonify({
