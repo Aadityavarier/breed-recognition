@@ -1,0 +1,100 @@
+{
+  "version": "3.0",
+  "total_breeds": 60,
+  "description": "Authoritative breed taxonomy for Cattle Breed Recognition System (SIH 2025)",
+  "classes": {
+    "0":  "Alambadi",
+    "1":  "Amritmahal",
+    "2":  "Ayrshire",
+    "3":  "Banni",
+    "4":  "Bargur",
+    "5":  "Bhadawari",
+    "6":  "Brahman",
+    "7":  "Brahman_Cross",
+    "8":  "Brown_Swiss",
+    "9":  "Chhattisgarhi",
+    "10": "Chilika",
+    "11": "Cholistani",
+    "12": "Cholistani_Cross",
+    "13": "Dangi",
+    "14": "Deoni",
+    "15": "Dhani",
+    "16": "Fresian_Cross",
+    "17": "Gir",
+    "18": "Gojri",
+    "19": "Guernsey",
+    "20": "Hallikar",
+    "21": "Hariana",
+    "22": "Holstein_Friesian",
+    "23": "Jaffrabadi",
+    "24": "Jersey",
+    "25": "Kalahandi",
+    "26": "Kangayam",
+    "27": "Kankrej",
+    "28": "Kasargod",
+    "29": "Kenkatha",
+    "30": "Kherigarh",
+    "31": "Khillari",
+    "32": "Krishna_Valley",
+    "33": "Luit",
+    "34": "Malnad_Gidda",
+    "35": "Marathwada",
+    "36": "Mehsana",
+    "37": "Murrah",
+    "38": "Nagori",
+    "39": "Nagpuri",
+    "40": "Nili_Ravi",
+    "41": "Nimari",
+    "42": "Ongole",
+    "43": "Pandharpuri",
+    "44": "Pulikulam",
+    "45": "Rathi",
+    "46": "Red_Dane",
+    "47": "Red_Sindhi",
+    "48": "Sahiwal",
+    "49": "Sahiwal_Cross",
+    "50": "Sibbi",
+    "51": "Surti",
+    "52": "Tharparkar",
+    "53": "Toda",
+    "54": "Umblachery",
+    "55": "Vechur",
+    "56": "Luit_Swamp",
+    "57": "Marathwadi",
+    "58": "Gyr",
+    "59": "Punganur"
+  },
+  "categories": {
+    "indigenous_cattle_milch": [
+      "Gir", "Sahiwal", "Red_Sindhi", "Tharparkar", "Rathi", "Gyr", "Kankrej"
+    ],
+    "indigenous_cattle_draught": [
+      "Hallikar", "Amritmahal", "Khillari", "Kangayam", "Bargur", "Malnad_Gidda"
+    ],
+    "indigenous_cattle_dual": [
+      "Hariana", "Ongole", "Deoni", "Krishna_Valley", "Dangi", "Alambadi"
+    ],
+    "indigenous_buffalo": [
+      "Murrah", "Jaffrabadi", "Nili_Ravi", "Banni", "Pandharpuri",
+      "Mehsana", "Surti", "Bhadawari", "Chilika", "Nagpuri"
+    ],
+    "exotic_crossbred": [
+      "Holstein_Friesian", "Jersey", "Brown_Swiss", "Guernsey",
+      "Ayrshire", "Brahman", "Brahman_Cross", "Fresian_Cross",
+      "Sahiwal_Cross", "Red_Dane"
+    ],
+    "rare_heritage": [
+      "Vechur", "Punganur", "Toda", "Umblachery", "Kasargod",
+      "Pulikulam", "Kenkatha", "Kherigarh", "Nagori", "Nimari",
+      "Kalahandi", "Luit", "Luit_Swamp", "Gojri", "Dhani",
+      "Sibbi", "Cholistani", "Cholistani_Cross", "Chhattisgarhi",
+      "Marathwada", "Marathwadi"
+    ]
+  },
+  "rare_breeds": [
+    "Vechur", "Punganur", "Toda", "Amritmahal", "Bargur",
+    "Kangayam", "Malnad_Gidda", "Krishna_Valley", "Pulikulam",
+    "Umblachery", "Alambadi", "Kasargod", "Kherigarh", "Kenkatha",
+    "Nagori", "Nimari", "Kalahandi", "Luit_Swamp"
+  ]
+}

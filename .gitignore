@@ -1,0 +1,82 @@
+﻿# ================================
+# DATASET (NEVER PUSH)
+# ================================
+data/
+
+# ================================
+# MODELS (LARGE FILES)
+# ================================
+*.h5
+*.keras
+*.pt
+*.tflite
+*.onnx
+
+models/final_optimized/
+models/saved/
+models/checkpoints/
+models/logs/
+
+# ================================
+# RESULTS / OUTPUTS
+# ================================
+results/
+logs/
+*.log
+
+# ================================
+# PYTHON CACHE / BUILD
+# ================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ================================
+# VIRTUAL ENVIRONMENTS
+# ================================
+venv/
+env/
+.venv/
+
+# ================================
+# IDE / EDITOR FILES
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ================================
+# OS FILES
+# ================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+# ENVIRONMENT VARIABLES
+# ================================
+.env
+.env.local
+
+# ================================
+# NOTEBOOKS (KEEP ONLY PROJECT ONES)
+# ================================
+*.ipynb
+!notebooks/*.ipynb
+
+# ================================
+# TEMP FILES
+# ================================
+*.tmp
+temp/
+
+# YOLO / inference outputs
+runs/

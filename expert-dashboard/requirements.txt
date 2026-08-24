@@ -1,0 +1,27 @@
+# expert-dashboard/requirements.txt
+# Minimal offline dependencies for the Expert Dashboard
+# Install with: pip install -r expert-dashboard/requirements.txt
+
+# ── Web framework ──────────────────────────────────────────────
+flask>=2.3.0
+werkzeug>=2.3.0
+
+# ── Inference (CPU-only, no GPU required) ──────────────────────
+onnxruntime>=1.16.0         # Primary inference backend
+Pillow>=9.5.0               # Image loading and preprocessing
+numpy>=1.23.0               # Array operations
+
+# ── Database ───────────────────────────────────────────────────
+# sqlite3 is stdlib — no extra install needed
+
+# ── Testing ────────────────────────────────────────────────────
+pytest>=7.3.0
+pytest-cov>=4.1.0
+
+# ── GovTech Features ───────────────────────────────────────────
+qrcode>=7.4.2               # Offline QR code generation
+
+# ── Optional: TFLite runtime (if model is .tflite format) ─────
+# Uncomment ONE of the following if you want TFLite support:
+# tflite-runtime>=2.13.0     # Lightweight (Linux/Mac)
+# tensorflow>=2.15.0          # Full TF (includes tf.lite.Interpreter)
