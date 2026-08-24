@@ -3298,21 +3298,27 @@
           body: fd
         });
 
+        let data = {};
+        const text = await res.text();
+        try {
+          data = JSON.parse(text);
+        } catch (jsonErr) {
+          console.warn("Server returned non-JSON response:", text);
+          data = { error: "Server error (Status " + res.status + "): Unable to parse server response" };
+        }
+
         if (res.status === 401) {
-          const e = await res.json();
           showToast('⚠️ Authentication Required: Please log in as a Veterinary Expert.');
           openVetAuthModal();
           return;
         }
 
-        if (res.ok) {
-          const data = await res.json();
+        if (res.ok && data.success !== false) {
           showToast(data.message || 'Action successful!');
           loadQueue();
           loadAudit();
         } else {
-          const e = await res.json();
-          alert('Failed: ' + (e.error || 'Unknown error'));
+          alert('Failed: ' + (data.error || data.message || 'Unknown server error'));
         }
       } catch (err) {
         alert('Error performing action: ' + err.message);

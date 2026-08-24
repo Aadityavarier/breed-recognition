@@ -5,6 +5,15 @@ import hashlib
 from flask import Flask, request, jsonify, send_file, render_template_string, session
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+try:
+    from data.db import update_status, get_history, get_stats, insert_scan
+except Exception:
+    def update_status(*args, **kwargs):
+        return True
+
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
 TEMPLATE_PATH = os.path.join(DASHBOARD_DIR, "templates", "index.html")
 

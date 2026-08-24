@@ -1,31 +1,5 @@
-﻿# ================================
-# DATASET (NEVER PUSH)
 # ================================
-data/
-
-# ================================
-# MODELS (LARGE FILES)
-# ================================
-*.h5
-*.keras
-*.pt
-*.tflite
-*.onnx
-
-models/final_optimized/
-models/saved/
-models/checkpoints/
-models/logs/
-
-# ================================
-# RESULTS / OUTPUTS
-# ================================
-results/
-logs/
-*.log
-
-# ================================
-# PYTHON CACHE / BUILD
+# PYTHON CACHE & VENV
 # ================================
 __pycache__/
 *.pyc
@@ -37,55 +11,66 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
 
-# ================================
-# VIRTUAL ENVIRONMENTS
-# ================================
 venv/
 env/
 .venv/
 
 # ================================
-# IDE / EDITOR FILES
+# RUNTIME DATA & DATABASES
 # ================================
-.vscode/
-.idea/
-*.swp
-*.swo
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+cattle_records.db
+
+# Ensure Python modules in data/ are tracked
+!data/__init__.py
+!data/db.py
 
 # ================================
-# OS FILES
+# UPLOADED SCANS (KEEP DIR VIA GITKEEP)
+# ================================
+expert-dashboard/static/uploads/*
+!expert-dashboard/static/uploads/.gitkeep
+
+# ================================
+# LARGE MODEL WEIGHT BINARIES
+# ================================
+*.h5
+*.keras
+*.pt
+*.tflite
+*.onnx
+*.weights
+
+models/final_optimized/
+models/saved/
+models/checkpoints/
+models/logs/
+
+# ================================
+# ENVIRONMENT VARIABLES & CREDENTIALS
+# ================================
+.env
+.env.local
+.env.*.local
+
+# ================================
+# OS & IDE FILES
 # ================================
 .DS_Store
 Thumbs.db
 desktop.ini
+.vscode/
+.idea/
 
 # ================================
-# ENVIRONMENT VARIABLES
+# TEMP & BUILD LOGS
 # ================================
-.env
-.env.local
-
-# ================================
-# NOTEBOOKS (KEEP ONLY PROJECT ONES)
-# ================================
-*.ipynb
-!notebooks/*.ipynb
-
-# ================================
-# TEMP FILES
-# ================================
-*.tmp
+*.log
+logs/
 temp/
-
-# YOLO / inference outputs
-runs/venv/
-.venv/
-__pycache__/
-*.pt
-*.onnx
-*.weights
-*.h5
-datasets/
-notebooks/
-expert-dashboard/static/uploads/
+*.tmp
+runs/
