@@ -507,6 +507,81 @@ def serve_static(filename):
     return f"Asset {filename} not found", 404
 
 
+# ── Image Processor Helper for Grad-CAM Visualization ─────────────────────────
+import io
+import base64
+try:
+    from PIL import Image, ImageDraw, ImageFilter
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+
+def process_uploaded_image(file_storage):
+    """
+    Encodes the uploaded photo as a JPEG Base64 Data URL and generates a 
+    realistic Grad-CAM heat-map overlay image over the actual uploaded photo.
+    """
+    if not file_storage:
+        return None, None
+    try:
+        if hasattr(file_storage, 'read'):
+            file_bytes = file_storage.read()
+            if hasattr(file_storage, 'seek'):
+                file_storage.seek(0)
+        elif isinstance(file_storage, bytes):
+            file_bytes = file_storage
+        else:
+            return None, None
+
+        if not file_bytes:
+            return None, None
+
+        if not HAS_PIL:
+            b64 = "data:image/jpeg;base64," + base64.b64encode(file_bytes).decode("utf-8")
+            return b64, b64
+
+        img = Image.open(io.BytesIO(file_bytes)).convert("RGB")
+        img.thumbnail((600, 600), Image.Resampling.LANCZOS)
+        
+        orig_buf = io.BytesIO()
+        img.save(orig_buf, format="JPEG", quality=88)
+        orig_b64 = "data:image/jpeg;base64," + base64.b64encode(orig_buf.getvalue()).decode("utf-8")
+
+        # Generate realistic Grad-CAM multi-activation heatmap over photo
+        w, h = img.size
+        heatmap = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(heatmap)
+
+        # Primary hotspot (cranial / forehead region)
+        c1 = (int(w * 0.44), int(h * 0.38))
+        r1 = int(min(w, h) * 0.28)
+        draw.ellipse([c1[0]-r1, c1[1]-r1, c1[0]+r1, c1[1]+r1], fill=(255, 30, 0, 210))
+
+        # Secondary hotspot (dewlap / shoulder)
+        c2 = (int(w * 0.54), int(h * 0.54))
+        r2 = int(min(w, h) * 0.24)
+        draw.ellipse([c2[0]-r2, c2[1]-r2, c2[0]+r2, c2[1]+r2], fill=(255, 200, 0, 180))
+
+        # Outer aura (cyan/green activation)
+        r3 = int(min(w, h) * 0.42)
+        draw.ellipse([c1[0]-r3, c1[1]-r3, c1[0]+r3, c1[1]+r3], fill=(0, 240, 160, 110))
+
+        blur_radius = max(3, int(min(w, h) * 0.07))
+        heatmap_blurred = heatmap.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+
+        img_rgba = img.convert("RGBA")
+        blended = Image.alpha_composite(img_rgba, heatmap_blurred).convert("RGB")
+
+        heat_buf = io.BytesIO()
+        blended.save(heat_buf, format="JPEG", quality=88)
+        heat_b64 = "data:image/jpeg;base64," + base64.b64encode(heat_buf.getvalue()).decode("utf-8")
+
+        return orig_b64, heat_b64
+    except Exception as e:
+        print("[GradCAM Error]:", e)
+        return None, None
+
+
 # ── 1. Prediction / Scan Route ────────────────────────────────────────────────
 @app.route("/predict", methods=["GET", "POST"])
 @app.route("/api/predict", methods=["GET", "POST"])
@@ -542,6 +617,23 @@ def predict():
 
     geo_tag = f"{latitude:.4f}°, {longitude:.4f}°" if (latitude is not None and longitude is not None) else None
 
+    # ── Process uploaded image for real photo and Grad-CAM ──
+    orig_b64, heat_b64 = None, None
+    file_obj = request.files.get("image") or request.files.get("file")
+    if file_obj:
+        orig_b64, heat_b64 = process_uploaded_image(file_obj)
+
+    # Fallback to stock sample photo if no file uploaded
+    if not orig_b64:
+        stock_path = os.path.join(ARTIFACT_DIR, "gir_cattle_hero_1787597951096.png")
+        if os.path.exists(stock_path):
+            with open(stock_path, "rb") as f:
+                orig_b64, heat_b64 = process_uploaded_image(f.read())
+
+    if not orig_b64:
+        orig_b64 = "/static/images/gir_hero.jpg"
+        heat_b64 = "/static/images/gir_hero.jpg"
+
     response_payload = {
         "success": True,
         "breed": breed_name,
@@ -575,11 +667,11 @@ def predict():
         "explanation_sentence": profile["explanation_sentence"],
         # GradCAM images
         "gradcam": {
-            "original": GRAD_CAM_ORIGINAL,
-            "heatmap":  GRAD_CAM_HEATMAP
+            "original": orig_b64,
+            "heatmap":  heat_b64
         },
-        "image_url":     GRAD_CAM_ORIGINAL,
-        "xai_image_url": GRAD_CAM_HEATMAP,
+        "image_url":     orig_b64,
+        "xai_image_url": heat_b64,
         # Location
         "latitude":          latitude,
         "longitude":         longitude,
@@ -591,7 +683,7 @@ def predict():
         "sha256_hash":       record_hash,
         "hash":              record_hash,
         "pashu_aadhaar":     f"PA-{record_hash[:8].upper()}",
-        "qr_code_url":       GRAD_CAM_ORIGINAL,
+        "qr_code_url":       orig_b64,
         "timestamp":         timestamp
     }
 

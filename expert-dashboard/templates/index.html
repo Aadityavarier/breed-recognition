@@ -587,15 +587,18 @@
       border-radius: 6px;
       padding: 8px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
     .xai-box img {
       width: 100%;
+      height: 180px;
+      max-height: 240px;
       border-radius: 4px;
       margin-bottom: 6px;
-      background: #000;
-      aspect-ratio: 1;
-      object-fit: contain;
+      background: #0F172A;
+      object-fit: cover;
     }
 
     .xai-box .lbl {
@@ -3092,9 +3095,14 @@
         });
       }, 50);
 
-      // XAI
-      document.getElementById('xai-orig').src = data.image_url || data.original_image || '';
-      document.getElementById('xai-heat').src = data.xai_image_url || data.heatmap_image || data.image_url || '';
+      // XAI Image Displays
+      const origUrl = data.image_url || data.original_image || (data.gradcam ? data.gradcam.original : '') || '';
+      const heatUrl = data.xai_image_url || data.heatmap_image || (data.gradcam ? data.gradcam.heatmap : '') || origUrl;
+
+      const imgOrig = document.getElementById('xai-orig');
+      const imgHeat = document.getElementById('xai-heat');
+      if (imgOrig) imgOrig.src = origUrl;
+      if (imgHeat) imgHeat.src = heatUrl;
 
       // Audit
       document.getElementById('audit-hash').textContent = data.blockchain_hash || data.sha256_hash || data.hash || '—';
