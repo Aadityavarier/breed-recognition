@@ -5,11 +5,17 @@ const PRECACHE_ASSETS = [
   '/static/sw.js'
 ];
 
-// Install: precache app shell
+// Install: precache app shell safely (per-file try/catch resilience)
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const assetUrl of PRECACHE_ASSETS) {
+        try {
+          await cache.add(assetUrl);
+        } catch (err) {
+          console.warn(`[SW Cache Warning]: Failed to precache ${assetUrl}:`, err);
+        }
+      }
     }).then(() => self.skipWaiting())
   );
 });
