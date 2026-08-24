@@ -3,12 +3,11 @@ import sys
 import sqlite3
 from flask import Flask, render_template, request, jsonify
 
-# Set directory paths
+# Base paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
 DB_PATH = os.path.join(BASE_DIR, "data", "cattle_records.db")
 
-# Initialize Flask with explicit template and static paths
 app = Flask(
     __name__,
     template_folder=os.path.join(DASHBOARD_DIR, "templates"),
@@ -26,7 +25,10 @@ def get_db():
             return None
     return None
 
+# Handle root URL, index path, and rewritten serverless invocations
 @app.route("/")
+@app.route("/api/index.py")
+@app.route("/index")
 def index():
     try:
         return render_template("index.html")
