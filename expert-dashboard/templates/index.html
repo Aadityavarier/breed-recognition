@@ -864,6 +864,465 @@
     .act-btn.retrain:hover {
       background: #475569;
     }
+
+    /* ═══════════════════════════════════════════════════════════
+       HOME PAGE — Gov-style landing
+    ═══════════════════════════════════════════════════════════ */
+
+    /* Full-width hero with gradient banner */
+    .home-hero {
+      background: linear-gradient(135deg, #1B365D 0%, #0d2240 60%, #00504f 100%);
+      color: #fff;
+      padding: 72px 40px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin: -24px -24px 0 -24px; /* bleed to edge of container */
+    }
+    .home-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+      pointer-events: none;
+    }
+    .home-hero .badge {
+      display: inline-block;
+      background: rgba(56,189,248,.18);
+      border: 1px solid rgba(56,189,248,.4);
+      color: #38BDF8;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+    .home-hero h1 {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.18;
+      max-width: 780px;
+      margin: 0 auto 18px;
+      letter-spacing: -0.5px;
+    }
+    .home-hero h1 span { color: #38BDF8; }
+    .home-hero .sub {
+      font-size: 17px;
+      color: rgba(255,255,255,.78);
+      max-width: 620px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .home-hero .cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: #008080;
+      color: #fff;
+      border: none;
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .2s;
+      box-shadow: 0 4px 16px rgba(0,128,128,.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background: #006b6b; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: rgba(255,255,255,.85);
+      border: 1.5px solid rgba(255,255,255,.35);
+      padding: 13px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.7); }
+
+    /* Metrics strip */
+    .home-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      background: #fff;
+      border-bottom: 1px solid #E2E8F0;
+      border-top: 1px solid #E2E8F0;
+    }
+    .hm-card {
+      padding: 22px 16px;
+      text-align: center;
+      border-right: 1px solid #E2E8F0;
+    }
+    .hm-card:last-child { border-right: none; }
+    .hm-card .hm-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #008080;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .hm-card .hm-lbl {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+      line-height: 1.3;
+    }
+
+    /* Section wrapper */
+    .home-section {
+      padding: 56px 40px;
+      background: #fff;
+    }
+    .home-section.alt { background: #F8FAFC; }
+    .home-section.dark {
+      background: #1B365D;
+      color: #fff;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #008080;
+      margin-bottom: 10px;
+    }
+    .home-section.dark .section-label { color: #38BDF8; }
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1B365D;
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .home-section.dark .section-title { color: #fff; }
+    .section-sub {
+      font-size: 15px;
+      color: #475569;
+      max-width: 680px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    .home-section.dark .section-sub { color: rgba(255,255,255,.7); }
+
+    /* Problem blocks */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .problem-card {
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .problem-card .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .problem-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1B365D;
+      margin-bottom: 6px;
+    }
+    .problem-card p {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    /* How it works — numbered flow */
+    .flow-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .flow-step {
+      text-align: center;
+      padding: 24px 20px;
+      position: relative;
+    }
+    .flow-step::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 36px;
+      font-size: 22px;
+      color: #CBD5E1;
+      pointer-events: none;
+    }
+    .flow-step:last-child::after { display: none; }
+    .flow-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1B365D;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+    .flow-step .flow-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .flow-step h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1B365D;
+      margin-bottom: 6px;
+    }
+    .flow-step p {
+      font-size: 12px;
+      color: #64748B;
+      line-height: 1.5;
+    }
+
+    /* Stakeholder cards — expanded */
+    .stake-grid-new {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .stake-new {
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .stake-new:hover { box-shadow: 0 8px 24px rgba(0,0,0,.09); }
+    .stake-new .stake-head {
+      padding: 22px 22px 16px;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .stake-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+    .stake-new h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1B365D;
+      line-height: 1.25;
+    }
+    .stake-new .stake-role {
+      font-size: 11px;
+      color: #008080;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-top: 3px;
+    }
+    .stake-new .stake-body {
+      padding: 18px 22px 22px;
+    }
+    .stake-new .stake-body p {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .benefit-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .benefit-list li {
+      font-size: 12.5px;
+      color: #334155;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+    }
+    .benefit-list li::before {
+      content: '✓';
+      color: #008080;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Why it matters */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .impact-card {
+      text-align: center;
+      padding: 28px 16px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .impact-card .ic-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .impact-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .impact-card p {
+      font-size: 12.5px;
+      color: rgba(255,255,255,.65);
+      line-height: 1.5;
+    }
+
+    /* Breed showcase strip */
+    .breed-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    .breed-card-new {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      text-align: center;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .breed-card-new:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); transform: translateY(-3px); }
+    .breed-card-new .bc-emoji {
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+    }
+    .breed-card-new .bc-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1B365D;
+      padding: 10px 10px 2px;
+    }
+    .breed-card-new .bc-type {
+      font-size: 11px;
+      color: #008080;
+      font-weight: 600;
+      padding: 0 10px 6px;
+    }
+    .breed-card-new .bc-role {
+      font-size: 11px;
+      color: #64748B;
+      padding: 0 12px 14px;
+      line-height: 1.4;
+    }
+
+    /* Footer */
+    .home-footer {
+      background: #0F2040;
+      color: rgba(255,255,255,.7);
+      padding: 40px 40px 24px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 32px;
+    }
+    .footer-brand h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .footer-brand p {
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .footer-col h5 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #38BDF8;
+      margin-bottom: 14px;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .footer-col ul li button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.65);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+      transition: color .15s;
+    }
+    .footer-col ul li button:hover { color: #fff; }
+    .footer-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,.1);
+      margin-bottom: 20px;
+    }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { font-size: 11.5px; }
+    .prototype-badge {
+      background: rgba(239,68,68,.15);
+      border: 1px solid rgba(239,68,68,.3);
+      color: #FCA5A5;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      letter-spacing: .5px;
+    }
   </style>
 </head>
 
@@ -914,82 +1373,317 @@
 
     <!-- PAGE: HOME -->
     <div id="pg-home" class="page active">
-      <div class="hero" style="background: #1B365D;">
-        <div class="ctx">Smart India Hackathon 2025 | PSID: 25004</div>
-        <h1>AI-Powered Cattle & Buffalo Breed Recognition for India</h1>
-        <p>Empowering field workers with smart, scalable, and trustworthy livestock identification</p>
-        <button class="btn-cta" onclick="document.querySelector('.nav-tab:nth-child(2)').click()">Launch AI Scan Studio
-          →</button>
-      </div>
 
-      <div class="metrics-ribbon">
-        <div class="metric-card">
-          <div class="val">15</div>
-          <div class="lbl">Curated Indigenous Breeds</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">&lt;500ms</div>
-          <div class="lbl">Edge Inference Speed</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">100%</div>
-          <div class="lbl">Offline Capable</div>
-        </div>
-        <div class="metric-card">
-          <div class="val">SHA-256</div>
-          <div class="lbl">Tamper-Proof Audit</div>
+      <!-- ❶ HERO -->
+      <div class="home-hero">
+        <div class="badge" data-i18n="hero_badge">Smart India Hackathon 2025 · Problem Statement SIH25004</div>
+        <h1 data-i18n="hero_h1">AI-Powered Cattle &amp; Buffalo<br><span>Breed Recognition</span> for India</h1>
+        <p class="sub" data-i18n="hero_sub">Fixing livestock data quality at the point of entry — offline, instant, and tamper-proof, so every farmer gets the subsidy and insurance they deserve.</p>
+        <div class="cta-row">
+          <button class="btn-primary" onclick="document.querySelector('.nav-tab:nth-child(2)').click()" data-i18n="hero_cta1">🔬 Launch AI Scan Studio</button>
+          <button class="btn-outline" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="hero_cta2">↓ How it works</button>
         </div>
       </div>
 
-      <h2 style="font-size:18px; color:#1B365D; margin-bottom:16px;">Who This Platform Serves</h2>
-      <div class="stakeholder-grid">
-        <div class="stake-card">
-          <h3>📱 Field Level Workers (FLWs)</h3>
-          <p>Instant, standardized breed identification on low-cost tablets with zero connectivity requirements.</p>
+      <!-- Metrics strip -->
+      <div class="home-metrics">
+        <div class="hm-card">
+          <div class="hm-val">15</div>
+          <div class="hm-lbl" data-i18n="m1">Curated Indigenous Breeds</div>
         </div>
-        <div class="stake-card">
-          <h3>🩺 Veterinarians & Experts</h3>
-          <p>Explainable AI (Grad-CAM) diagnostics and an active-learning escalation queue to review low-confidence
-            scans securely.</p>
+        <div class="hm-card">
+          <div class="hm-val">&lt;500ms</div>
+          <div class="hm-lbl" data-i18n="m2">Edge Inference Speed</div>
         </div>
-        <div class="stake-card">
-          <h3>🌾 Farmers & Dairy Breeders</h3>
-          <p>Scientific cross-breeding advisories to optimize milk yields and preserve indigenous genetics.</p>
+        <div class="hm-card">
+          <div class="hm-val">100%</div>
+          <div class="hm-lbl" data-i18n="m3">Works Offline</div>
+        </div>
+        <div class="hm-card">
+          <div class="hm-val">SHA-256</div>
+          <div class="hm-lbl" data-i18n="m4">Tamper-Proof Audit Trail</div>
         </div>
       </div>
 
-      <h2 style="font-size:18px; color:#1B365D; margin-bottom:16px;">Featured Indigenous Breeds Spotlight</h2>
-      <div class="breed-showcase" style="grid-template-columns: repeat(4, 1fr);">
-        <div class="showcase-card">
-          <div
-            style="width: 100%; height: 120px; background: #E0F2FE; display: flex; align-items: center; justify-content: center; font-size: 48px;">
-            🐄</div>
-          <div class="name">Gir</div>
-          <div class="type">Milch Breed (Gujarat)</div>
-        </div>
-        <div class="showcase-card">
-          <div
-            style="width: 100%; height: 120px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; font-size: 48px;">
-            🐄</div>
-          <div class="name">Sahiwal</div>
-          <div class="type">Milch Breed (Punjab)</div>
-        </div>
-        <div class="showcase-card">
-          <div
-            style="width: 100%; height: 120px; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 48px;">
-            🐃</div>
-          <div class="name">Murrah</div>
-          <div class="type">Buffalo (Haryana)</div>
-        </div>
-        <div class="showcase-card">
-          <div
-            style="width: 100%; height: 120px; background: #DCFCE7; display: flex; align-items: center; justify-content: center; font-size: 48px;">
-            🐄</div>
-          <div class="name">Kankrej</div>
-          <div class="type">Dual Purpose (Gujarat)</div>
+      <!-- ❷ WHY THIS PLATFORM EXISTS -->
+      <div class="home-section alt">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="section-label" data-i18n="prob_label">The Problem</div>
+          <h2 class="section-title" data-i18n="prob_title">India's livestock data has a quality crisis</h2>
+          <p class="section-sub" data-i18n="prob_sub">The Bharat Pashudhan App registers over 300 million cattle and buffalo across India. But manual breed entry by field workers — under time pressure, without reference standards — produces systematic misregistration that flows through the entire policy chain.</p>
+          <div class="problem-grid">
+            <div class="problem-card">
+              <div class="icon-box" style="background:#FEF2F2;">❌</div>
+              <div>
+                <h4 data-i18n="pc1_h">Wrong breed → Wrong subsidy</h4>
+                <p data-i18n="pc1_p">PM-KISAN, Rashtriya Gokul Mission, and state dairy schemes disburse benefits based on registered breed. A misidentified Sahiwal registered as a crossbreed disqualifies the farmer from indigenous cattle incentives worth ₹10,000–₹50,000 per animal.</p>
+              </div>
+            </div>
+            <div class="problem-card">
+              <div class="icon-box" style="background:#FFF7ED;">📋</div>
+              <div>
+                <h4 data-i18n="pc2_h">Manual records enable fraud</h4>
+                <p data-i18n="pc2_p">Without a photo-verified, tamper-evident audit trail, phantom animal registrations and duplicate claims are difficult to detect. Field-level data entry without any AI cross-check is a known vulnerability in livestock insurance programs.</p>
+              </div>
+            </div>
+            <div class="problem-card">
+              <div class="icon-box" style="background:#F0FDF4;">🧬</div>
+              <div>
+                <h4 data-i18n="pc3_h">Indigenous genetics are being lost</h4>
+                <p data-i18n="pc3_p">Breeds like Vechur, Punganur, and Alambadi number in the thousands — not millions. Without accurate breed-level census data, conservation and cross-breeding programs cannot be targeted to the right districts and herds.</p>
+              </div>
+            </div>
+            <div class="problem-card">
+              <div class="icon-box" style="background:#EFF6FF;">📡</div>
+              <div>
+                <h4 data-i18n="pc4_h">AI must work where internet doesn't</h4>
+                <p data-i18n="pc4_p">75% of India's livestock is registered in rural areas with intermittent or zero connectivity. Any AI solution that requires a cloud API call at the point of identification is not deployable at scale across India.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- ❸ HOW IT WORKS -->
+      <div class="home-section" id="how-it-works">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="section-label" data-i18n="flow_label">The Solution</div>
+          <h2 class="section-title" data-i18n="flow_title">From photo to verified record — entirely offline</h2>
+          <p class="section-sub" data-i18n="flow_sub">A four-step pipeline that runs on a low-cost Android tablet, no internet required.</p>
+          <div class="flow-steps">
+            <div class="flow-step">
+              <div class="flow-num">1</div>
+              <div class="flow-icon">📸</div>
+              <h4 data-i18n="fs1_h">FLW takes a photo</h4>
+              <p data-i18n="fs1_p">Field-level worker captures a standard-angle photo of the animal using the BPA camera within the app. No specialist training required.</p>
+            </div>
+            <div class="flow-step">
+              <div class="flow-num">2</div>
+              <div class="flow-icon">🤖</div>
+              <h4 data-i18n="fs2_h">On-device AI identifies breed</h4>
+              <p data-i18n="fs2_p">A quantised MobileNetV2 model runs entirely on-device in under 500ms. Region and coat colour metadata further refine the prediction with a heuristic fusion layer.</p>
+            </div>
+            <div class="flow-step">
+              <div class="flow-num">3</div>
+              <div class="flow-icon">✅</div>
+              <h4 data-i18n="fs3_h">Auto-verify or expert review</h4>
+              <p data-i18n="fs3_p">High-confidence results are auto-accepted. Low-confidence or rare-breed scans are routed to a veterinarian expert queue, with a Grad-CAM explainability overlay.</p>
+            </div>
+            <div class="flow-step">
+              <div class="flow-num">4</div>
+              <div class="flow-icon">☁️</div>
+              <h4 data-i18n="fs4_h">Synced to BPA on reconnect</h4>
+              <p data-i18n="fs4_p">Verified records — each with a SHA-256 hash chain, QR passport, and Pashu Aadhaar ID — are batch-synced to Bharat Pashudhan when connectivity returns.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ❹ WHO IT'S FOR -->
+      <div class="home-section alt">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="section-label" data-i18n="who_label">Who It's For</div>
+          <h2 class="section-title" data-i18n="who_title">Built for every link in India's livestock chain</h2>
+          <p class="section-sub" data-i18n="who_sub">Three different stakeholders, one integrated platform — each with a dedicated workflow.</p>
+          <div class="stake-grid-new">
+            <div class="stake-new">
+              <div class="stake-head">
+                <div class="stake-icon" style="background:#E0F2FE;">📱</div>
+                <div>
+                  <h3 data-i18n="st1_h">Field Level Workers</h3>
+                  <div class="stake-role" data-i18n="st1_role">FLWs &amp; Paravets</div>
+                </div>
+              </div>
+              <div class="stake-body">
+                <p data-i18n="st1_p">The frontline of India's livestock data system — working across hundreds of villages daily with basic smartphones and unreliable connectivity.</p>
+                <ul class="benefit-list">
+                  <li data-i18n="st1_b1">Identify any of 15 indigenous breeds instantly — no manual lookup or memory required</li>
+                  <li data-i18n="st1_b2">Works fully offline — 2G, 3G, or no signal at all</li>
+                  <li data-i18n="st1_b3">Hindi and regional language UI toggle</li>
+                  <li data-i18n="st1_b4">Auto-generates a Pashu Aadhaar ID and QR code for each animal</li>
+                </ul>
+              </div>
+            </div>
+            <div class="stake-new">
+              <div class="stake-head">
+                <div class="stake-icon" style="background:#F0FDF4;">🩺</div>
+                <div>
+                  <h3 data-i18n="st2_h">Veterinarians &amp; Experts</h3>
+                  <div class="stake-role" data-i18n="st2_role">Expert Review Panel</div>
+                </div>
+              </div>
+              <div class="stake-body">
+                <p data-i18n="st2_p">Specialists who validate borderline predictions and maintain the scientific integrity of the breed census data.</p>
+                <ul class="benefit-list">
+                  <li data-i18n="st2_b1">Dedicated Expert Queue tab — only receives low-confidence scans that need review</li>
+                  <li data-i18n="st2_b2">Grad-CAM XAI overlay shows exactly which features the AI used — accountable, explainable decisions</li>
+                  <li data-i18n="st2_b3">One-click Verify or Flag for Retraining actions</li>
+                  <li data-i18n="st2_b4">Full SHA-256 audit trail — every decision is permanently logged and tamper-evident</li>
+                </ul>
+              </div>
+            </div>
+            <div class="stake-new">
+              <div class="stake-head">
+                <div class="stake-icon" style="background:#FEF3C7;">🌾</div>
+                <div>
+                  <h3 data-i18n="st3_h">Farmers &amp; Dairy Breeders</h3>
+                  <div class="stake-role" data-i18n="st3_role">Livestock Owners</div>
+                </div>
+              </div>
+              <div class="stake-body">
+                <p data-i18n="st3_p">The ultimate beneficiaries — small and marginal farmers whose livelihoods depend on correct breed registration.</p>
+                <ul class="benefit-list">
+                  <li data-i18n="st3_b1">Correct breed registration ensures access to the right government subsidy schemes</li>
+                  <li data-i18n="st3_b2">Accurate livestock insurance coverage based on verified breed value</li>
+                  <li data-i18n="st3_b3">Science-based crossbreeding advisory from the Encyclopedia to optimise milk yield</li>
+                  <li data-i18n="st3_b4">A tamper-proof QR-coded identity for each animal — reducing theft and fraud</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ❺ WHY IT MATTERS -->
+      <div class="home-section dark">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="section-label" data-i18n="impact_label">Public Impact</div>
+          <h2 class="section-title" data-i18n="impact_title">Why accurate breed data is a national priority</h2>
+          <p class="section-sub" data-i18n="impact_sub">India has the world's largest livestock population. The quality of this data directly affects ₹15,000+ crore in annual government expenditure on animal husbandry schemes.</p>
+          <div class="impact-grid">
+            <div class="impact-card">
+              <span class="ic-icon">📊</span>
+              <h4 data-i18n="ic1_h">Better Livestock Census</h4>
+              <p data-i18n="ic1_p">Accurate breed-level data improves the 20th Livestock Census, enabling evidence-based national breeding policy and district-level resource allocation.</p>
+            </div>
+            <div class="impact-card">
+              <span class="ic-icon">💰</span>
+              <h4 data-i18n="ic2_h">Fair Subsidy Disbursal</h4>
+              <p data-i18n="ic2_p">Breed-correct registration ensures Rashtriya Gokul Mission incentives and state dairy bonuses actually reach the farmers who own high-value indigenous cattle.</p>
+            </div>
+            <div class="impact-card">
+              <span class="ic-icon">🧬</span>
+              <h4 data-i18n="ic3_h">Indigenous Genetics Preserved</h4>
+              <p data-i18n="ic3_p">Knowing exactly where rare breeds like Vechur or Punganur exist allows targeted conservation programs and regulated semen supply — preventing irreversible genetic erosion.</p>
+            </div>
+            <div class="impact-card">
+              <span class="ic-icon">🛡️</span>
+              <h4 data-i18n="ic4_h">Reduced Livestock Fraud</h4>
+              <p data-i18n="ic4_p">Photo-verified, hash-chained records make duplicate insurance claims and phantom animal registrations detectable — protecting the integrity of the entire BPA dataset.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ❻ BREED SHOWCASE -->
+      <div class="home-section">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="section-label" data-i18n="breed_label">Breed Spotlight</div>
+          <h2 class="section-title" data-i18n="breed_title">15 Curated Indigenous Breeds</h2>
+          <p class="section-sub" data-i18n="breed_sub">Every breed in this platform was selected based on ICAR breed registers, conservation status, and economic significance to Indian dairy and agriculture.</p>
+          <div class="breed-strip">
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#E0F2FE;">🐄</div>
+              <div class="bc-name">Gir</div>
+              <div class="bc-type">Milch · Gujarat</div>
+              <div class="bc-role" data-i18n="br1">Highest milk yield among Indian zebu cattle; exported to Brazil and Israel for tropical dairy programs.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#FEF3C7;">🐄</div>
+              <div class="bc-name">Sahiwal</div>
+              <div class="bc-type">Milch · Punjab</div>
+              <div class="bc-role" data-i18n="br2">India's premier dairy zebu; tick-resistant and heat-tolerant — the backbone of Punjab and Haryana dairy economies.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#F1F5F9;">🐃</div>
+              <div class="bc-name">Murrah</div>
+              <div class="bc-type">Buffalo · Haryana</div>
+              <div class="bc-role" data-i18n="br3">World's highest-yielding buffalo breed; produces milk with 7%+ fat, critical for Indian ghee and paneer industries.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#DCFCE7;">🐄</div>
+              <div class="bc-name">Kankrej</div>
+              <div class="bc-type">Dual Purpose · Gujarat</div>
+              <div class="bc-role" data-i18n="br4">Hardy dual-purpose breed; excellent draught power plus moderate milk yield; parent of the American Brahman.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#FFF7ED;">🐄</div>
+              <div class="bc-name">Khillari</div>
+              <div class="bc-type">Draught · Maharashtra</div>
+              <div class="bc-role" data-i18n="br5">Renowned for speed and endurance; preferred bullocks for the Deccan plateau's hard, rocky soils.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#F0FDF4;">🐄</div>
+              <div class="bc-name">Hariana</div>
+              <div class="bc-type">Dual Purpose · Haryana</div>
+              <div class="bc-role" data-i18n="br6">Versatile dual-purpose breed widely used in UP and Haryana; significant in government cattle development programs.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#F5F3FF;">🐄</div>
+              <div class="bc-name">Kangayam</div>
+              <div class="bc-type">Draught · Tamil Nadu</div>
+              <div class="bc-role" data-i18n="br7">Critically endangered; one of the last pure draught breeds of South India with exceptional disease resistance.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#FEF2F2;">🐄</div>
+              <div class="bc-name">Vechur</div>
+              <div class="bc-type">Milch · Kerala</div>
+              <div class="bc-role" data-i18n="br8">World's smallest cattle breed; high A2 milk fat; near-extinct and under active conservation by Kerala Veterinary University.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#E0F2FE;">🐄</div>
+              <div class="bc-name">Red Sindhi</div>
+              <div class="bc-type">Milch · Sindh origin</div>
+              <div class="bc-role" data-i18n="br9">High heat and tick tolerance; a key breed in India's tropical dairy belt from Gujarat to West Bengal.</div>
+            </div>
+            <div class="breed-card-new">
+              <div class="bc-emoji" style="background:#F0FDF4;">🐄</div>
+              <div class="bc-name">Ongole</div>
+              <div class="bc-type">Dual Purpose · Andhra Pradesh</div>
+              <div class="bc-role" data-i18n="br10">Iconic draught breed of coastal Andhra; exported globally as Nellore cattle to Brazil and the USA.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ❼ FOOTER -->
+      <footer class="home-footer">
+        <div style="max-width:1100px; margin:0 auto;">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <h4 data-i18n="foot_brand">Bharat Pashudhan AI Portal</h4>
+              <p data-i18n="foot_blurb">India is home to 43 recognised cattle breeds and 13 buffalo breeds — the highest diversity of any country. This platform supports the accurate identification and conservation of these breeds, which are uniquely adapted to India's diverse agro-climatic zones and are irreplaceable genetic resources for drought tolerance, disease resistance, and high-fat A2 milk production.</p>
+            </div>
+            <div class="footer-col">
+              <h5 data-i18n="foot_nav_h">Navigate</h5>
+              <ul>
+                <li><button onclick="goPage('pg-home', document.querySelector('.nav-tab:nth-child(1)'))" data-i18n="tab_home">Home</button></li>
+                <li><button onclick="goPage('pg-scan', document.querySelector('.nav-tab:nth-child(2)'))" data-i18n="tab_scan">AI Scan Studio</button></li>
+                <li><button onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)'))" data-i18n="tab_enc">Encyclopedia</button></li>
+                <li><button onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)'))" data-i18n="tab_expert">Expert Queue</button></li>
+                <li><button onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)'))" data-i18n="tab_audit">Audit Trail</button></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h5 data-i18n="foot_about_h">About</h5>
+              <ul>
+                <li><button onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="foot_how">How it Works</button></li>
+                <li><button onclick="window.open('https://sih.gov.in','_blank')" data-i18n="foot_sih">SIH 2025 Portal</button></li>
+                <li><button onclick="window.open('https://dahd.gov.in','_blank')" data-i18n="foot_dahd">DAHD Ministry</button></li>
+                <li><button onclick="window.open('https://bharatpashudhan.gov.in','_blank')" data-i18n="foot_bpa">Bharat Pashudhan App</button></li>
+              </ul>
+            </div>
+          </div>
+          <hr class="footer-divider">
+          <div class="footer-bottom">
+            <p data-i18n="foot_ministry">Department of Animal Husbandry &amp; Dairying · Ministry of Fisheries, Animal Husbandry &amp; Dairying · Government of India</p>
+            <span class="prototype-badge" data-i18n="foot_proto">⚠ SIH 2025 Prototype — Not an Official Government Platform</span>
+          </div>
+        </div>
+      </footer>
+
     </div>
+
 
 
     <!-- PAGE: SCAN STUDIO -->
@@ -1291,6 +1985,103 @@
       'upload_title': 'कैप्चर और विश्लेषण',
       'drag_text': 'यहाँ फोटो खींचें और छोड़ें',
       'btn_cam': 'कैमरा का उपयोग करें',
+      // Hero
+      'hero_badge': 'स्मार्ट इंडिया हैकाथॉन 2025 · समस्या विवरण SIH25004',
+      'hero_h1': 'AI-संचालित मवेशी एवं भैंस<br><span>नस्ल पहचान</span> भारत के लिए',
+      'hero_sub': 'डेटा प्रविष्टि बिंदु पर पशुधन डेटा की गुणवत्ता सुधारना — ऑफलाइन, त्वरित और छेड़छाड़-रोधी, ताकि हर किसान को उचित सब्सिडी और बीमा मिले।',
+      'hero_cta1': '🔬 AI स्कैन स्टूडियो लॉन्च करें',
+      'hero_cta2': '↓ यह कैसे काम करता है',
+      // Metrics
+      'm1': 'स्वदेशी नस्लें',
+      'm2': 'एज अनुमान गति',
+      'm3': 'ऑफलाइन कार्य',
+      'm4': 'छेड़छाड़-रोधी ऑडिट',
+      // Problem
+      'prob_label': 'समस्या',
+      'prob_title': 'भारत के पशुधन डेटा में गुणवत्ता संकट है',
+      'prob_sub': 'भारत पशुधन ऐप पूरे भारत में 30 करोड़ से अधिक मवेशियों और भैंसों को पंजीकृत करता है। लेकिन समय के दबाव में, बिना संदर्भ मानकों के, क्षेत्र कार्यकर्ताओं द्वारा मैन्युअल नस्ल प्रविष्टि से व्यवस्थित गलत पंजीकरण होता है।',
+      'pc1_h': 'गलत नस्ल → गलत सब्सिडी',
+      'pc1_p': 'PM-KISAN, राष्ट्रीय गोकुल मिशन और राज्य डेयरी योजनाएं पंजीकृत नस्ल के आधार पर लाभ देती हैं। साहीवाल को क्रॉसब्रीड के रूप में पंजीकृत करने से किसान ₹10,000–₹50,000 प्रति पशु के लाभ से वंचित हो जाता है।',
+      'pc2_h': 'मैन्युअल रिकॉर्ड से धोखाधड़ी संभव',
+      'pc2_p': 'फोटो-सत्यापित, छेड़छाड़-रोधी ऑडिट ट्रेल के बिना, भूत पशु पंजीकरण और डुप्लीकेट दावों का पता लगाना मुश्किल है।',
+      'pc3_h': 'स्वदेशी आनुवंशिकी खो रही है',
+      'pc3_p': 'वेचूर, पुंगनूर और अलम्बादी जैसी नस्लें हजारों में हैं — करोड़ों में नहीं। सटीक नस्ल-स्तरीय जनगणना डेटा के बिना संरक्षण कार्यक्रम लक्षित नहीं हो सकते।',
+      'pc4_h': 'AI को इंटरनेट के बिना काम करना होगा',
+      'pc4_p': 'भारत का 75% पशुधन ग्रामीण क्षेत्रों में पंजीकृत है जहां कनेक्टिविटी अनिश्चित है। क्लाउड API पर निर्भर AI समाधान भारत में बड़े पैमाने पर तैनात नहीं हो सकता।',
+      // Flow
+      'flow_label': 'समाधान',
+      'flow_title': 'फोटो से सत्यापित रिकॉर्ड तक — पूरी तरह ऑफलाइन',
+      'flow_sub': 'एक चार-चरणीय पाइपलाइन जो कम लागत वाले Android टैबलेट पर चलती है, इंटरनेट की आवश्यकता नहीं।',
+      'fs1_h': 'FLW फोटो लेता है',
+      'fs1_p': 'क्षेत्र कार्यकर्ता ऐप के भीतर BPA कैमरे का उपयोग करके पशु की मानक-कोण फोटो लेता है।',
+      'fs2_h': 'ऑन-डिवाइस AI नस्ल पहचानता है',
+      'fs2_p': 'क्वांटाइज़ MobileNetV2 मॉडल पूरी तरह ऑन-डिवाइस 500ms से कम में चलता है।',
+      'fs3_h': 'ऑटो-सत्यापन या विशेषज्ञ समीक्षा',
+      'fs3_p': 'उच्च-विश्वास परिणाम स्वचालित रूप से स्वीकार किए जाते हैं। कम-विश्वास स्कैन विशेषज्ञ कतार में भेजे जाते हैं।',
+      'fs4_h': 'कनेक्ट होने पर BPA को सिंक',
+      'fs4_p': 'सत्यापित रिकॉर्ड — SHA-256 हैश चेन, QR पासपोर्ट और पशु आधार ID के साथ — कनेक्टिविटी वापस आने पर भारत पशुधन को सिंक किए जाते हैं।',
+      // Who
+      'who_label': 'यह किसके लिए है',
+      'who_title': 'भारत की पशुधन श्रृंखला की हर कड़ी के लिए बनाया गया',
+      'who_sub': 'तीन अलग-अलग हितधारक, एक एकीकृत मंच — प्रत्येक के लिए समर्पित वर्कफ़्लो।',
+      'st1_h': 'क्षेत्र स्तर के कार्यकर्ता',
+      'st1_role': 'FLW और पैरावेट',
+      'st1_p': 'भारत के पशुधन डेटा सिस्टम की अग्रिम पंक्ति — बुनियादी स्मार्टफोन और अनिश्चित कनेक्टिविटी के साथ सैकड़ों गांवों में काम कर रहे हैं।',
+      'st1_b1': '15 स्वदेशी नस्लों में से किसी को भी तुरंत पहचानें',
+      'st1_b2': 'पूरी तरह ऑफलाइन काम करता है — 2G, 3G, या बिना सिग्नल के भी',
+      'st1_b3': 'हिंदी और क्षेत्रीय भाषा UI टॉगल',
+      'st1_b4': 'प्रत्येक पशु के लिए पशु आधार ID और QR कोड स्वचालित रूप से उत्पन्न करता है',
+      'st2_h': 'पशु चिकित्सक और विशेषज्ञ',
+      'st2_role': 'विशेषज्ञ समीक्षा पैनल',
+      'st2_p': 'विशेषज्ञ जो सीमारेखा पूर्वानुमानों को सत्यापित करते हैं और नस्ल जनगणना डेटा की वैज्ञानिक अखंडता बनाए रखते हैं।',
+      'st2_b1': 'समर्पित विशेषज्ञ कतार — केवल कम-विश्वास स्कैन प्राप्त होते हैं',
+      'st2_b2': 'Grad-CAM XAI ओवरले दिखाता है AI ने किन विशेषताओं का उपयोग किया',
+      'st2_b3': 'एक-क्लिक सत्यापन या पुनः प्रशिक्षण के लिए फ़्लैग करें',
+      'st2_b4': 'पूर्ण SHA-256 ऑडिट ट्रेल — हर निर्णय स्थायी रूप से लॉग किया जाता है',
+      'st3_h': 'किसान और डेयरी प्रजनक',
+      'st3_role': 'पशुधन मालिक',
+      'st3_p': 'अंतिम लाभार्थी — छोटे और सीमांत किसान जिनकी आजीविका सही नस्ल पंजीकरण पर निर्भर करती है।',
+      'st3_b1': 'सही नस्ल पंजीकरण सरकारी सब्सिडी योजनाओं तक पहुंच सुनिश्चित करता है',
+      'st3_b2': 'सत्यापित नस्ल मूल्य के आधार पर सटीक पशुधन बीमा कवरेज',
+      'st3_b3': 'दूध उत्पादन अनुकूलित करने के लिए विश्वकोश से विज्ञान-आधारित क्रॉसब्रीडिंग सलाह',
+      'st3_b4': 'प्रत्येक पशु के लिए छेड़छाड़-रोधी QR-कोडेड पहचान',
+      // Impact
+      'impact_label': 'सार्वजनिक प्रभाव',
+      'impact_title': 'सटीक नस्ल डेटा राष्ट्रीय प्राथमिकता क्यों है',
+      'impact_sub': 'भारत में दुनिया की सबसे बड़ी पशुधन आबादी है। इस डेटा की गुणवत्ता पशुपालन योजनाओं पर सालाना ₹15,000+ करोड़ सरकारी व्यय को सीधे प्रभावित करती है।',
+      'ic1_h': 'बेहतर पशुधन जनगणना',
+      'ic1_p': 'सटीक नस्ल-स्तरीय डेटा 20वीं पशुधन जनगणना को बेहतर बनाता है, साक्ष्य-आधारित राष्ट्रीय प्रजनन नीति को सक्षम करता है।',
+      'ic2_h': 'उचित सब्सिडी वितरण',
+      'ic2_p': 'नस्ल-सही पंजीकरण सुनिश्चित करता है कि राष्ट्रीय गोकुल मिशन प्रोत्साहन वास्तव में उन किसानों तक पहुंचे जो उच्च-मूल्य स्वदेशी मवेशी रखते हैं।',
+      'ic3_h': 'स्वदेशी आनुवंशिकी संरक्षित',
+      'ic3_p': 'यह जानना कि वेचूर या पुंगनूर जैसी दुर्लभ नस्लें कहां हैं, लक्षित संरक्षण कार्यक्रमों और नियमित वीर्य आपूर्ति की अनुमति देता है।',
+      'ic4_h': 'पशुधन धोखाधड़ी में कमी',
+      'ic4_p': 'फोटो-सत्यापित, हैश-चेन रिकॉर्ड डुप्लीकेट बीमा दावों और भूत पशु पंजीकरण का पता लगाने योग्य बनाते हैं।',
+      // Breeds
+      'breed_label': 'नस्ल स्पॉटलाइट',
+      'breed_title': '15 स्वदेशी नस्लें',
+      'breed_sub': 'इस प्लेटफॉर्म की प्रत्येक नस्ल ICAR नस्ल रजिस्टर, संरक्षण स्थिति और भारतीय डेयरी के लिए आर्थिक महत्व के आधार पर चुनी गई।',
+      'br1': 'भारतीय ज़ेबू मवेशियों में सर्वाधिक दूध उत्पादन; ब्राजील और इजराइल को निर्यात।',
+      'br2': 'भारत की प्रमुख डेयरी ज़ेबू; टिक-प्रतिरोधी — पंजाब और हरियाणा डेयरी अर्थव्यवस्था की रीढ़।',
+      'br3': 'दुनिया की सर्वाधिक उत्पादक भैंस नस्ल; 7%+ वसा युक्त दूध।',
+      'br4': 'मजबूत बहु-उद्देश्यीय नस्ल; अमेरिकन ब्राह्मण की जनक।',
+      'br5': 'गति और सहनशक्ति के लिए प्रसिद्ध; दक्कन पठार के लिए पसंदीदा।',
+      'br6': 'UP और हरियाणा में व्यापक रूप से उपयोग की जाने वाली बहु-उद्देश्यीय नस्ल।',
+      'br7': 'गंभीर रूप से संकटग्रस्त; दक्षिण भारत की अंतिम शुद्ध भार नस्लों में से एक।',
+      'br8': 'दुनिया की सबसे छोटी मवेशी नस्ल; A2 दूध वसा; केरल पशु चिकित्सा विश्वविद्यालय द्वारा संरक्षण।',
+      'br9': 'उच्च गर्मी और टिक सहनशीलता; गुजरात से पश्चिम बंगाल तक उष्णकटिबंधीय डेयरी।',
+      'br10': 'तटीय आंध्र की प्रतिष्ठित भार नस्ल; ब्राजील और अमेरिका को नेल्लोर मवेशी के रूप में निर्यात।',
+      // Footer
+      'foot_brand': 'भारत पशुधन AI पोर्टल',
+      'foot_blurb': 'भारत में 43 मान्यता प्राप्त मवेशी नस्लें और 13 भैंस नस्लें हैं — किसी भी देश में सर्वाधिक विविधता। यह मंच इन नस्लों की सटीक पहचान और संरक्षण का समर्थन करता है।',
+      'foot_nav_h': 'नेविगेट करें',
+      'foot_about_h': 'के बारे में',
+      'foot_how': 'यह कैसे काम करता है',
+      'foot_sih': 'SIH 2025 पोर्टल',
+      'foot_dahd': 'DAHD मंत्रालय',
+      'foot_bpa': 'भारत पशुधन ऐप',
+      'foot_ministry': 'पशुपालन और डेयरी विभाग · मत्स्य पालन, पशुपालन और डेयरी मंत्रालय · भारत सरकार',
+      'foot_proto': '⚠ SIH 2025 प्रोटोटाइप — यह आधिकारिक सरकारी प्लेटफॉर्म नहीं है',
     };
 
     /* ─── Navigation ───────────────────────── */
