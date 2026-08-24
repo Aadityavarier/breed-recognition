@@ -1,20 +1,20 @@
 import os
 import sys
 import sqlite3
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_DIR = os.path.join(BASE_DIR, "expert-dashboard")
+STATIC_DIR = os.path.join(DASHBOARD_DIR, "static")
 DB_PATH = os.path.join(BASE_DIR, "data", "cattle_records.db")
 
 app = Flask(
     __name__,
     template_folder=os.path.join(DASHBOARD_DIR, "templates"),
-    static_folder=os.path.join(DASHBOARD_DIR, "static"),
+    static_folder=STATIC_DIR,
     static_url_path="/static"
 )
 
-# Mock context object to satisfy Jinja template variables
 class MockEngine:
     name = "TFLite INT8 Runtime (Cloud Sandbox)"
     version = "v2.14"
@@ -31,12 +31,15 @@ def get_db():
             return None
     return None
 
+@app.route("/static/<path:filename>")
+def serve_static(filename):
+    return send_from_directory(STATIC_DIR, filename)
+
 @app.route("/")
 @app.route("/api/index.py")
 @app.route("/index")
 def index():
     try:
-        # Pass all template variables expected by index.html
         return render_template(
             "index.html",
             engine=MockEngine(),
