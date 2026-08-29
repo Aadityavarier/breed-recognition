@@ -3,7 +3,7 @@
  * ======================================
  * 
  * Proof of Concept (PoC) for FLW testing
- * Designed for integration with Bharat Pashudhan App (BPA)
+ * Designed for integration with Bharat Pashu-Pehchaan App (BPP)
  * 
  * This Kotlin file demonstrates the core functionality for:
  * 1. Loading TFLite models

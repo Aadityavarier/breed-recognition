@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pashudhan-app-v1';
+const CACHE_NAME = 'pashupehchaan-app-v1';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',

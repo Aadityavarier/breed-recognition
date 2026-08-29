@@ -11,7 +11,7 @@ Endpoints:
   GET  /api/export              → Full JSON export of all records
   GET  /api/export/decentralized→ IPFS/Chroma DB schema export
   POST /api/status              → Update a scan's status (verify / flag / retraining)
-  POST /api/sync                → Mock sync to Bharat Pashudhan (BPA)
+  POST /api/sync                → Mock sync to Bharat Pashu-Pehchaan (BPP)
   GET  /api/encyclopedia        → Fetch breed encyclopedia
   GET  /health                  → Health check
 """
@@ -455,12 +455,12 @@ def export_audit_log():
     records = export_json()
     ipfs_payload = {
         "version": "1.0",
-        "schema": "BharatPashudhan-IPFS",
+        "schema": "BharatPashuPehchaan-IPFS",
         "records": []
     }
     for r in records:
         ipfs_payload["records"].append({
-            "bpa_id": r["id"],
+            "bpp_id": r["id"],
             "blockchain_hash": r.get("blockchain_hash"),
             "breed": r["predicted_breed"],
             "metadata": {
@@ -479,8 +479,8 @@ def export_audit_log():
 
 
 @app.route("/api/sync", methods=["POST"])
-def sync_bpa():
-    """Mock sync to Bharat Pashudhan (BPA)."""
+def sync_bpp():
+    """Mock sync to Bharat Pashu-Pehchaan (BPP)."""
     # In a real app, this would POST to an external API and mark records as synced.
     # For now, we'll just return a success message.
     records = get_history(limit=1000) # Get all records
@@ -488,7 +488,7 @@ def sync_bpa():
     
     return jsonify({
         "success": True,
-        "message": f"Successfully synced {len(pending_sync)} verified records to Bharat Pashudhan.",
+        "message": f"Successfully synced {len(pending_sync)} verified records to Bharat Pashu-Pehchaan.",
         "synced_count": len(pending_sync)
     })
 

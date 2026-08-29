@@ -8,7 +8,7 @@ def main():
     # 1. Clear README.md
     readme_path = root_dir / "README.md"
     if readme_path.exists():
-        readme_path.write_text("# NDLM Bharat Pashudhan - AI Breed Recognition Platform\n\nPrototype for Smart India Hackathon 2025.\n", encoding="utf-8")
+        readme_path.write_text("# NDLM Bharat Pashu-Pehchaan - AI Breed Recognition Platform\n", encoding="utf-8")
         print("Cleared README.md")
 
     # 2. Create archive directory

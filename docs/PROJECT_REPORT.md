@@ -36,7 +36,7 @@
 
 ## 1.1 Problem Background
 
-The Government of India is implementing the **Bharat Pashudhan App (BPA)** for systematic data recording of breeding, health, and nutrition of dairy animals. Field Level Workers (FLWs) are responsible for capturing animal data on the ground. However, despite multiple training programs, a recurring issue is the **incorrect identification and registration of animal breeds** of cattle and buffaloes.
+The Government of India is implementing **Bharat Pashu-Pehchaan** for systematic data recording of breeding, health, and nutrition of dairy animals. Field Level Workers (FLWs) are responsible for capturing animal data on the ground. However, despite multiple training programs, a recurring issue is the **incorrect identification and registration of animal breeds** of cattle and buffaloes.
 
 ## 1.2 Problem Statement
 
@@ -540,7 +540,7 @@ cattle-breed-recognition/
 ## B. References
 
 1. NBAGR - National Bureau of Animal Genetic Resources: https://nbagr.icar.gov.in
-2. Bharat Pashudhan App - Department of Animal Husbandry & Dairying
+2. Bharat Pashu-Pehchaan - Department of Animal Husbandry & Dairying
 3. SIH 2025 - Smart India Hackathon: https://sih.gov.in
 4. TensorFlow Documentation: https://tensorflow.org
 5. EfficientNet Paper: https://arxiv.org/abs/1905.11946
