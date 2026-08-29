@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pashupehchaan-app-v1';
+const CACHE_NAME = 'pashupehchaan-app-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/manifest.json',
@@ -33,34 +33,28 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: Stale-While-Revalidate for app shell, Network-First for API with cache fallback
+// Fetch: Stale-While-Revalidate for app shell, Network-Only for prediction API
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // API calls: Network-First, cache last successful result
+  // PREDICTION ENDPOINT — Network-Only, never cache.
+  //
+  // Do NOT clone or cache POST requests that carry a multipart FormData body
+  // (the uploaded image). Cloning a consumed POST body stream causes the server
+  // to receive an empty image, making every scan return the same region-fallback
+  // breed. Returning a stale cached response from a previous scan is equally
+  // wrong. Let these requests go straight to the network untouched.
   if (url.pathname.includes('/api/predict') || url.pathname.includes('/predict')) {
     event.respondWith(
-      fetch(event.request.clone())
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put('/api/last_prediction_result', copy);
-            });
-          }
-          return response;
-        })
+      fetch(event.request)
         .catch(() => {
-          return caches.match('/api/last_prediction_result').then((cached) => {
-            if (cached) return cached;
-            return new Response(
-              JSON.stringify({
-                success: false,
-                error: "Offline mode: Local edge AI model ready."
-              }),
-              { headers: { 'Content-Type': 'application/json' } }
-            );
-          });
+          return new Response(
+            JSON.stringify({
+              success: false,
+              error: 'You appear to be offline. Please reconnect and try again.'
+            }),
+            { headers: { 'Content-Type': 'application/json' } }
+          );
         })
     );
     return;
