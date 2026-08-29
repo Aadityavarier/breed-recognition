@@ -2046,7 +2046,6 @@
           </div>
 
         </div>
-      </div>
 
       <!-- ❺ EXPLORE THE PLATFORM (Quick-link cards replacing login/QR) -->
       <div class="card" style="margin-bottom:32px; background:linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);">
@@ -2093,37 +2092,6 @@
 
         </div>
       </div>
-
-      <!-- ❻ FOOTER (Department & Portal Footer) -->
-      <footer class="home-footer">
-        <div style="max-width:1100px; margin:0 auto;">
-          <div class="footer-grid">
-            <div class="footer-brand">
-              <h4 data-i18n="foot_brand">Bharat Pashu-Pehchaan</h4>
-              <p data-i18n="foot_blurb">India is home to 43 recognised cattle breeds and 13 buffalo breeds — the highest diversity of any country. This platform supports the accurate identification and conservation of these breeds, which are uniquely adapted to India's diverse agro-climatic zones and are irreplaceable genetic resources for drought tolerance, disease resistance, and high-fat A2 milk production.</p>
-            </div>
-            <div class="footer-col">
-              <h5 data-i18n="foot_nav_h">Navigate</h5>
-              <ul>
-                <li><button onclick="goPage('pg-home', document.querySelector('.nav-tab:nth-child(1)'))" data-i18n="tab_home">Home</button></li>
-                <li><button onclick="goPage('pg-scan', document.querySelector('.nav-tab:nth-child(2)'))" data-i18n="tab_scan">AI Scan Studio</button></li>
-                <li><button onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)'))" data-i18n="tab_enc">Encyclopedia</button></li>
-                <li><button onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)'))" data-i18n="tab_expert">Expert Queue</button></li>
-                <li><button onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)'))" data-i18n="tab_audit">Audit Trail</button></li>
-                <li><button onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})" data-i18n="foot_how">How it Works</button></li>
-                <li><button onclick="goPage('pg-myscans', document.querySelector('.nav-tab:nth-child(6)'))" data-i18n="tab_myscans">My Scans</button></li>
-                <li><button onclick="window.open('https://dahd.gov.in','_blank')" data-i18n="foot_dahd">DAHD Ministry</button></li>
-                <li><button onclick="window.open('https://bharatpashudhan.gov.in','_blank')" data-i18n="foot_bpa">Bharat Pashudhan App</button></li>
-              </ul>
-            </div>
-          </div>
-          <hr class="footer-divider">
-          <div class="footer-bottom">
-            <p data-i18n="foot_ministry">Department of Animal Husbandry &amp; Dairying · Ministry of Fisheries, Animal Husbandry &amp; Dairying · Government of India</p>
-            <span class="prototype-badge" data-i18n="foot_proto">This is a demonstration platform and not an official government service</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
 
@@ -2620,16 +2588,37 @@
           </table>
         </div>
       </div>
-    </div>
+    <!-- SITE-WIDE FOOTER (Department & Portal Footer) -->
+    <footer class="home-footer" style="margin-top:40px;">
+      <div style="max-width:1100px; margin:0 auto;">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <h4 data-i18n="foot_brand">Bharat Pashu-Pehchaan</h4>
+            <p data-i18n="foot_blurb">India is home to 43 recognised cattle breeds and 13 buffalo breeds — the highest diversity of any country. This platform supports the accurate identification and conservation of these breeds, which are uniquely adapted to India's diverse agro-climatic zones and are irreplaceable genetic resources for drought tolerance, disease resistance, and high-fat A2 milk production.</p>
+          </div>
+          <div class="footer-col">
+            <h5 data-i18n="foot_nav_h">Navigate</h5>
+            <ul>
+              <li><button onclick="goPage('pg-home', document.querySelector('.nav-tab:nth-child(1)'))" data-i18n="tab_home">Home</button></li>
+              <li><button onclick="goPage('pg-scan', document.querySelector('.nav-tab:nth-child(2)'))" data-i18n="tab_scan">AI Scan Studio</button></li>
+              <li><button onclick="goPage('pg-encyclopedia', document.querySelector('.nav-tab:nth-child(3)'))" data-i18n="tab_enc">Encyclopedia</button></li>
+              <li><button onclick="goPage('pg-queue', document.querySelector('.nav-tab:nth-child(4)'))" data-i18n="tab_expert">Expert Queue</button></li>
+              <li><button onclick="goPage('pg-audit', document.querySelector('.nav-tab:nth-child(5)'))" data-i18n="tab_audit">Audit Trail</button></li>
+              <li><button onclick="goPage('pg-myscans', document.querySelector('.nav-tab:nth-child(6)'))" data-i18n="tab_myscans">My Scans</button></li>
+              <li><button onclick="window.open('https://dahd.gov.in','_blank')" data-i18n="foot_dahd">DAHD Ministry</button></li>
+              <li><button onclick="window.open('https://bharatpashudhan.gov.in','_blank')" data-i18n="foot_bpa">Bharat Pashudhan App</button></li>
+            </ul>
+          </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+          <p data-i18n="foot_ministry">Department of Animal Husbandry &amp; Dairying · Ministry of Fisheries, Animal Husbandry &amp; Dairying · Government of India</p>
+          <span class="prototype-badge" data-i18n="foot_proto">This is a demonstration platform and not an official government service</span>
+        </div>
+      </div>
+    </footer>
 
   </div>
-
-  <footer
-    style="margin-top: 40px; padding: 30px; text-align: center; color: #64748B; font-size: 13px; border-top: 1px solid #E2E8F0; background: #F8FAFC;">
-    <div style="margin-bottom: 8px; font-weight: 600; color: #1B365D;">Department of Animal Husbandry &amp; Dairying,
-      Ministry of Fisheries, Animal Husbandry &amp; Dairying, Government of India</div>
-    <div style="margin-bottom: 12px;">This is a demonstration platform and not an official government service</div>
-  </footer>
 
   <!-- ── VETERINARY EXPERT AUTHENTICATION MODAL ────────────────────────────── -->
   <div id="vet-auth-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
